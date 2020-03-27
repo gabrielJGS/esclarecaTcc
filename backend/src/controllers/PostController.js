@@ -35,20 +35,16 @@ module.exports = {
         if (!user_id) {
             return response.status(400).json({ error: 'Login inválido' })
         }
+
         //Recupera as tags do usuário e depois separa em uma string para usar no IN no select
-        const tag = await connection('users_tags').where('user_id', user_id).select('tag')
-        var tags = []
-        tag.forEach(t => {
-            //tags+=t.tag+", "
-            tags.push(t.tag)
-        });
-        //tags = tags.substring(0, tags.length - 2)
-        const teste = ['C#', 'visual studio']
-        //Recupera os posts
-        //select * from posts_tags where tag in ('c#', 'visual studio')
-        console.log(tags)
-        const posts_tags = await connection('posts_tags').whereIn('tag', teste).select('*');
+        const tagUsuario = await connection('users_tags').where('user_id', user_id).select('tag').pluck('tag')
+
+        //Recupera as tags dos posts e depois separa em uma string para usar no IN no sele
+        const post_Ids = await connection('posts_tags').whereIn('tag', tagUsuario).select('post_id').pluck('post_id')
         
-        console.log(posts_tags)
+        //Busca os posts com base nos ids dos posts que recuperou
+        const posts = await connection('posts').whereIn('id',post_Ids).select('*')
+        
+        return response.json(posts)
     }
 }
