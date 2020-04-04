@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom'
 
 import './styles.css'
 
-import logoImg from '../../assets/logo.svg'
+import logoImg from '../../assets/logo.png'
 
 import { FiArrowLeft } from 'react-icons/fi'
 
@@ -38,16 +38,16 @@ export default function Register() {
         <div className="register-container">
             <div className="content">
                 <section>
-                    <img src={logoImg} alt="" />
-                    <h1>Cadastro</h1>
-                    <p>Faça seu cadastro</p>
+                    <img src={logoImg} alt="" width={250} height={250} style={{marginBottom:5,marginLeft:20}} />
+                    <h1 style={{marginTop:0}}>Cadastre-se</h1>
+                    <p>Você sem dúvidas! Efetue já o acesso.</p>
 
                     <Link className="back-link" to="/">
                         <FiArrowLeft size={16} color="#e2041"></FiArrowLeft>
-                        Não tenho cadastro
+                        Já possuo cadastro
                     </Link>
                 </section>
-                <form onSubmit={handleRegister}>
+                <form onSubmit={handleRegister} style={{marginTop:20}}>
                     <input
                         value={nome}
                         onChange={e => setNome(e.target.value)}
@@ -70,7 +70,7 @@ export default function Register() {
                         value={tags}
                         onChange={e => setTags(e.target.value)}
                         type="text"
-                        placeholder="Tags para seguir separadas por ' , '" />
+                        placeholder="Assuntos desejados separados por ' , ' Ex: HTML, Cálculo, NodeJS" />
                     <button className="button" type="submit">Cadastrar</button>
                 </form>
             </div>

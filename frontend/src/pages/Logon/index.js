@@ -34,9 +34,9 @@ export default function Logon() {
     return (
         <div className="logon-container">
             <section className="form">
-                <img width={364} src={logoImg} alt="" />
-                <form onSubmit={handleLogin}>
-                    <h1>Faça seu logon</h1>
+                <img width={364} src={logoImg} alt="Logo" style={{marginTop:20}} />
+                <form onSubmit={handleLogin} style={{marginBottom:50,marginTop:0}}>
+                    <h1>Faça seu Login</h1>
                     <input
                         type="text"
                         placeholder="Seu email"
@@ -51,9 +51,9 @@ export default function Logon() {
                     />
                     <button className="button" type="submit">Entrar</button>
 
-                    <Link className="back-link" to="/register">
+                    <Link className="back-link" to="/register" style={{margintop:1}}>
                         <FiLogIn size={16} color="#2b475e"></FiLogIn>
-                        Não tenho cadastro
+                        Não possuo cadastro
                     </Link>
                 </form>
             </section>
