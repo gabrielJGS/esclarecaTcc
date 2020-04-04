@@ -39,7 +39,7 @@ export default function Register() {
             <div className="content">
                 <section>
                     <img src={logoImg} alt="" width={250} height={250} style={{marginBottom:5,marginLeft:20}} />
-                    <h1 style={{marginTop:0}}>Cadastre-se</h1>
+                    <h1 style={{marginTop:0,marginBottom:10}}>Cadastre-se</h1>
                     <p>Você sem dúvidas! Efetue já o acesso.</p>
 
                     <Link className="back-link" to="/">
