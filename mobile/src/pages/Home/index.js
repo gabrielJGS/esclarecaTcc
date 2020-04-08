@@ -1,10 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
 
-export default function NewPost() {
+export default function Home() {
   return (
     <View>
-      <Text>Teste2</Text>
+      <Text>Teste</Text>
      </View>
   );
 }

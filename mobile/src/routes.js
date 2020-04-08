@@ -1,16 +1,20 @@
+import React from 'react'
+
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import Feed from './pages/Feed'
+import Home from './pages/Home'
 import NewPost from './pages/NewPost'
 
 const AppStack = createStackNavigator()
 
 export default function Routes() {
-    <NavigationContainer>
-        <AppStack.Navigator>
-            <AppStack.Screen name="Página Inicial" component={Feed}></AppStack.Screen>
-            <AppStack.Screen name="Nova Postagem" component={NewPost}></AppStack.Screen>
-        </AppStack.Navigator>
-    </NavigationContainer>
+    return (
+        <NavigationContainer screenOptions={{ headerShown: false }}>
+            <AppStack.Navigator>
+                <AppStack.Screen name="Página Inicial" component={Home}></AppStack.Screen>
+                <AppStack.Screen name="Nova Postagem" component={NewPost}></AppStack.Screen>
+            </AppStack.Navigator>
+        </NavigationContainer>
+    )
 }
