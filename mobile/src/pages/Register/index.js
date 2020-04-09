@@ -7,35 +7,40 @@ import api from '../../services/api'
 import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo maior
 import styles from './styles'
 
-export default function Login() {
+export default function Register() {
     const navigation = useNavigation()
 
+    const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [tags, setTags] = useState('');
 
-    useEffect(() => {
-        AsyncStorage.getItem('user').then(user => {
-            if (user) {
-                navigation.navigate('Home');
-            }
-        })
-    }, [])
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
-        const response = await api.post('/login', {
-            email, senha
+        const response = await api.post('/signup', {
+            email, nome, senha, tags
         });
         const { id } = response.data;
         await AsyncStorage.setItem('user', id.toString());
-        navigation.navigate('Home');
+        navigation.goBack()
     }
-    async function navigateToRegister() {
-        navigation.navigate('Register');
+    function handleCancel() {
+        navigation.goBack()
     }
     return (
         <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="padding" style={styles.container}>
             <Image source={logo} />
             <View style={styles.form}>
+                <Text style={styles.label}>SEU NOME *</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Insira seu nome"
+                    placeholderTextColor="#999"
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                    value={nome}
+                    onChangeText={setNome}
+                />
                 <Text style={styles.label}>SEU E-MAIL *</Text>
                 <TextInput
                     style={styles.input}
@@ -59,11 +64,21 @@ export default function Login() {
                     value={senha}
                     onChangeText={setSenha}
                 />
+                <Text style={styles.label}>TAGS *</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Seus interesses separados por ' , '"
+                    placeholderTextColor="#999"
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                    value={tags}
+                    onChangeText={setTags}
+                />
                 <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-                    <Text style={styles.buttonText}>Login</Text>
+                    <Text style={styles.buttonText}>Registre-se</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={navigateToRegister} style={{ marginTop: 10 }}>
-                    <Text style={{ color: '#fdee00' }}>Não possui conta? Registre-se aqui</Text>
+                <TouchableOpacity onPress={handleCancel} style={styles.buttonCancel}>
+                    <Text style={[styles.buttonText, { color: '#123660' }]}>Voltar</Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
