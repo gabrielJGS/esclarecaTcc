@@ -44,7 +44,6 @@ module.exports = {
         
         //Busca os posts com base nos ids dos posts_tags que recuperou
         const posts = await connection('posts').whereIn('posts.id',post_Ids).select('posts.*', connection.raw(`GROUP_CONCAT([tag], ', ') as tag`)).join('posts_tags',{'posts_tags.post_id': 'posts.id'}).groupBy('posts.id')
-        console.log(posts)
         
         return response.json(posts)
     }
