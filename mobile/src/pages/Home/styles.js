@@ -11,7 +11,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 30,
+    padding: 20,
     borderRadius: 8,
     backgroundColor: '#365478'
   },
@@ -22,19 +22,6 @@ export default StyleSheet.create({
   headerTextBold: {
     fontWeight: 'bold'
   },
-  title: {
-    fontSize: 30,
-    marginBottom: 16,
-    marginTop: 48,
-    color: '#13131a',
-    fontWeight: 'bold',
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#737380'
-  },
-
   postsList: {
     marginTop: 32,
   },
@@ -42,7 +29,7 @@ export default StyleSheet.create({
     padding: 24,
     borderRadius: 8,
     backgroundColor: '#fff',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   postTitle: {
     fontSize: 16,
@@ -59,7 +46,7 @@ export default StyleSheet.create({
   },
   detailsButton:{
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center'
   },
   detailsButtonText:{

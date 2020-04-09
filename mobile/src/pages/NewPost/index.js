@@ -24,11 +24,11 @@ export default function NewPost() {
       headers: { user_id }
     })
     
-    navigation.navigate('Home');
+    navigation.goBack()
   }
 
   function handleCancel() {
-    navigation.navigate('Home');
+    navigation.goBack()
   }
 
   return (

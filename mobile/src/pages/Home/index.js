@@ -18,6 +18,10 @@ export default function Home() {
     function navigateToNewPost() {
         navigation.navigate('NewPost')
     }
+    function logoutUser() {
+        AsyncStorage.clear()
+        navigation.goBack()
+    }
     async function loadPosts() {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
@@ -46,13 +50,17 @@ export default function Home() {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Image source={logoImg}></Image>
-                <TouchableOpacity style={styles.detailsButton} onPress={() => navigateToNewPost()}>
-                    <Text style={styles.detailsButtonText}>Novo post </Text>
-                    <Feather name="plus" size={16} color="#fdee00"></Feather>
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'column' }}>
+                    <TouchableOpacity style={[styles.detailsButton, { marginBottom: 25 }]} onPress={() => logoutUser()}>
+                        <Text style={styles.detailsButtonText}>Sair </Text>
+                        <Feather name="log-out" size={16} color="#fdee00"></Feather>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.detailsButton} onPress={() => navigateToNewPost()}>
+                        <Text style={styles.detailsButtonText}>Novo post </Text>
+                        <Feather name="plus" size={16} color="#fdee00"></Feather>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <Text style={styles.title}>Bem vindo!</Text>
-            <Text style={styles.description}>Tire a dúvida de uma pessoa abaixo</Text>
 
             <FlatList
                 data={posts}
