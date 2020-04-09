@@ -4,6 +4,7 @@ module.exports = {
     async create(request, response) {
         const { titulo, descricao, tags } = request.body;
         const { user_id } = request.headers;
+
         //Testa se algum campo obrigatório não foi preenchido
         if (!user_id) {
             return response.status(400).json({ error: 'Login inválido' })
@@ -28,8 +29,12 @@ module.exports = {
         return response.json({ id })
     },
     async index(request, response) {
-        //Todo: é interessante recuperar os posts do usuário também?
+        //Todo: é interessante ignorar os posts do usuário?
         const { user_id } = request.headers;
+
+        //Páginação
+        const { page = 1 } = request.query;
+        const [count] = await connection('posts').count()
 
         //Testa se algum campo obrigatório não foi preenchido
         if (!user_id) {
@@ -41,10 +46,14 @@ module.exports = {
 
         //Recupera as tags dos posts e depois separa em uma string para usar no IN no sele
         const post_Ids = await connection('posts_tags').whereIn('tag', tagUsuario).select('post_id').pluck('post_id')
-        
+
         //Busca os posts com base nos ids dos posts_tags que recuperou
-        const posts = await connection('posts').whereIn('posts.id',post_Ids).select('posts.*', connection.raw(`GROUP_CONCAT([tag], ', ') as tag`)).join('posts_tags',{'posts_tags.post_id': 'posts.id'}).groupBy('posts.id')
-        
+        const posts = await connection('posts').whereIn('posts.id', post_Ids).select('posts.*', connection.raw(`GROUP_CONCAT([tag], ', ') as tag`))
+            .join('posts_tags', { 'posts_tags.post_id': 'posts.id' }).groupBy('posts.id')
+            .limit(5)
+            .offset((page - 1) * 5)
+
+        response.header('X-Total-Count', count['count(*)'])
         return response.json(posts)
     }
 }
