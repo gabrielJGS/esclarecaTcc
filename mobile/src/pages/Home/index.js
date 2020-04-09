@@ -11,8 +11,8 @@ import styles from './styles'
 export default function Home() {
     const navigation = useNavigation()
     const [posts, setPosts] = useState([])
-    //   const [total, setTotal] = useState(0)
-    //   const [page, setPage] = useState(1)
+    const [total, setTotal] = useState(0)
+    const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
 
     function navigateToNewPost() {
@@ -28,17 +28,19 @@ export default function Home() {
             return
         }
         // if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-        //   return
+        //     return
         // }
         setLoading(true)//Altera para o loading iniciado
         const response = await api.get('posts', {
-            headers: { user_id }
+            headers: { user_id },
+            params: { page }
         })
-        setPosts(response.data)
-        // setPosts([...posts, ...response.data])
-        // setTotal(response.headers['x-total-count'])
-        // setPage(page + 1)
+        //setPosts(response.data)
+        setPosts([...posts, ...response.data])
+        setTotal(response.headers['x-total-count'])
+        setPage(page + 1)
         setLoading(false)//Conclui o load
+        console.log('requisicao')
     }
 
     useEffect(() => {
@@ -65,8 +67,10 @@ export default function Home() {
             <FlatList
                 data={posts}
                 style={styles.postsList}
-                showsVerticalScrollIndicator={false}
                 keyExtractor={post => String(post.id)}
+                onTouchStart={loadPosts}
+                onEndReached={loadPosts}
+                onEndReachedThreshold={0.2}
                 renderItem={({ item: post }) => (
                     <View style={styles.post}>
                         <Text style={styles.postTitle}>{post.titulo}</Text>
