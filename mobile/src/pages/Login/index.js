@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
-import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity } from "react-native";
+import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar } from "react-native";
 import api from '../../services/api'
 
 import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo maior
 import styles from './styles'
+import * as Animatable from 'react-native-animatable';
+import LinearGradient from 'react-native-linear-gradient'
 
 export default function Login() {
     const navigation = useNavigation()
@@ -33,39 +35,60 @@ export default function Login() {
         navigation.navigate('Register');
     }
     return (
-        <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="padding" style={styles.container}>
-            <Image source={logo} />
-            <View style={styles.form}>
-                <Text style={styles.label}>SEU E-MAIL *</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Seu e-mail"
-                    placeholderTextColor="#999"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    value={email}
-                    onChangeText={setEmail}
+        <KeyboardAvoidingView behavior={Platform.select({
+        ios: 'padding',
+        android: null,
+    })} style={styles.container}>
+            <StatusBar barStyle="light-content"/>
+            <View style={styles.header}>
+                <Animatable.Image
+                    animation="bounceIn"
+                    duration={1500}
+                    source={logo}
+                    style={styles.img}
+                    resizeMode="stretch"
                 />
-                <Text style={styles.label}>SENHA *</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Sua senha"
-                    placeholderTextColor="#999"
-                    secureTextEntry={true}
-                    password={true}
-                    autoCapitalize="words"
-                    autoCorrect={false}
-                    value={senha}
-                    onChangeText={setSenha}
-                />
-                <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={navigateToRegister} style={{ marginTop: 10 }}>
-                    <Text style={{ color: '#fdee00' }}>Não possui conta? Registre-se aqui</Text>
-                </TouchableOpacity>
             </View>
+            <Animatable.View
+                style={styles.form}
+                animation="fadeInUpBig">
+                    <Text style={styles.text}>Entre com sua conta</Text>
+                    <Text style={styles.label}>E-MAIL</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Seu e-mail"
+                        placeholderTextColor="#999"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        value={email}
+                        onChangeText={setEmail}
+                    />
+                    <Text style={styles.label}>SENHA</Text>
+                    <TextInput
+                        style={styles.input2}
+                        placeholder="Sua senha"
+                        placeholderTextColor="#999"
+                        secureTextEntry={true}
+                        password={true}
+                        autoCapitalize="words"
+                        autoCorrect={false}
+                        value={senha}
+                        onChangeText={setSenha}
+                    />
+                    <TouchableOpacity style={{ marginBottom: 0 }}>
+                        <Text style={{ color: '#e8423f' }}>Esqueci a senha</Text>
+                    </TouchableOpacity>
+
+                    <View style={styles.btn}>
+                        <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+                            <Text style={styles.buttonText}>Login</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={navigateToRegister} style={styles.button2}>
+                            <Text style={styles.buttonText2}>Cadastre-se</Text>
+                        </TouchableOpacity>
+                    </View>
+            </Animatable.View>
         </KeyboardAvoidingView>
     )
 }
