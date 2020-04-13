@@ -1,9 +1,10 @@
 const connection = require('../database/connection')
+const transporter = require('../services/email')
 
 module.exports = {
     async register(request, response) {
         const { nome, tags } = request.body;
-        var {email, senha} = request.body;
+        var { email, senha } = request.body;
         //Validações anti usuário
         email = email.trim().toLowerCase()
         senha = senha.trim().toLowerCase()
@@ -15,7 +16,7 @@ module.exports = {
         //Testa se o usuário não existe antes do insert
         const exists = await connection('users').where('email', email).andWhere('senha', senha).select('*').first();
         if (exists) {
-            return response.status(400).json({error: 'Usuário já existe'})
+            return response.status(400).json({ error: 'Usuário já existe' })
         }
 
         const [id] = await connection('users').insert({
@@ -47,5 +48,24 @@ module.exports = {
             return response.status(400).json({ error: 'Email ou senha inválido' })
         }
         return response.json(profile)
+    },
+    async forget(request, response) {
+        var { email } = request.body;
+        const senha = await connection('users').where('email', email).select('senha').first()
+        //Variavel do email
+        const mailOptions = {
+            from: 'appesclareca@gmail.com',
+            to: email,
+            subject: 'Recuperação de senha do app Esclareça!',
+            text: `Sua senha é: ${senha.senha}`
+        };
+        //Api configurada separadamente
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email enviado: ' + info.response);
+            }
+        });
     }
 }

@@ -8,6 +8,7 @@ const routes = express.Router()
 //Cadastrar perfil e logar
 routes.post('/signup', UserController.register)
 routes.post('/login', UserController.login)
+routes.post('/forget', UserController.forget)
 
 routes.post('/posts', PostController.create)
 routes.get('/posts', PostController.index)

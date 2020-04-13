@@ -40,7 +40,6 @@ export default function Home() {
         setTotal(response.headers['x-total-count'])
         setPage(page + 1)
         setLoading(false)//Conclui o load
-        console.log('requisicao')
     }
 
     useEffect(() => {
