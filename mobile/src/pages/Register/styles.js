@@ -53,14 +53,14 @@ export default StyleSheet.create({
     },
     button: {
         height: hp('6%'),
-        backgroundColor: '#FAD7A0',
+        backgroundColor: '#289cff',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5,
         marginTop:hp('2%')
     },
     buttonText: {
-        color: '#FFF',
+        color: 'white',
         fontWeight: 'bold',
         fontSize: 16,
     },
@@ -72,7 +72,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
         borderWidth:1,
-        borderColor:'#FAD7A0'
+        borderColor:'#289cff'
     },
     OvalShapeView: {
         marginBottom:hp('14%'),
