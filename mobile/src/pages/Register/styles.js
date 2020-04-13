@@ -1,40 +1,63 @@
 import { StyleSheet } from 'react-native'
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 export default StyleSheet.create({
     container: {
-        backgroundColor: '#365478',
+        backgroundColor: 'white',
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+    },
+    header:{
+        backgroundColor: 'white',
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: wp('100%'),
+        height: hp('10%'),
+    },
+    img: {
+        width:wp('22%'),
+        height:hp('8%'),
+        marginTop:hp('20%'),
+        marginLeft:hp('7%'),
     },
     form: {
+        backgroundColor:'white',
+        flex:3,
         alignSelf: 'stretch',
-        paddingHorizontal: 30,
-        marginTop: 30,
+        paddingHorizontal: hp('6%'),
+        marginTop:hp('1%')
+    },
+    label1: {
+        fontWeight: 'bold',
+        color: '#365478',
+        fontSize:hp('2.2%'),
+        marginTop:hp('1%')
     },
     label: {
         fontWeight: 'bold',
-        color: 'white',
-        marginBottom: 8,
+        color: '#365478',
+        fontSize:hp('2.2%')
     },
     input: {
-        borderWidth: 1,
-        borderColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: '#B2BABB',
         backgroundColor: 'white',
         paddingHorizontal: 20,
-        fontSize: 16,
-        color: '#444',
-        height: 44,
-        marginBottom: 20,
-        borderRadius: 2,
+        fontSize:hp('1.8%'),
+        color: '#707B7C',
+        height: hp('4.5%'),
+        marginBottom: hp('2%'),
+        borderRadius: 5,
     },
-
     button: {
-        height: 42,
-        backgroundColor: '#bfbfbf',
+        height: hp('6%'),
+        backgroundColor: '#FAD7A0',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 2,
+        borderRadius: 5,
+        marginTop:hp('2%')
     },
     buttonText: {
         color: '#FFF',
@@ -42,11 +65,37 @@ export default StyleSheet.create({
         fontSize: 16,
     },
     buttonCancel: {
-        marginTop: 15,
-        height: 42,
+        marginTop: hp('1.5%'),
+        height: hp('6%'),
         backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 2,
+        borderRadius: 5,
+        borderWidth:1,
+        borderColor:'#FAD7A0'
     },
+    OvalShapeView: {
+        marginBottom:hp('14%'),
+        width: wp('50%'),
+        height: hp('33.4%'),
+        borderRadius: 80,
+        backgroundColor:'#365478',
+        transform: [
+          {scaleX: 2}
+        ]
+      },
+      images: {
+        backgroundColor:'#B2BABB', 
+        marginTop:30,
+        width:hp('6%'), 
+        color:'white',
+        marginLeft:28
+      },
+      circle: {
+        width: 100, 
+        height: 100, 
+        borderRadius: 100/ 2,
+        backgroundColor:'#B2BABB',
+        marginTop:hp('2%')
+      }
 });

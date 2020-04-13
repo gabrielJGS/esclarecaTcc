@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
-import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity } from "react-native";
+import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar } from "react-native";
 import api from '../../services/api'
 
 import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo maior
 import styles from './styles'
+import * as Animatable from 'react-native-animatable'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function Register() {
     const navigation = useNavigation()
@@ -29,9 +31,29 @@ export default function Register() {
     }
     return (
         <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="padding" style={styles.container}>
-            <Image source={logo} />
-            <View style={styles.form}>
-                <Text style={styles.label}>SEU NOME *</Text>
+            <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'}/>
+            <View style={styles.header}>
+                
+                <View style={styles.OvalShapeView} >
+                <Animatable.Image
+                    animation="bounceIn"
+                    duration={1500}
+                    source={logo}
+                    style={styles.img}
+                    resizeMode="stretch"
+                />
+                </View>
+            </View>
+            <TouchableOpacity style={styles.circle}>
+                <Icon
+                    name="camera" size={40}
+                    style={styles.images}
+                />
+            </TouchableOpacity>
+            <Animatable.View
+            style={styles.form}
+            animation="bounceInUp">
+                <Text style={styles.label1}>NOME *</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Insira seu nome"
@@ -41,7 +63,7 @@ export default function Register() {
                     value={nome}
                     onChangeText={setNome}
                 />
-                <Text style={styles.label}>SEU E-MAIL *</Text>
+                <Text style={styles.label}>E-MAIL *</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Seu e-mail"
@@ -80,7 +102,7 @@ export default function Register() {
                 <TouchableOpacity onPress={handleCancel} style={styles.buttonCancel}>
                     <Text style={[styles.buttonText, { color: '#123660' }]}>Voltar</Text>
                 </TouchableOpacity>
-            </View>
+            </Animatable.View>
         </KeyboardAvoidingView>
     )
 }

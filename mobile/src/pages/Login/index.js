@@ -6,8 +6,7 @@ import api from '../../services/api'
 
 import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo maior
 import styles from './styles'
-import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient'
+import * as Animatable from 'react-native-animatable'
 
 export default function Login() {
     const navigation = useNavigation()
@@ -39,7 +38,7 @@ export default function Login() {
         ios: 'padding',
         android: null,
     })} style={styles.container}>
-            <StatusBar barStyle="light-content"/>
+            <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'}/>
             <View style={styles.header}>
                 <Animatable.Image
                     animation="bounceIn"

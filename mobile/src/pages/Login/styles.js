@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 export default StyleSheet.create({
     container: {
@@ -39,7 +40,7 @@ export default StyleSheet.create({
         fontSize: 16,
         color: '#444',
         height: 44,
-        marginBottom: 10,
+        marginBottom: hp('3%'),
         borderRadius: 2,
     },
     input2: {
@@ -51,13 +52,13 @@ export default StyleSheet.create({
         fontSize: 16,
         color: '#444',
         height: 44,
-        marginBottom: 10,
+        marginBottom: hp('2%'),
         borderRadius: 2,
     },
 
     button: {
-        marginTop:15,
-        height: 45,
+        marginTop:hp('5%'),
+        height: hp('6%'),
         backgroundColor: '#289cff',
         justifyContent: 'center',
         alignItems: 'center',
@@ -69,10 +70,10 @@ export default StyleSheet.create({
         fontSize: 20,
    },
    img:{
-    width:200,
-    height:100,
-    marginTop:50,
-    marginLeft:20
+    width:wp('50%'),
+    height:hp('10%'),
+    marginTop:hp('7%'),
+    marginLeft:hp('2%')
    },
    title: {
     fontWeight: 'bold',
@@ -81,25 +82,25 @@ export default StyleSheet.create({
     },
    text:{
     color:'gray',
-    marginTop:5,
-    paddingBottom:5
+    marginTop:hp('0.5%'),
+    paddingBottom:hp('2%')
    },
    button2: {
-       marginTop:10,
-    height: 45,
+    marginTop: hp('2%'),
+    height: hp('6%'),
     backgroundColor: 'white',
     borderColor:'#289cff',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
     borderWidth:1
-    },
-    buttonText2: {
-        color: '#289cff',
-        fontWeight: 'bold',
-        fontSize: 20,
-    },
-    btn:{
-        flex:1,
-    }
+   },
+   buttonText2: {
+    color: '#289cff',
+    fontWeight: 'bold',
+    fontSize: 20,
+   },
+   btn:{
+    flex:1,
+   }
 });
