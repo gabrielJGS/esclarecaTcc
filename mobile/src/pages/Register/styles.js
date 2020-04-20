@@ -56,7 +56,7 @@ export default StyleSheet.create({
         backgroundColor: '#289cff',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
+        borderRadius: 50,
         marginTop:hp('2%')
     },
     buttonText: {
@@ -70,7 +70,7 @@ export default StyleSheet.create({
         backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
+        borderRadius: 50,
         borderWidth:1,
         borderColor:'#289cff'
     },

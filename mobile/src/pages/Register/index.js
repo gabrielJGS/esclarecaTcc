@@ -30,7 +30,7 @@ export default function Register() {
         navigation.goBack()
     }
     return (
-        <KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior="padding" style={styles.container}>
+        <KeyboardAvoidingView behavior="padding" style={styles.container}>
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'}/>
             <View style={styles.header}>
                 
@@ -52,7 +52,7 @@ export default function Register() {
             </TouchableOpacity>
             <Animatable.View
             style={styles.form}
-            animation="bounceInUp">
+            animation="fadeIn">
                 <Text style={styles.label1}>NOME *</Text>
                 <TextInput
                     style={styles.input}

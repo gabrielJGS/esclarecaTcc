@@ -84,6 +84,7 @@ export default function Login() {
                     autoCorrect={false}
                     value={senha}
                     onChangeText={setSenha}
+                    returnKeyType="done"
                 />
                 <TouchableOpacity onPress={handleForgetPassword} style={{ marginBottom: 0 }}>
                     <Text style={{ color: '#e8423f' }}>Esqueci a senha</Text>

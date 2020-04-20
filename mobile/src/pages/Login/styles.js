@@ -13,22 +13,22 @@ export default StyleSheet.create({
         flex: 2,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: 50,
+        paddingBottom: hp('6%'),
     },
     form: {
         flex: 4,
         backgroundColor: '#365478',
         alignSelf: 'stretch',
         paddingHorizontal: 30,
-        paddingVertical: 20,
+        paddingVertical: hp('2.5%'),
         backgroundColor: "white",
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
+        borderTopLeftRadius: hp('5%'),
+        borderTopRightRadius: hp('5%'),
     },
     label: {
         fontWeight: 'bold',
         color: '#365478',
-        fontSize: 18,
+        fontSize: hp('2.3%'),
         marginBottom: 0,
     },
     input: {
@@ -37,9 +37,9 @@ export default StyleSheet.create({
         borderColor: 'white',
         backgroundColor: 'white',
         paddingHorizontal: 20,
-        fontSize: 16,
+        fontSize: hp('1.8%'),
         color: '#444',
-        height: 44,
+        height: hp('5%'),
         marginBottom: hp('2%'),
         borderRadius: 2,
     },
@@ -49,9 +49,9 @@ export default StyleSheet.create({
         borderColor: 'white',
         backgroundColor: 'white',
         paddingHorizontal: 20,
-        fontSize: 16,
+        fontSize: hp('1.8%'),
         color: '#444',
-        height: 44,
+        height: hp('5%'),
         marginBottom: hp('2%'),
         borderRadius: 2,
     },
@@ -62,12 +62,12 @@ export default StyleSheet.create({
         backgroundColor: '#289cff',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius:50,
     },
     buttonText: {
         color: '#FFF',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: hp('2.5%'),
     },
     img: {
         width: wp('50%'),
@@ -78,7 +78,7 @@ export default StyleSheet.create({
     title: {
         fontWeight: 'bold',
         color: '#365478',
-        fontSize: 30
+        fontSize: hp('2.5%')
     },
     text: {
         color: 'gray',
@@ -92,13 +92,13 @@ export default StyleSheet.create({
         borderColor: '#289cff',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius: 50,
         borderWidth: 1
     },
     buttonText2: {
         color: '#289cff',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize:  hp('2.5%'),
     },
     btn: {
         flex: 1,
