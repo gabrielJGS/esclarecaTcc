@@ -23,12 +23,17 @@ export default function Login() {
     }, [])
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
-        const response = await api.post('/login', {
-            email, senha
-        });
-        const { id } = response.data;
-        await AsyncStorage.setItem('user', id.toString());
-        navigation.navigate('Home');
+        if(email != '' && senha != ''){
+            const response = await api.post('/login', {
+                email, senha
+            });
+            const { id } = response.data;
+            await AsyncStorage.setItem('user', id.toString());
+            navigation.navigate('Home');
+        }
+        else {
+            alert('Preencha os campos.');
+        }
     }
 
     async function handleForgetPassword() {

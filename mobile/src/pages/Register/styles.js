@@ -53,7 +53,7 @@ export default StyleSheet.create({
     },
     button: {
         height: hp('6%'),
-        backgroundColor: '#289cff',
+        backgroundColor: '#365478',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,
@@ -72,7 +72,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         borderRadius: 50,
         borderWidth:1,
-        borderColor:'#289cff'
+        borderColor:'#FFC300'
     },
     OvalShapeView: {
         marginBottom:hp('14%'),

@@ -30,7 +30,7 @@ export default function Register() {
         navigation.goBack()
     }
     return (
-        <KeyboardAvoidingView behavior="padding" style={styles.container}>
+        <KeyboardAvoidingView behavior="" style={styles.container}>
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'}/>
             <View style={styles.header}>
                 
@@ -62,6 +62,7 @@ export default function Register() {
                     autoCorrect={false}
                     value={nome}
                     onChangeText={setNome}
+                    returnKeyType="done"
                 />
                 <Text style={styles.label}>E-MAIL *</Text>
                 <TextInput
@@ -73,6 +74,7 @@ export default function Register() {
                     autoCorrect={false}
                     value={email}
                     onChangeText={setEmail}
+                    returnKeyType="done"
                 />
                 <Text style={styles.label}>SENHA *</Text>
                 <TextInput
@@ -85,6 +87,7 @@ export default function Register() {
                     autoCorrect={false}
                     value={senha}
                     onChangeText={setSenha}
+                    returnKeyType="done"
                 />
                 <Text style={styles.label}>TAGS *</Text>
                 <TextInput
@@ -95,12 +98,13 @@ export default function Register() {
                     autoCorrect={false}
                     value={tags}
                     onChangeText={setTags}
+                    returnKeyType="go"
                 />
                 <TouchableOpacity onPress={handleSubmit} style={styles.button}>
                     <Text style={styles.buttonText}>Registre-se</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleCancel} style={styles.buttonCancel}>
-                    <Text style={[styles.buttonText, { color: '#123660' }]}>Voltar</Text>
+                    <Text style={[styles.buttonText, { color: '#365478' }]}>Voltar</Text>
                 </TouchableOpacity>
             </Animatable.View>
         </KeyboardAvoidingView>
