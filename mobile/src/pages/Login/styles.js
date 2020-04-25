@@ -59,7 +59,7 @@ export default StyleSheet.create({
     button: {
         marginTop: hp('4%'),
         height: hp('6%'),
-        backgroundColor: '#289cff',
+        backgroundColor: '#365478',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius:50,
@@ -89,14 +89,14 @@ export default StyleSheet.create({
         marginTop: hp('2%'),
         height: hp('6%'),
         backgroundColor: 'white',
-        borderColor: '#289cff',
+        borderColor: '#FFC300',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,
         borderWidth: 1
     },
     buttonText2: {
-        color: '#289cff',
+        color: '#365478',
         fontWeight: 'bold',
         fontSize:  hp('2.5%'),
     },
