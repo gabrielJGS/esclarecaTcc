@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
-import { SafeAreaView, Alert, TextInput, TouchableOpacity, AsyncStorage, Text } from 'react-native';
+import { SafeAreaView, View, TextInput, TouchableOpacity, AsyncStorage, Text, Image } from 'react-native';
+import {Ionicons} from "@expo/vector-icons"
 
 import api from '../../services/api'
 
@@ -33,43 +34,58 @@ export default function NewPost() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.label}>Titulo *</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Resuma a sua dúvida"
-        placeholderTextColor="#999"
-        autoCapitalize="words"
-        autoCorrect={false}
-        value={titulo}
-        onChangeText={setTitulo}
-      />
-      <Text style={styles.label}>Descrição *</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Descreva a sua dúvida"
-        placeholderTextColor="#999"
-        autoCapitalize="words"
-        autoCorrect={false}
-        value={descricao}
-        onChangeText={setDescricao}
-      />
-      <Text style={styles.label}>Tags *</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Quais os interesses de sua dúvida?"
-        placeholderTextColor="#999"
-        autoCapitalize="words"
-        autoCorrect={false}
-        value={tags}
-        onChangeText={setTags}
-      />
-      <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-        <Text style={styles.buttonText}>Nova dúvida</Text>
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleCancel}>
+          <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleSubmit}>
+          <Text style={{fontWeight:'bold', color:'white', fontSize:18}}>Postar Dúvida</Text>
+        </TouchableOpacity>
+      </View>
+      
+      <View style={styles.inputContainer}>
+        <Ionicons name="md-camera" size={50} color='#D8D9DB' style={styles.avatar}></Ionicons>
+        <TextInput
+          autoFocus={true}
+          multiline={true}
+          numberOfLines={4}
+          style={{flex:1, fontSize:15}}
+          placeholder="Descreva qual a sua dúvida..."
+          value={descricao}
+          onChangeText={setDescricao}
+        />
+      </View>
 
-      <TouchableOpacity onPress={handleCancel} style={[styles.button, styles.cancelButton]}>
-        <Text style={styles.buttonText}>Cancelar</Text>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity style={styles.anexo}>
+          <Ionicons name="md-attach" size={32} color='#D8D9DB'></Ionicons>
+        </TouchableOpacity>
+      </View>
+
+      <View style={{paddingHorizontal:30,marginTop:40}}>
+        <Text style={styles.label}>Título da dúvida</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Título que deseja dar à sua dúvida..."
+          placeholderTextColor="#999"
+          autoCapitalize="words"
+          autoCorrect={false}
+          value={titulo}
+          onChangeText={setTitulo}
+          numberOfLines={2}
+        />
+        <Text style={styles.label}>Tags</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Temas relacionados à sua dúvida separados por ','"
+          placeholderTextColor="#999"
+          autoCapitalize="words"
+          autoCorrect={false}
+          value={tags}
+          onChangeText={setTags}
+          numberOfLines={2}
+        />
+      </View>
     </SafeAreaView>
   );
 }
