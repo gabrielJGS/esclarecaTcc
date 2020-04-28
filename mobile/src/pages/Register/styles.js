@@ -53,7 +53,7 @@ export default StyleSheet.create({
     },
     button: {
         height: hp('6%'),
-        backgroundColor: '#289cff',
+        backgroundColor: '#365478',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5,

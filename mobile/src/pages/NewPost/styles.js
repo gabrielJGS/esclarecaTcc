@@ -2,23 +2,50 @@ import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
     container: {
-      margin: 30,
+      flex:1,
     },
-  
+    
+    header:{
+      flexDirection:'row',
+      justifyContent:'space-between',
+      paddingVertical:12,
+      paddingHorizontal:32,
+      backgroundColor:'#365478',
+      borderBottomWidth:1,
+      borderBottomColor:'#D8D9DB',
+      height:70,
+      alignItems:'center'
+    },
+    
+    inputContainer:{
+      margin:32,
+      flexDirection:'row',
+    },
+
+    anexo:{
+      alignItems:'flex-end',
+      marginHorizontal:32,
+    },
+    
+    avatar:{
+      marginRight:16
+    },
+
     label: {
       fontWeight: 'bold',
       color: '#444',
-      marginBottom: 8,
+      marginBottom: 5,
+      fontSize:18
     },
   
     input: {
-      borderWidth: 1,
+      borderBottomWidth: 1,
       borderColor: '#ddd',
       paddingHorizontal: 20,
       fontSize: 16,
       color: '#444',
       height: 44,
-      marginBottom: 20,
+      marginBottom: 30,
       borderRadius: 2
     },
   

@@ -23,12 +23,17 @@ export default function Login() {
     }, [])
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
-        const response = await api.post('/login', {
-            email, senha
-        });
-        const { id } = response.data;
-        await AsyncStorage.setItem('user', id.toString());
-        navigation.navigate('Home');
+        if(email != '' && senha != ''){
+            const response = await api.post('/login', {
+                email, senha
+            });
+            const { id } = response.data;
+            await AsyncStorage.setItem('user', id.toString());
+            navigation.navigate('Home');
+        }
+        else {
+            alert('Preencha os campos.');
+        }
     }
 
     async function handleForgetPassword() {
@@ -82,6 +87,7 @@ export default function Login() {
                     autoCorrect={false}
                     value={senha}
                     onChangeText={setSenha}
+                    returnKeyType="done"
                 />
                 <TouchableOpacity onPress={handleForgetPassword} style={{ marginBottom: 0 }}>
                     <Text style={{ color: '#e8423f' }}>Esqueci a senha</Text>

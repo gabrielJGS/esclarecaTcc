@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, Image, TouchableOpacity, AsyncStorage } from 'react-native';
-import { Feather } from '@expo/vector-icons'
+import { FlatList, View, Text, Image, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, Alert } from 'react-native';
+import { Feather, Ionicons } from '@expo/vector-icons'
 
 import api from '../../services/api'
 
@@ -46,10 +46,40 @@ export default function Home() {
         loadPosts()
     }, [])
 
+    useEffect(() => {
+        const backAction = () => {
+           BackHandler.exitApp()
+          return true;
+        };
+    
+        const backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          backAction
+        );
+    
+        return () => backHandler.remove();
+      }, []);
 
     return (
+        //reidner 26/04
         <View style={styles.container}>
+            <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
+                <TouchableOpacity style={styles.detailsButton} onPress={() => logoutUser()}>
+                    <Text style={styles.detailsButtonText}>Sair </Text>
+                    <Feather name="log-out" size={16} color="#FFC300"></Feather>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <Text style={{fontWeight:'bold', color:"white", fontSize:20}}>Feed de Dúvidas</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.detailsButton} onPress={() => navigateToNewPost()}>
+                        <Text style={styles.detailsButtonText}>Novo </Text>
+                        <Feather name="plus" size={16} color="#FFC300"></Feather>
+                </TouchableOpacity>
+            </View>
+
+
+            {/*<View style={styles.header}>
                 <Image source={logoImg}></Image>
                 <View style={{ flexDirection: 'column' }}>
                     <TouchableOpacity style={[styles.detailsButton, { marginBottom: 25 }]} onPress={() => logoutUser()}>
@@ -61,14 +91,15 @@ export default function Home() {
                         <Feather name="plus" size={16} color="#fdee00"></Feather>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </View>*/}
 
             <FlatList
                 data={posts}
                 style={styles.postsList}
                 keyExtractor={post => String(post.id)}
-                onTouchStart={loadPosts}
-                onEndReached={loadPosts}
+                refreshing={loading}
+                onRefresh={() => loadPosts()}
+                onEndReached={() => loadPosts()}
                 onEndReachedThreshold={0.2}
                 renderItem={({ item: post }) => (
                     <View style={styles.post}>

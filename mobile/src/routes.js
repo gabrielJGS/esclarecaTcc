@@ -3,6 +3,7 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
+import Init from './pages/Init'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
@@ -14,7 +15,7 @@ export default function Routes() {
     return (
         <NavigationContainer>
             <AppStack.Navigator screenOptions={{ headerShown: false }}>
-                {/* Descobrir pq não pode deixar o componente com name diferente */}
+                <AppStack.Screen name="Init" component={Init}></AppStack.Screen>
                 <AppStack.Screen name="Login" component={Login}></AppStack.Screen>
                 <AppStack.Screen name="Register" component={Register}></AppStack.Screen>
                 <AppStack.Screen name="Home" component={Home}></AppStack.Screen>
