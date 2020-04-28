@@ -99,6 +99,9 @@ export default function Home() {
                 keyExtractor={post => String(post.id)}
                 onTouchStart={loadPosts}
                 onEndReached={loadPosts}
+                refreshing={loading}
+                onRefresh={() => loadPosts()}
+                onEndReached={() => loadPosts()}
                 onEndReachedThreshold={0.2}
                 renderItem={({ item: post }) => (
                     <View style={styles.post}>
