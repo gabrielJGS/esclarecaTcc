@@ -97,8 +97,6 @@ export default function Home() {
                 data={posts}
                 style={styles.postsList}
                 keyExtractor={post => String(post.id)}
-                onTouchStart={loadPosts}
-                onEndReached={loadPosts}
                 refreshing={loading}
                 onRefresh={() => loadPosts()}
                 onEndReached={() => loadPosts()}
