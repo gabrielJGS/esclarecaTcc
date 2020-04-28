@@ -4,19 +4,22 @@ import Constants from 'expo-constants'
 export default StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: Constants.statusBarHeight + 20,
   },
+
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderRadius: 8,
-    backgroundColor: '#365478'
+    flexDirection:'row',
+      justifyContent:'space-between',
+      paddingVertical:12,
+      paddingHorizontal:30,
+      backgroundColor:'#365478',
+      borderBottomWidth:1,
+      borderBottomColor:'#D8D9DB',
+      height:110,
+      alignItems:'center'
   },
+
   headerText: {
-    fontSize: 15,
+    fontSize: 18,
     color: 'white',
   },
   headerTextBold: {
@@ -51,7 +54,7 @@ export default StyleSheet.create({
   },
   detailsButtonText:{
     color: 'white',
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: 'bold'
   }
 })

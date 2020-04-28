@@ -15,7 +15,6 @@ export default function Routes() {
     return (
         <NavigationContainer>
             <AppStack.Navigator screenOptions={{ headerShown: false }}>
-                {/* Descobrir pq não pode deixar o componente com name diferente */}
                 <AppStack.Screen name="Init" component={Init}></AppStack.Screen>
                 <AppStack.Screen name="Login" component={Login}></AppStack.Screen>
                 <AppStack.Screen name="Register" component={Register}></AppStack.Screen>
