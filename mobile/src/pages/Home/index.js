@@ -7,6 +7,7 @@ import api from '../../services/api'
 
 import logoImg from '../../assets/logo.png'
 import styles from './styles'
+import * as Animatable from 'react-native-animatable'
 
 export default function Home() {
     const navigation = useNavigation()
@@ -17,6 +18,9 @@ export default function Home() {
 
     function navigateToNewPost() {
         navigation.navigate('NewPost')
+    }
+    function navigateToContent() {
+        navigation.navigate('HomeContent')
     }
     function logoutUser() {
         AsyncStorage.clear()
@@ -46,7 +50,7 @@ export default function Home() {
         loadPosts()
     }, [])
 
-    useEffect(() => {
+    {/*useEffect(() => {
         const backAction = () => {
            BackHandler.exitApp()
           return true;
@@ -58,7 +62,7 @@ export default function Home() {
         );
     
         return () => backHandler.remove();
-      }, []);
+      }, []);*/}
 
     return (
         //reidner 26/04
@@ -70,13 +74,14 @@ export default function Home() {
                     <Feather name="log-out" size={16} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                    <Text style={{fontWeight:'bold', color:"white", fontSize:20}}>Feed de Dúvidas</Text>
+                    <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Dúvidas</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.detailsButton} onPress={() => navigateToNewPost()}>
                         <Text style={styles.detailsButtonText}>Novo </Text>
                         <Feather name="plus" size={16} color="#FFC300"></Feather>
                 </TouchableOpacity>
             </View>
+<<<<<<< Updated upstream
 
 
             {/*<View style={styles.header}>
@@ -109,6 +114,38 @@ export default function Home() {
                     </View>
                 )}>
             </FlatList>
+=======
+            <View>
+                <FlatList
+                    data={posts}
+                    style={styles.postsList}
+                    keyExtractor={post => String(post.id)}
+                    onTouchStart={loadPosts}
+                    onEndReached={loadPosts}
+                    onEndReachedThreshold={0.2}
+                    renderItem={({ item: post }) => (
+                        <View style={styles.post}>
+                            <Text style={styles.postTitle}>{post.titulo}</Text>
+                            <Text style={styles.postTag}>{post.tag}</Text>
+                            <Text style={styles.postDescricao}>{post.descricao}</Text>
+                        </View>
+                    )}>
+                </FlatList>
+            </View>
+            <Animatable.View 
+            style={styles.footer}
+            animation="fadeInUpBig"
+            duration={1000}>
+                <TouchableOpacity style={styles.detailsBar} onPress={() => loadPosts()}>
+                    <Text style={styles.detailsButtonTextHome}>Dúvidas </Text>
+                    <Feather name="edit-3" size={16} color="#FFC300"></Feather>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.detailsBar} onPress={() => navigateToContent()}>
+                    <Text style={styles.detailsButtonText}>Conteúdos </Text>
+                    <Feather name="book-open" size={16} color="white"></Feather>
+                </TouchableOpacity>
+            </Animatable.View>
+>>>>>>> Stashed changes
         </View>
     );
 }
