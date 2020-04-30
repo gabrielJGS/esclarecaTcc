@@ -8,15 +8,15 @@ export default StyleSheet.create({
 
   header: {
     flexDirection:'row',
-    justifyContent:'space-between',
-    paddingVertical:15,
-    paddingHorizontal:30,
-    backgroundColor:'#365478',
-    borderBottomWidth:1,
-    borderBottomColor:'#D8D9DB',
-    height:hp('13%'),
-    alignItems:'center',
-    paddingTop: hp('2%')
+      justifyContent:'space-between',
+      paddingVertical:15,
+      paddingHorizontal:30,
+      backgroundColor:'#365478',
+      borderBottomWidth:1,
+      borderBottomColor:'#D8D9DB',
+      height:hp('13%'),
+      alignItems:'center',
+      paddingTop: hp('2%')
   },
 
   headerText: {
