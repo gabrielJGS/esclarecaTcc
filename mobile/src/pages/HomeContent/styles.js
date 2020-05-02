@@ -8,15 +8,15 @@ export default StyleSheet.create({
 
   header: {
     flexDirection:'row',
-      justifyContent:'space-between',
-      paddingVertical:15,
-      paddingHorizontal:30,
-      backgroundColor:'#365478',
-      borderBottomWidth:1,
-      borderBottomColor:'#D8D9DB',
-      height:hp('13%'),
-      alignItems:'center',
-      paddingTop: hp('2%')
+    justifyContent:'space-between',
+    paddingVertical:15,
+    paddingHorizontal:32,
+    backgroundColor:'#365478',
+    borderBottomWidth:1,
+    borderBottomColor:'#D8D9DB',
+    height:hp('13%'),
+    alignItems:'center',
+    paddingTop: hp('2%'),
   },
 
   headerText: {
@@ -27,22 +27,30 @@ export default StyleSheet.create({
     fontWeight: 'bold'
   },
   postsList: {
-    marginTop: 32,
+    marginTop: 5,
+    paddingHorizontal: 8,
   },
   post: {
-    padding: 24,
     borderRadius: 8,
     backgroundColor: '#fff',
-    marginBottom: 8,
+    marginBottom: 10,
+    shadowColor: 'rgb(0, 0, 0)',
+            shadowOffset: {
+              width: 3,
+              height: 3,
+            },
+            shadowOpacity: 0.8,
+            shadowRadius: 5,
+            elevation: 3,
   },
   postTitle: {
     fontSize: 16,
-    color: '#41414d',
-    fontWeight: 'bold'
+    color: '#365478',
+    fontWeight: 'bold',
+    paddingLeft:10
   },
   postTag:{
     fontSize: 12,
-    marginBottom: 12,
     color: '#737380'
   },
   postDescricao: {
@@ -55,7 +63,7 @@ export default StyleSheet.create({
   },
   detailsButtonText:{
     color: 'white',
-    fontSize: 18,
+    fontSize: hp('2.2%'),
     fontWeight: 'bold'
   },
   footer:{
@@ -65,14 +73,23 @@ export default StyleSheet.create({
     bottom: hp('2%'),
     height:hp('6%'),
     backgroundColor:'#365478',
-    paddingVertical:10,
-    paddingHorizontal:60,
-    borderBottomRightRadius:30,
-    borderBottomLeftRadius:30,
-    borderTopLeftRadius:8,
-    borderTopRightRadius:8,
+    alignItems:'center',
+    paddingHorizontal:hp('8.5%'),
+    borderBottomRightRadius:hp('4%'),
+    borderBottomLeftRadius:hp('4%'),
+    borderTopLeftRadius:hp('1.5%'),
+    borderTopRightRadius:hp('1.5%'),
     flexDirection:'row',
     justifyContent:'space-between',
+    flex:0.1,
+    shadowColor: 'rgb(0, 0, 0)',
+            shadowOffset: {
+              width: 3,
+              height: 3,
+            },
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+            elevation: 3,
   },
   detailsBar:{
     flexDirection: 'column',
@@ -81,7 +98,83 @@ export default StyleSheet.create({
   },
   detailsButtonTextHome:{
     color: '#FFC300',
-    fontSize: 18,
+    fontSize: hp('2.2%'),
     fontWeight: 'bold'
   },
+  Search:{
+    marginTop:5
+  },
+  Barheight:{
+    height: hp('5%')
+  },
+  Body:{
+    flex:1
+  },
+  BodyFlat:{
+    flex:0.9
+  },
+  addButton: {
+    position: 'absolute',
+    right: hp('2%'),
+    bottom: hp('9%'),
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#566F8E',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'rgb(0, 0, 0)',
+            shadowOffset: {
+              width: 3,
+              height: 3,
+            },
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+            elevation: 3,
+  },
+
+  postHeader:{
+    backgroundColor: '#FAFAFA',
+    borderRadius: 8,
+    borderBottomLeftRadius:20,
+    borderBottomRightRadius:20,
+    paddingRight:24,
+    paddingLeft:24,
+    paddingTop:10,
+    paddingBottom:8
+  },
+
+  postDesc:{
+    backgroundColor: 'white',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius:8,
+    paddingRight:24,
+    paddingLeft:24,
+    paddingTop:10,
+    paddingBottom:12
+  },
+
+  postTitulo:{
+    flexDirection:'row',
+    alignItems:'center',
+    marginBottom:2
+  },
+
+  headerTags:{
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+
+  Ver:{
+    paddingRight:20,
+    flexDirection:'row', 
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  Nomepost:{
+    fontSize:10,
+    color:'#C8C8C8'
+  }
+
 })

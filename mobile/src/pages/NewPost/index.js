@@ -39,7 +39,7 @@ export default function NewPost() {
           <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSubmit}>
-          <Text style={{fontWeight:'bold', color:'white', fontSize:18}}>Postar Dúvida</Text>
+          <Text style={{fontWeight:'bold', color:'white', fontSize:20}}>Postar Dúvida</Text>
         </TouchableOpacity>
       </View>
       

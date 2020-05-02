@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, Image, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, Alert } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons'
 
 import api from '../../services/api'
@@ -8,6 +8,7 @@ import api from '../../services/api'
 import logoImg from '../../assets/logo.png'
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
+import { SearchBar } from 'react-native-elements'
 
 export default function Home() {
     const navigation = useNavigation()
@@ -77,75 +78,81 @@ export default function Home() {
                     <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Dúvidas</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.detailsButton} onPress={() => navigateToNewPost()}>
-                        <Text style={styles.detailsButtonText}>Novo </Text>
-                        <Feather name="plus" size={16} color="#FFC300"></Feather>
+                    <Text style={styles.detailsButtonText}>Novo </Text>
+                    <Feather name="plus" size={16} color="#FFC300"></Feather>
                 </TouchableOpacity>
             </View>
-<<<<<<< Updated upstream
 
+            <View style={styles.Search}>
+                <SearchBar
+                    round
+                    platform="ios"
+                    cancelButtonTitle="Cancelar"
+                    placeholder='Pesquise o assunto de interesse...'
+                    containerStyle={styles.Barheight}
+                    inputStyle={{fontSize:15}}
+                />
+            </View>
 
-            {/*<View style={styles.header}>
-                <Image source={logoImg}></Image>
-                <View style={{ flexDirection: 'column' }}>
-                    <TouchableOpacity style={[styles.detailsButton, { marginBottom: 25 }]} onPress={() => logoutUser()}>
-                        <Text style={styles.detailsButtonText}>Sair </Text>
-                        <Feather name="log-out" size={16} color="#fdee00"></Feather>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.detailsButton} onPress={() => navigateToNewPost()}>
-                        <Text style={styles.detailsButtonText}>Novo post </Text>
-                        <Feather name="plus" size={16} color="#fdee00"></Feather>
-                    </TouchableOpacity>
+            <View style={styles.Body}>
+                <View style={styles.BodyFlat}>
+                    <FlatList
+                        data={posts}
+                        style={styles.postsList}
+                        keyExtractor={post => String(post.id)}
+                        onTouchStart={loadPosts}
+                        onEndReached={loadPosts}
+                        onEndReachedThreshold={0.2}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item: post }) => (
+                            <Animatable.View 
+                            style={styles.post}
+                            animation="fadeInDown"
+                            duration={500}>
+                                <View style={styles.postHeader}>
+                                    <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center'}}>
+                                        <View style={styles.postTitulo}>
+                                            <Feather name="camera" size={30} color='#D8D9DB'></Feather>
+                                            <Text style={styles.postTitle}>{post.titulo}</Text>
+                                        </View>
+                                        <Text style={styles.Nomepost}>Usuário Teste</Text>
+                                    </View>
+                                    <View style={styles.headerTags}>
+                                        <Text style={styles.postTag}>{post.tag}</Text>
+                                        <TouchableOpacity style={styles.Ver}>
+                                            <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={styles.postDesc}>
+                                    <Text style={styles.postDescricao}>{post.descricao}</Text>
+                                </View>
+                            </Animatable.View>
+                        )}>
+                    </FlatList>
                 </View>
-            </View>*/}
 
-            <FlatList
-                data={posts}
-                style={styles.postsList}
-                keyExtractor={post => String(post.id)}
-                refreshing={loading}
-                onRefresh={() => loadPosts()}
-                onEndReached={() => loadPosts()}
-                onEndReachedThreshold={0.2}
-                renderItem={({ item: post }) => (
-                    <View style={styles.post}>
-                        <Text style={styles.postTitle}>{post.titulo}</Text>
-                        <Text style={styles.postTag}>{post.tag}</Text>
-                        <Text style={styles.postDescricao}>{post.descricao}</Text>
-                    </View>
-                )}>
-            </FlatList>
-=======
-            <View>
-                <FlatList
-                    data={posts}
-                    style={styles.postsList}
-                    keyExtractor={post => String(post.id)}
-                    onTouchStart={loadPosts}
-                    onEndReached={loadPosts}
-                    onEndReachedThreshold={0.2}
-                    renderItem={({ item: post }) => (
-                        <View style={styles.post}>
-                            <Text style={styles.postTitle}>{post.titulo}</Text>
-                            <Text style={styles.postTag}>{post.tag}</Text>
-                            <Text style={styles.postDescricao}>{post.descricao}</Text>
-                        </View>
-                    )}>
-                </FlatList>
+                <Animatable.View 
+                style={styles.footer}
+                animation="fadeInUp"
+                duration={900}>
+                    <TouchableOpacity style={styles.detailsBar} onPress={() => loadPosts()}>
+                        <Text style={styles.detailsButtonTextHome}>Dúvidas</Text>
+                        <Feather name="edit-3" size={16} color="#FFC300"></Feather>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.detailsBar} onPress={() => navigateToContent()}>
+                        <Text style={styles.detailsButtonText}>Conteúdos</Text>
+                        <Feather name="book-open" size={16} color="white"></Feather>
+                    </TouchableOpacity>
+                </Animatable.View>
             </View>
-            <Animatable.View 
-            style={styles.footer}
-            animation="fadeInUpBig"
-            duration={1000}>
-                <TouchableOpacity style={styles.detailsBar} onPress={() => loadPosts()}>
-                    <Text style={styles.detailsButtonTextHome}>Dúvidas </Text>
-                    <Feather name="edit-3" size={16} color="#FFC300"></Feather>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.detailsBar} onPress={() => navigateToContent()}>
-                    <Text style={styles.detailsButtonText}>Conteúdos </Text>
-                    <Feather name="book-open" size={16} color="white"></Feather>
-                </TouchableOpacity>
-            </Animatable.View>
->>>>>>> Stashed changes
+            
+            <TouchableOpacity style={styles.addButton} onPress={() => navigateToNewPost()}>
+                <Animatable.View 
+                animation="fadeIn">
+                    <Feather name="plus" size={25} color="white"></Feather>
+                </Animatable.View>
+            </TouchableOpacity>
         </View>
     );
 }
