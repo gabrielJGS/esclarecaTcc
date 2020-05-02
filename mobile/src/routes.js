@@ -9,6 +9,7 @@ import Register from './pages/Register'
 import Home from './pages/Home'
 import NewPost from './pages/NewPost'
 import HomeContent from './pages/HomeContent'
+import NewContent from './pages/NewContent'
 
 const AppStack = createStackNavigator()
 
@@ -22,6 +23,7 @@ export default function Routes() {
                 <AppStack.Screen name="Home" component={Home}></AppStack.Screen>
                 <AppStack.Screen name="NewPost" component={NewPost}></AppStack.Screen>
                 <AppStack.Screen name="HomeContent" component={HomeContent}></AppStack.Screen>
+                <AppStack.Screen name="NewContent" component={NewContent}></AppStack.Screen>
             </AppStack.Navigator>
         </NavigationContainer>
     )

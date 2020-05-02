@@ -1,4 +1,6 @@
 import { StyleSheet } from 'react-native'
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 export default StyleSheet.create({
     container: {
@@ -14,11 +16,13 @@ export default StyleSheet.create({
       borderBottomWidth:1,
       borderBottomColor:'#D8D9DB',
       height:70,
-      alignItems:'center'
+      alignItems:'center',
+      height:hp('9%'),
     },
     
     inputContainer:{
-      margin:32,
+      paddingHorizontal:32,
+      paddingTop:20,
       flexDirection:'row',
     },
 
@@ -33,7 +37,7 @@ export default StyleSheet.create({
 
     label: {
       fontWeight: 'bold',
-      color: '#444',
+      color: '#365478',
       marginBottom: 5,
       fontSize:18
     },
@@ -42,7 +46,7 @@ export default StyleSheet.create({
       borderBottomWidth: 1,
       borderColor: '#ddd',
       paddingHorizontal: 20,
-      fontSize: 16,
+      fontSize: 15,
       color: '#444',
       height: 44,
       marginBottom: 30,
