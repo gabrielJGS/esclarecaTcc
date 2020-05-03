@@ -14,7 +14,7 @@ export default StyleSheet.create({
     backgroundColor:'#365478',
     borderBottomWidth:1,
     borderBottomColor:'#D8D9DB',
-    height:hp('13%'),
+    height:hp('10%'),
     alignItems:'center',
     paddingTop: hp('2%'),
   },

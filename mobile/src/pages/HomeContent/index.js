@@ -25,15 +25,13 @@ export default function HomeContent() {
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
                 <TouchableOpacity style={styles.detailsButton}>
-                    <Text style={styles.detailsButtonText}>Sair </Text>
-                    <Feather name="log-out" size={16} color="#FFC300"></Feather>
+                    <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Conteúdos</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.detailsButton} onPress={() => navigateToNewContent()}>
-                        <Text style={styles.detailsButtonText}>Novo </Text>
-                        <Feather name="plus" size={16} color="#FFC300"></Feather>
+                <TouchableOpacity style={styles.detailsButton} onPress={() => logoutUser()}>
+                    <Feather name="log-out" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
             </View>
 
