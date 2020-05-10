@@ -1,7 +1,8 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
 import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler } from 'react-native';
-import { Feather, Ionicons } from '@expo/vector-icons'
+import { Feather, Ionicons,FontAwesome } from '@expo/vector-icons'
+import {Icon,Button} from 'native-base'
 
 import api from '../../services/api'
 
@@ -12,7 +13,7 @@ import { SearchBar } from 'react-native-elements'
 
 export default function Home() {
     const navigation = useNavigation()
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState([])  
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
@@ -23,10 +24,10 @@ export default function Home() {
     function navigateToContent() {
         navigation.navigate('HomeContent')
     }
-    function logoutUser() {
-        AsyncStorage.clear()
-        navigation.goBack()
+    function navigateToProfile() {
+        navigation.navigate('Profile')
     }
+
     async function loadPosts() {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
@@ -50,35 +51,21 @@ export default function Home() {
     useEffect(() => {
         loadPosts()
     }, [])
-
-    {/*useEffect(() => {
-        const backAction = () => {
-           BackHandler.exitApp()
-          return true;
-        };
     
-        const backHandler = BackHandler.addEventListener(
-          "hardwareBackPress",
-          backAction
-        );
-    
-        return () => backHandler.remove();
-      }, []);*/}
+    const onLoadMore = useCallback(() => {
+        loadPosts();
+      })
 
     return (
         //reidner 26/04
         <View style={styles.container}>
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
-                <TouchableOpacity style={styles.detailsButton}>
+                <TouchableOpacity style={styles.detailsButton} onPress ={ ( ) => navigation.openDrawer()}>
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Dúvidas</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.detailsButton} onPress={() => logoutUser()}>
-                    <Feather name="log-out" size={20} color="#FFC300"></Feather>
-                </TouchableOpacity>
+                <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Dúvidas</Text>
+                <Text></Text>
             </View>
 
             <View style={styles.Search}>
@@ -106,7 +93,7 @@ export default function Home() {
                             <Animatable.View 
                             style={styles.post}
                             animation="fadeInDown"
-                            duration={500}>
+                            duration={1000}>
                                 <View style={styles.postHeader}>
                                     <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center'}}>
                                         <View style={styles.postTitulo}>
@@ -124,6 +111,14 @@ export default function Home() {
                                 </View>
                                 <View style={styles.postDesc}>
                                     <Text style={styles.postDescricao}>{post.descricao}</Text>
+                                </View>
+                                <View style={{marginLeft:25, paddingBottom:5, flexDirection:'row', alignItems:'center'}}>
+                                    <TouchableOpacity>
+                                        <FontAwesome name="heart-o" style={{color:'red', fontSize:12}} />
+                                    </TouchableOpacity>
+                                    <Text style={{marginLeft:3,fontSize:12,color:'gray'}}>15</Text>
+                                    <FontAwesome name="commenting-o" style={{color:'#D8D9DB', fontSize:12,marginLeft:15}} />
+                                    <Text style={{marginLeft:3,fontSize:12,color:'gray'}}>20</Text>
                                 </View>
                             </Animatable.View>
                         )}>

@@ -8,8 +8,11 @@ import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 
+import {AuthContext} from '../../context'
+
 export default function Login() {
     const navigation = useNavigation()
+    const {singIn} = React.useContext(AuthContext);
 
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -29,7 +32,7 @@ export default function Login() {
             });
             const { id } = response.data;
             await AsyncStorage.setItem('user', id.toString());
-            navigation.navigate('Home');
+            singIn();
         }
         else {
             alert('Preencha os campos.');
@@ -48,6 +51,7 @@ export default function Login() {
     async function navigateToRegister() {
         navigation.navigate('Register');
     }
+
     return (
         <KeyboardAvoidingView behavior={Platform.select({
             ios: 'padding',
