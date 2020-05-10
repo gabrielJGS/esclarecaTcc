@@ -18,21 +18,20 @@ export default function HomeContent() {
     function navigateToNewContent() {
         navigation.navigate('NewContent')
     }
+    function navigateToProfile() {
+        navigation.navigate('Profile')
+    }
 
     return (
         //reidner 29/04
         <View style={styles.container}>
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
-                <TouchableOpacity style={styles.detailsButton}>
+                <TouchableOpacity style={styles.detailsButton} onPress ={ ( ) => navigation.openDrawer()}>
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Conteúdos</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.detailsButton} onPress={() => logoutUser()}>
-                    <Feather name="log-out" size={20} color="#FFC300"></Feather>
-                </TouchableOpacity>
+                <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Conteúdos</Text>
+                <Text></Text>
             </View>
 
             <View style={styles.Search}>

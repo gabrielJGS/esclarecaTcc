@@ -54,7 +54,7 @@ export default StyleSheet.create({
     color: '#737380'
   },
   postDescricao: {
-    fontSize: 14,
+    fontSize: 15,
   },
   detailsButton:{
     flexDirection: 'row',
