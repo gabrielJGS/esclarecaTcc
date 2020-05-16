@@ -24,8 +24,8 @@ export default function Home() {
     function navigateToContent() {
         navigation.navigate('HomeContent')
     }
-    function navigateToProfile() {
-        navigation.navigate('Profile')
+    function navigateToPost() {
+        navigation.navigate('PostPage')
     }
 
     async function loadPosts() {
@@ -99,12 +99,13 @@ export default function Home() {
                                         <View style={styles.postTitulo}>
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
                                             <Text style={styles.postTitle}>{post.titulo}</Text>
+                                            {/*<Feather name="check" size={15} color='#7DCEA0' style={{marginLeft:5}}></Feather>*/}
                                         </View>
                                         <Text style={styles.Nomepost}>Usuário Teste</Text>
                                     </View>
                                     <View style={styles.headerTags}>
                                         <Text style={styles.postTag}>{post.tag}</Text>
-                                        <TouchableOpacity style={styles.Ver}>
+                                        <TouchableOpacity style={styles.Ver} onPress={() => navigateToPost()}>
                                             <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
                                         </TouchableOpacity>
                                     </View>
