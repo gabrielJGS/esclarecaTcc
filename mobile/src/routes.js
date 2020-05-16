@@ -18,6 +18,8 @@ import NewPost from './pages/NewPost'
 import HomeContent from './pages/HomeContent'
 import NewContent from './pages/NewContent'
 import Profile from './pages/Profile'
+import PostPage from './pages/PostPage'
+import ContentPage from './pages/ContentPage'
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -38,6 +40,7 @@ const PostStack = () => (
     <MainStack.Navigator screenOptions={{ headerShown: false }}>
         <MainStack.Screen name="Home" component={Home}></MainStack.Screen>
         <MainStack.Screen name="NewPost" component={NewPost}></MainStack.Screen>
+        <MainStack.Screen name="PostPage" component={PostPage}></MainStack.Screen>
     </MainStack.Navigator>
 )
 
@@ -45,6 +48,7 @@ const ContentStack = () => (
     <Main2Stack.Navigator screenOptions={{ headerShown: false }}>
         <Main2Stack.Screen name="HomeContent" component={HomeContent}></Main2Stack.Screen>
         <Main2Stack.Screen name="NewContent" component={NewContent}></Main2Stack.Screen>
+        <MainStack.Screen name="ContentPage" component={ContentPage}></MainStack.Screen>
     </Main2Stack.Navigator>
 )
 
