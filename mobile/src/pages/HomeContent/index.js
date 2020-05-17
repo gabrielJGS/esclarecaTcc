@@ -31,7 +31,9 @@ export default function HomeContent() {
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Conteúdos</Text>
-                <Text></Text>
+                <TouchableOpacity style={styles.detailsButton}>
+                    <Feather name="filter" size={20} color="#FFC300"></Feather>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.Search}>
@@ -51,10 +53,39 @@ export default function HomeContent() {
                         {/*<Animatable.View 
                             style={styles.post}
                             animation="fadeInDown"
-                            duration={500}>
-                                <Text style={styles.postTitle}>{post.titulo}</Text>
-                                <Text style={styles.postTag}>{post.tag}</Text>
-                                <Text style={styles.postDescricao}>{post.descricao}</Text>
+                            duration={1000}>
+                                <View style={styles.postHeader}>
+                                    <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center'}}>
+                                        <View style={styles.postTitulo}>
+                                            <Feather name="camera" size={30} color='#D8D9DB'></Feather>
+                                            <Text style={styles.postTitle}>{post.titulo}</Text>
+                                        </View>
+                                        <Text style={styles.Nomepost}>Usuário Teste</Text>
+                                    </View>
+                                    <View style={styles.headerTags}>
+                                        <Text style={styles.postTag}>{post.tag}</Text>
+                                        <TouchableOpacity style={styles.Ver} onPress={() => navigateToPost()}>
+                                            <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={styles.postDesc}>
+                                    <Text style={styles.postDescricao}>{post.descricao}</Text>
+                                </View>
+                                <View style={{paddingHorizontal:25, paddingBottom:5, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+                                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                                        <TouchableOpacity  style={{flexDirection:'row', alignItems:'center'}}>
+                                            <FontAwesome name="heart-o" style={{color:'red', fontSize:12}} />
+                                            <Text style={{marginLeft:3,fontSize:12,color:'gray'}}>15</Text>
+                                        </TouchableOpacity>
+                                        <FontAwesome name="commenting-o" style={{color:'#D8D9DB', fontSize:12,marginLeft:15}} />
+                                        <Text style={{marginLeft:3,fontSize:12,color:'gray'}}>20</Text>
+                                    </View>
+                                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                                        <Text style={{fontSize:13,color:'#117A65',fontWeight:'800'}}>Dúvida finalizada</Text>
+                                        <Feather name="check-circle" size={15} color='#117A65' style={{marginLeft:5}}></Feather>
+                                    </View>
+                                </View>
                             </Animatable.View>*/}
                     </FlatList>
                 </View>
