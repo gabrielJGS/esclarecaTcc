@@ -8,24 +8,9 @@ import api from '../../services/api'
 
 import styles from './styles'
 
-export default function NewPost() {
+export default function NewContent() {
   const navigation = useNavigation()
-
-  const [titulo, setTitulo] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [tags, setTags] = useState('');
-
-  async function handleSubmit() {
-    const user_id = await AsyncStorage.getItem('user');
-
-    await api.post(`/posts`, {
-      titulo, descricao, tags
-    }, {
-      headers: { user_id }
-    })
-    
-    navigation.goBack()
-  }
+  console.log( navigation.params)
 
   function handleCancel() {
     navigation.goBack()
@@ -37,21 +22,20 @@ export default function NewPost() {
         <TouchableOpacity onPress={handleCancel}>
           <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleSubmit}>
-          <Text style={{fontWeight:'bold', color:'white', fontSize:20}}>Postar Dúvida</Text>
+        <TouchableOpacity >
+          <Text style={{fontWeight:'bold', color:'white', fontSize:20}}>Postar Conteúdo</Text>
         </TouchableOpacity>
       </View>
       
       <View style={styles.inputContainer}>
-        <Ionicons name="md-camera" size={50} color='#D8D9DB' style={styles.avatar}></Ionicons>
         <TextInput
           autoFocus={true}
           multiline={true}
-          numberOfLines={4}
+          numberOfLines={7}
           style={{flex:1, fontSize:15}}
-          placeholder="Descreva qual a sua dúvida..."
-          value={descricao}
-          onChangeText={setDescricao}
+          placeholder="Compartilhe seu conhecimento com texto, indicações, links ou anexando arquivos..."
+          //value={...}
+          //onChangeText={setDescricao}
         />
       </View>
 
@@ -62,26 +46,26 @@ export default function NewPost() {
       </View>
 
       <View style={{paddingHorizontal:30,marginTop:40}}>
-        <Text style={styles.label}>Título da dúvida</Text>
+        <Text style={styles.label}>Título do Conteúdo</Text>
         <TextInput
           style={styles.input}
-          placeholder="Título que deseja dar à sua dúvida..."
+          placeholder="Título que deseja dar à sua publicação..."
           placeholderTextColor="#999"
           autoCapitalize="words"
           autoCorrect={false}
-          value={titulo}
-          onChangeText={setTitulo}
+          //value={titulo}
+          //onChangeText={setTitulo}
           numberOfLines={2}
         />
         <Text style={styles.label}>Tags</Text>
         <TextInput
           style={styles.input}
-          placeholder="Temas relacionados à sua dúvida separados por ','"
+          placeholder="Temas relacionados à sua publicação separados por ','"
           placeholderTextColor="#999"
           autoCapitalize="words"
           autoCorrect={false}
-          value={tags}
-          onChangeText={setTags}
+          //value={tags}
+          //onChangeText={setTags}
           numberOfLines={2}
         />
       </View>

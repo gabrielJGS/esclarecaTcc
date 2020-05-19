@@ -12,12 +12,16 @@ export default StyleSheet.create({
     paddingVertical:15,
     paddingHorizontal:32,
     backgroundColor:'#365478',
-    borderBottomWidth:1,
-    borderBottomColor:'#D8D9DB',
     height:hp('10%'),
     alignItems:'center',
     paddingTop: hp('2%'),
   },
+
+  headerPost: {
+    backgroundColor:'#365478',
+    borderBottomRightRadius:10
+  },
+
 
   headerText: {
     fontSize: 18,
@@ -32,8 +36,8 @@ export default StyleSheet.create({
   },
   post: {
     borderRadius: 8,
-    backgroundColor: '#fff',
-    marginBottom: 10,
+    backgroundColor: '#FAFAFA',
+    marginBottom: 5,
     shadowColor: 'rgb(0, 0, 0)',
             shadowOffset: {
               width: 3,
@@ -68,17 +72,14 @@ export default StyleSheet.create({
   },
   footer:{
     position: 'absolute', 
-    left: hp('2%'), 
-    right: hp('2%'), 
-    bottom: hp('2%'),
-    height:hp('6%'),
+    left: 0, 
+    right: 0, 
+    bottom: 0,
+    height:hp('8%'),
     backgroundColor:'#365478',
     alignItems:'center',
-    paddingHorizontal:hp('8.5%'),
-    borderBottomRightRadius:hp('4%'),
-    borderBottomLeftRadius:hp('4%'),
-    borderTopLeftRadius:hp('1.5%'),
-    borderTopRightRadius:hp('1.5%'),
+    paddingHorizontal:20,
+    paddingVertical:15,
     flexDirection:'row',
     justifyContent:'space-between',
     flex:0.1,
@@ -108,6 +109,7 @@ export default StyleSheet.create({
     height: hp('5%')
   },
   Body:{
+    marginTop:5,
     flex:1
   },
   BodyFlat:{
@@ -134,7 +136,7 @@ export default StyleSheet.create({
   },
 
   postHeader:{
-    backgroundColor: '#FAFAFA',
+    backgroundColor: 'white',
     borderRadius: 8,
     borderBottomLeftRadius:20,
     borderBottomRightRadius:20,
@@ -145,7 +147,7 @@ export default StyleSheet.create({
   },
 
   postDesc:{
-    backgroundColor: 'white',
+    backgroundColor: '#FAFAFA',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius:8,
     paddingRight:24,
@@ -175,6 +177,32 @@ export default StyleSheet.create({
   Nomepost:{
     fontSize:10,
     color:'#C8C8C8'
-  }
+  },
+  InputT:{
+    color:'#365478',
+    width: hp('40%'),
+    backgroundColor:'#FAFAFA',
+    borderRadius:10,
+    paddingHorizontal:10,
+    paddingVertical:5,
+    maxHeight:200,
+    fontWeight:'bold'
+  },
 
+  DuvidaTitle:{
+    fontWeight:'bold', 
+    color:"white", 
+    fontSize:25
+  },
+  DuvidaCorpo:{
+    flexDirection:'row', 
+    paddingHorizontal:32, 
+    paddingBottom:10
+  },
+  CorpoTitle:{
+    color:'white',
+    fontSize:20, 
+    fontWeight:'bold'
+  },
+  
 })

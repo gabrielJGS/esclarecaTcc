@@ -1,70 +1,36 @@
-import React, { Component, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
 import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler } from 'react-native';
-import { Feather, Ionicons,FontAwesome } from '@expo/vector-icons'
-import {Icon,Button} from 'native-base'
+import { Feather, Ionicons } from '@expo/vector-icons'
 
 import api from '../../services/api'
-
-import logoImg from '../../assets/logo.png'
-import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 import { SearchBar } from 'react-native-elements'
 
-export default function Home() {
+import styles from './styles'
+
+export default function HomeContent() {
     const navigation = useNavigation()
-    const [posts, setPosts] = useState([])  
-    const [total, setTotal] = useState(0)
-    const [page, setPage] = useState(1)
-    const [loading, setLoading] = useState(false)
 
-    function navigateToNewPost() {
-        navigation.navigate('NewPost')
+    function navigateToHome() {
+        navigation.navigate('Home')
     }
-    function navigateToContent() {
-        navigation.navigate('HomeContent')
+    function navigateToNewContent() {
+        navigation.navigate('NewContent')
     }
-    function navigateToPost() {
-        navigation.navigate('PostPage')
+    function navigateToProfile() {
+        navigation.navigate('Profile')
     }
-
-    async function loadPosts() {
-        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-        if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
-            return
-        }
-        // if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-        //     return
-        // }
-        setLoading(true)//Altera para o loading iniciado
-        const response = await api.get('posts', {
-            headers: { user_id },
-            params: { page }
-        })
-        //setPosts(response.data)
-        setPosts([...posts, ...response.data])
-        setTotal(response.headers['x-total-count'])
-        setPage(page + 1)
-        setLoading(false)//Conclui o load
-    }
-
-    useEffect(() => {
-        loadPosts()
-    }, [])
-    
-    const onLoadMore = useCallback(() => {
-        loadPosts();
-      })
 
     return (
-        //reidner 26/04
+        //reidner 29/04
         <View style={styles.container}>
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
                 <TouchableOpacity style={styles.detailsButton} onPress ={ ( ) => navigation.openDrawer()}>
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
-                <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Dúvidas</Text>
+                <Text style={{fontWeight:'bold', color:"white", fontSize:25}}>Conteúdos</Text>
                 <TouchableOpacity style={styles.detailsButton}>
                     <Feather name="filter" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
@@ -83,16 +49,8 @@ export default function Home() {
 
             <View style={styles.Body}>
                 <View style={styles.BodyFlat}>
-                    <FlatList
-                        data={posts}
-                        style={styles.postsList}
-                        keyExtractor={post => String(post.id)}
-                        onTouchStart={loadPosts}
-                        onEndReached={loadPosts}
-                        onEndReachedThreshold={0.2}
-                        showsVerticalScrollIndicator={false}
-                        renderItem={({ item: post }) => (
-                            <Animatable.View 
+                    <FlatList>
+                        {/*<Animatable.View 
                             style={styles.post}
                             animation="fadeInDown"
                             duration={1000}>
@@ -123,13 +81,12 @@ export default function Home() {
                                         <FontAwesome name="commenting-o" style={{color:'#D8D9DB', fontSize:12,marginLeft:15}} />
                                         <Text style={{marginLeft:3,fontSize:12,color:'gray'}}>20</Text>
                                     </View>
-                                    {/*<View style={{flexDirection:'row', alignItems:'center'}}>
+                                    <View style={{flexDirection:'row', alignItems:'center'}}>
                                         <Text style={{fontSize:13,color:'#117A65',fontWeight:'800'}}>Dúvida finalizada</Text>
                                         <Feather name="check-circle" size={15} color='#117A65' style={{marginLeft:5}}></Feather>
-                                    </View>*/}
+                                    </View>
                                 </View>
-                            </Animatable.View>
-                        )}>
+                            </Animatable.View>*/}
                     </FlatList>
                 </View>
 
@@ -137,18 +94,18 @@ export default function Home() {
                 style={styles.footer}
                 animation="fadeInUp"
                 duration={900}>
-                    <TouchableOpacity style={styles.detailsBar} onPress={() => loadPosts()}>
-                        <Text style={styles.detailsButtonTextHome}>Dúvidas</Text>
-                        <Feather name="edit-3" size={16} color="#FFC300"></Feather>
+                    <TouchableOpacity style={styles.detailsBar} onPress={() => navigateToHome()}>
+                        <Text style={styles.detailsButtonText}>Dúvidas</Text>
+                        <Feather name="edit-3" size={16} color="white"></Feather>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.detailsBar} onPress={() => navigateToContent()}>
-                        <Text style={styles.detailsButtonText}>Conteúdos</Text>
-                        <Feather name="book-open" size={16} color="white"></Feather>
+                    <TouchableOpacity style={styles.detailsBar} onPress={() => loadPosts()}>
+                        <Text style={styles.detailsButtonTextHome}>Conteúdos</Text>
+                        <Feather name="book-open" size={16} color="#FFC300"></Feather>
                     </TouchableOpacity>
                 </Animatable.View>
             </View>
-            
-            <TouchableOpacity style={styles.addButton} onPress={() => navigateToNewPost()}>
+
+            <TouchableOpacity style={styles.addButton} onPress={() => navigateToNewContent()}>
                 <Animatable.View 
                 animation="fadeIn">
                     <Feather name="plus" size={25} color="white"></Feather>

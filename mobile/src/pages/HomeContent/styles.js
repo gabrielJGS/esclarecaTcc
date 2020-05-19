@@ -151,7 +151,7 @@ export default StyleSheet.create({
     paddingRight:24,
     paddingLeft:24,
     paddingTop:10,
-    paddingBottom:12,
+    paddingBottom:12
   },
 
   postTitulo:{
