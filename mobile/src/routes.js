@@ -21,6 +21,6 @@ export default function Routes() {
                 <AppStack.Screen name="Home" component={Home}></AppStack.Screen>
                 <AppStack.Screen name="NewPost" component={NewPost}></AppStack.Screen>
             </AppStack.Navigator>
-        </NavigationContainer>
+        </NavigationContainer >
     )
 }

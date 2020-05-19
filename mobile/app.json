@@ -1,7 +1,9 @@
 {
   "expo": {
     "name": "Esclareca",
-    "slug": "mobile",
+    "slug": "testapkss",
+    "description":"Tire suas dúvidas!",
+    "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "android"
@@ -24,8 +26,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.esclareca.appmobile",
-      "versionCode": 1
+      "package": "com.esclareca.appmobile"
     }
   }
 }
