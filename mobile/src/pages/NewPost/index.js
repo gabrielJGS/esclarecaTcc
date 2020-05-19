@@ -10,7 +10,6 @@ import styles from './styles'
 
 export default function NewPost() {
   const navigation = useNavigation()
-  console.log( navigation.params)
 
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');

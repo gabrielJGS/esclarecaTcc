@@ -26,7 +26,8 @@ module.exports = {
         if (id) {
             user_id = id
             tagsArray = tags.split(',')
-            // TODO: não permitir inserir tags repetidas//Busca as tags que já existem previamente
+            // TODO: não permitir inserir tags repetidas
+            //Busca as tags que já existem previamente
             // const tagsExistentes = await connection('tags').whereIn('tag',tagsArray).select('id');
             // console.log(tagsExistentes)
 
