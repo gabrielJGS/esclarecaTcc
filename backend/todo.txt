@@ -1,0 +1,10 @@
+This sprint:
+>Implementar no app
+>Foto de perfil usuário
+>Conferir status code certos https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+>Remover certos campos dos populates: https://stackoverflow.com/questions/37562129/how-to-select-specific-field-in-nested-populate-in-mogoose
+
+Some day:
+>Debugar condições que possa ocorrer erros
+>Autenticação nas rotas
+>Anexos posts

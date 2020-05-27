@@ -1,0 +1,3 @@
+module.exports = {
+    authSecret: '1a5g96ah98984ae@5ag6!ads'
+}
