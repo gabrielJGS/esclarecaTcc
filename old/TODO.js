@@ -12,3 +12,9 @@
     Listar por tag
     Pesquisar tags//talvez
 */
+
+/*
+Inserir autenticação no backend
+Validar autorização no frontend
+Trocar banco
+*/
