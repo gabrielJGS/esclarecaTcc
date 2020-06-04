@@ -8,11 +8,14 @@ import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 
-import {AuthContext} from '../../context'
+import { AuthContext } from '../../context'
+
+import { showError, showSucess } from '../../common'
+
 
 export default function Login() {
     const navigation = useNavigation()
-    const {singIn} = React.useContext(AuthContext);
+    const { singIn } = React.useContext(AuthContext);
 
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -26,24 +29,32 @@ export default function Login() {
     }, [])
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
-        if(email != '' && senha != ''){
-            const response = await api.post('/login', {
-                email, senha
+        if (email != '' && senha != '') {
+            const response = await api.post('/signin', {
+                email, password: senha
             });
             const { id } = response.data;
-            await AsyncStorage.setItem('user', id.toString());
-            singIn();
+            try {
+                await AsyncStorage.setItem('user', id.toString());
+                singIn();
+            } catch (e) {
+                showError(e)
+            }
         }
         else {
-            alert('Preencha os campos.');
+            alert('Preencha os campos email e senha.');
         }
     }
 
     async function handleForgetPassword() {
-        const response = await api.post('/forget', {
-            email
-        });
-        Alert.alert(`A senha foi enviada para o email ${email}`)
+        try {
+            const response = await api.post('/forget', {
+                email
+            });
+            showSucess("Senha enviada para o email "+email)
+        } catch (e) {
+            showError(e)
+        }
     }
 
     async function navigateToRegister() {

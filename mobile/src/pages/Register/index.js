@@ -9,39 +9,49 @@ import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import { showError, showSucess } from '../../common'
+
 export default function Register() {
     const navigation = useNavigation()
 
-    const [nome, setNome] = useState('');
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [senha, setSenha] = useState('');
+    const [password, setPassword] = useState('');
     const [tags, setTags] = useState('');
 
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
-        const response = await api.post('/signup', {
-            email, nome, senha, tags
-        });
-        const { id } = response.data;
-        await AsyncStorage.setItem('user', id.toString());
-        navigation.goBack()
+        try {
+            const response = await api.post('/signup', {
+                email, name, password, tags
+            });
+            if (response.status == 204) {
+                showSucess("Usuário cadastrado com sucesso")
+                navigation.goBack()
+            } else {
+                showError("Erro")
+            }
+
+        } catch (e) {
+            showError(e)
+        }
     }
     function handleCancel() {
         navigation.goBack()
     }
     return (
         <KeyboardAvoidingView behavior="" style={styles.container}>
-            <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'}/>
+            <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
-                
+
                 <View style={styles.OvalShapeView} >
-                <Animatable.Image
-                    animation="bounceIn"
-                    duration={1500}
-                    source={logo}
-                    style={styles.img}
-                    resizeMode="stretch"
-                />
+                    <Animatable.Image
+                        animation="bounceIn"
+                        duration={1500}
+                        source={logo}
+                        style={styles.img}
+                        resizeMode="stretch"
+                    />
                 </View>
             </View>
             <TouchableOpacity style={styles.circle}>
@@ -51,17 +61,17 @@ export default function Register() {
                 />
             </TouchableOpacity>
             <Animatable.View
-            style={styles.form}
-            animation="fadeIn">
-                <Text style={styles.label1}>NOME *</Text>
+                style={styles.form}
+                animation="fadeIn">
+                <Text style={styles.label1}>NAME *</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Insira seu nome"
                     placeholderTextColor="#999"
                     autoCapitalize="words"
                     autoCorrect={false}
-                    value={nome}
-                    onChangeText={setNome}
+                    value={name}
+                    onChangeText={setName}
                     returnKeyType="done"
                 />
                 <Text style={styles.label}>E-MAIL *</Text>
@@ -85,8 +95,8 @@ export default function Register() {
                     password={true}
                     autoCapitalize="words"
                     autoCorrect={false}
-                    value={senha}
-                    onChangeText={setSenha}
+                    value={password}
+                    onChangeText={setPassword}
                     returnKeyType="done"
                 />
                 <Text style={styles.label}>TAGS *</Text>

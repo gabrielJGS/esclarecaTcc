@@ -27,6 +27,7 @@ module.exports = app => {
                 }
 
                 res.json({
+                    id: user.id,//REMOVER
                     name: user.name,
                     email: user.email,
                     token: jwt.encode(payload, authSecret),

@@ -37,13 +37,13 @@ module.exports = app => {
         desc.trim()
         tags.trim()
 
+        console.log(req.body)
         const user = await Users.findById(user_id);
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
-        if (!title || !desc || !tags || typeof (type) !== "boolean") {
-            return res.status(400).send('Algum campo não foi preenchido');
-        }
+        const valid =  !title || !desc || !tags || (type != true || type != false)
+        valid==false?res.status(400).send('Algum campo não foi preenchido'):null
         const post = await Posts.create({
             title,
             desc,
@@ -77,7 +77,7 @@ module.exports = app => {
     const like = async (req, res) => {
         const { user_id } = req.headers;
         const { post } = req.params;
-
+console.log(user_id)
         const user = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
         if (!user) {
