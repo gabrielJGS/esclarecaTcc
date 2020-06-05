@@ -33,7 +33,6 @@ export default function Home() {
     }
     async function handleLike(postId) {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-        console.log(user_id)
         try {
             const response = await api.post(`/posts/${postId}/like`, {
             }, {
@@ -49,17 +48,17 @@ export default function Home() {
         if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
-        // if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-        //     return
-        // }
+        if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+            return
+        }
         setLoading(true)//Altera para o loading iniciado
         try {
             const response = await api.get('/posts', {
                 headers: { user_id },
                 params: { page }
             })
-            setPosts(response.data)
-            //setPosts([...posts, ...response.data])
+            // setPosts(response.data)
+            setPosts([...posts, ...response.data])
             setTotal(response.headers['x-total-count'])
             setPage(page + 1)
         } catch (e) {
@@ -107,9 +106,9 @@ export default function Home() {
                         data={posts}
                         style={styles.postsList}
                         keyExtractor={post => String(post._id)}
-                        onTouchStart={loadPosts}
+                        //onTouchStart={loadPosts}
                         onEndReached={loadPosts}
-                        onEndReachedThreshold={0.2}
+                        onEndReachedThreshold={0.5}
                         showsVerticalScrollIndicator={false}
                         renderItem={({ item: post }) => (
                             <Animatable.View

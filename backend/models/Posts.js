@@ -24,6 +24,7 @@ const mongoose = require('mongoose');
 const PostsSchema = new mongoose.Schema({
     title: String,
     desc: String,
+    postedIn: Date,
     tags: [String],
     type: Boolean,
     closed: Boolean,

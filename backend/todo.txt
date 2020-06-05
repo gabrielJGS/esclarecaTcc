@@ -1,6 +1,6 @@
 This sprint:
->Paginação
->Data no post e comentário(ordenar gets por data tbm)
+
+>Pesquisar(tela e rota)
 >Se o usuário estiver entre os que curtiram, exibir botão preenchido(apenas heart)/exige user_id no estado, rota: se ja tiver curtido descurtir
 >Qtd comentários post
 >Likes comments
@@ -11,14 +11,17 @@ This sprint:
 >Foto de perfil(backend)
 >Rota de perfil(com posts e duvidas publicadas)
 >Solucionar dúvida(post solucionado e comentário q solucionou)
->Pesquisar(tela e rota)
 >Conferir tratamento/validações nas requisições
 >Conferir status code certos https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 >Remover certos campos dos populates: https://stackoverflow.com/questions/37562129/how-to-select-specific-field-in-nested-populate-in-mogoose
 >Aprender a usar promise para fazer no registro, evitando retornar para a tela de login e digitar dnv
 >Rota/tela de esqueceu a senha(inserir referencia a ela no login/registro)
 
+Done:
+//>Data no post e comentário(ordenar gets por data tbm)
+//>Paginação //Ok no insomnia, mas realmente está ok no app?
 Reid:
+>Botão solucionar dúvida no comentário
 >Nomes de usuário ser um botão para o perfil
 >Tela de perfil
 >Foto de perfil usuário
