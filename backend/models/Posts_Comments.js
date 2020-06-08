@@ -25,6 +25,7 @@ const PostsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
+    postedIn: Date,
     message: String,
 });
 

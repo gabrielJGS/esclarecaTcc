@@ -11,7 +11,7 @@ module.exports = app => {
 
     //Posts
     app.route('/posts')
-        // .all(app.config.passport.authenticate())
+        //.all(app.config.passport.authenticate())
         .get(app.api.posts.index)
         .post(app.api.posts.save)
 

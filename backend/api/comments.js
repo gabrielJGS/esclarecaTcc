@@ -1,3 +1,5 @@
+var momentTz = require('moment-timezone');
+
 const Users = require('../models/Users');
 const Posts = require('../models/Posts');
 const Posts_Comments = require('../models/Posts_Comments');
@@ -41,6 +43,7 @@ module.exports = app => {
         const comment = await Posts_Comments.create({
             post,
             user,
+            postedIn: momentTz().tz("America/Sao_Paulo").format(),
             message,
         })
             .catch(err => res.status(400).json(err))
