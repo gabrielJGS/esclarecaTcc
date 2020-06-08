@@ -5,8 +5,8 @@ const consign = require('consign')
 
 //consign().include('./config/passport.js').then('./config/middlewares.js').then('./api').then('./config/routes.js').into(app)
 consign()
+    .include('./config/passport.js')
     .then('./api')//controllers
-    
     .then('./config/middlewares.js')
     .then('./config/routes.js')//config das rotas
     .into(app)//inserir os then acima na variavel app

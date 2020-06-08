@@ -8,17 +8,20 @@ module.exports = app => {
         })
     }
 
-    const save = (req, res) => {
+    const save = async (req, res) => {
         const email = req.body.email.trim().toLowerCase()
         const tags = req.body.tags.trim().toLowerCase()
 
-        obterHash(req.body.password.trim().toLowerCase(), hash => {
-            const password = hash
-
-            user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()) })
-                .then(_ => res.status(204).send())
-                .catch(err => res.status(400).json(err))
-        })
+        const user = await Users.findOne({ email })
+        if (user) {
+            res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`)
+        } else {
+            obterHash(req.body.password.trim().toLowerCase(), hash => {
+                user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()) })
+                    .then(_ => res.status(204).send())
+                    .catch(err => res.status(400).json(err))
+            })
+        }
     }
     const update = (req, res) => {
         const { id } = req.params;

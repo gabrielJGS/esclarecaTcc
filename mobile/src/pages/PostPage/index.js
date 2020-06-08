@@ -8,11 +8,66 @@ import api from '../../services/api'
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 
-export default function PostPage() {
-    const navigation = useNavigation()
+import { showError, showSucess } from '../../common'
+
+export default function PostPage({ route, navigation }) {
+    const [commentText, setCommentText] = useState('')
+    const [comments, setComments] = useState([])
+    const [total, setTotal] = useState(0)
+    const [page, setPage] = useState(1)
+    const [loading, setLoading] = useState(false)
+
+    const post = route.params.post
+
+    useEffect(() => {
+        loadComments()
+    }, [])
+
 
     function navigateToHome() {
         navigation.navigate('Home')
+    }
+
+    async function handlePostComment() {
+        if (commentText.trim() == '') {
+            showError("Digite um comentário válido")
+        } else {
+            const user_id = await AsyncStorage.getItem('user');
+            try {
+                const comm = await api.post(`/posts/${post._id}`, {
+                    user: user_id, message: commentText
+                })
+                if (comm.status == 204) {
+                    showSucess("Comentário cadastrado com sucesso")
+                    setCommentText('')
+                } else {
+                    showError("Ocorreu um erro")
+                }
+            }
+            catch (e) {
+                showError(e)
+            }
+        }
+    }
+    async function loadComments() {
+        if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+            return
+        }
+        // if (total > 0 && comments.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+        //     return
+        // }
+        setLoading(true)//Altera para o loading iniciado
+        try {
+            const response = await api.get(`/posts/${post._id}`)
+            //const response = await api.get(`/posts/5ec88a62d7634b14384c66e9`)
+            setComments(response.data)
+            //setComments([...comments, ...response.data])
+            setTotal(response.headers['x-total-count'])
+            setPage(page + 1)
+        } catch (e) {
+            showError(e)
+        }
+        setLoading(false)//Conclui o load
     }
 
     return (
@@ -21,128 +76,95 @@ export default function PostPage() {
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.headerPost}>
                 <View style={styles.header}>
-                    <TouchableOpacity style={styles.detailsButton} onPress ={ ( ) => navigateToHome()}>
+                    <TouchableOpacity style={styles.detailsButton} onPress={() => navigateToHome()}>
                         <Feather name="arrow-left" size={20} color="#FFC300"></Feather>
                     </TouchableOpacity>
-                    <Text style={styles.DuvidaTitle}>Dúvida C#</Text>
+                    <Text style={styles.DuvidaTitle}>{post.title}</Text>
                     <Text></Text>
                 </View>
                 <View style={styles.DuvidaCorpo}>
                     <Feather name="camera" size={30} color='white'></Feather>
-                    <View style={{paddingLeft:30}}>
-                        <Text style={styles.CorpoTitle}>Reidner Rocha</Text>
-                        <Text style={styles.Nomepost}>Tags</Text>
-                        <Text style={{marginTop:10, fontSize:15, color:'white'}}>DÚVIDAS</Text>
-                        
-                        <View style={{flexDirection:'row', paddingTop:20, alignItems:'flex-end'}}>
-                            <Text style={{color:'white',fontSize:15, fontWeight:'bold'}}>Anexos</Text>
-                            <View style={{paddingLeft:10}}>
+                    <View style={{ paddingLeft: 30 }}>
+                        <Text style={styles.CorpoTitle}>{post.user.name}</Text>
+                        <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
+                        <Text style={{ marginTop: 10, fontSize: 15, color: 'white' }}>{post.desc}</Text>
+
+                        <View style={{ flexDirection: 'row', paddingTop: 20, alignItems: 'flex-end' }}>
+                            <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>Anexos</Text>
+                            <View style={{ paddingLeft: 10 }}>
                                 <Feather name="file" size={20} color='#FFC300'></Feather>
                             </View>
-                            <View style={{paddingLeft:10}}>
+                            <View style={{ paddingLeft: 10 }}>
                                 <Feather name="file" size={20} color='#FFC300'></Feather>
                             </View>
                         </View>
                     </View>
                 </View>
-                <View style={{marginLeft:32, paddingBottom:8, flexDirection:'row', alignItems:'center'}}>
+                <View style={{ marginLeft: 32, paddingBottom: 8, flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity>
-                        <FontAwesome name="heart-o" style={{color:'#FFC300', fontSize:12}} />
+                        <FontAwesome name="heart-o" style={{ color: '#FFC300', fontSize: 12 }} />
                     </TouchableOpacity>
-                    <Text style={{marginLeft:3,fontSize:12,color:'#C8C8C8'}}>15</Text>
+                    <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>15</Text>
                 </View>
             </View>
 
             <View style={styles.Body}>
                 <View style={styles.BodyFlat}>
-                    <Animatable.View 
-                    style={styles.post}
-                    animation="fadeInDown"
-                    duration={1000}>
-                        <View style={styles.postHeader}>
-                            <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center'}}>
-                                <View style={styles.postTitulo}>
-                                    <Feather name="camera" size={30} color='#D8D9DB'></Feather>
-                                    <Text style={styles.postTitle}>Reidner</Text>
+                    <FlatList
+                        data={comments}
+                        // style={styles.commentsList}
+                        keyExtractor={comment => String(comment._id)}
+                        onTouchStart={loadComments}
+                        onEndReached={loadComments}
+                        onEndReachedThreshold={0.2}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item: comment }) => (
+                            <Animatable.View
+                                style={styles.post}
+                                animation="fadeInDown"
+                                duration={1000}>
+                                <View style={styles.postHeader}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <View style={styles.postTitulo}>
+                                            <Feather name="camera" size={30} color='#D8D9DB'></Feather>
+                                            <Text style={styles.postTitle}>{comment.user.name}</Text>
+                                        </View>
+                                        <Text style={styles.Nomepost}>Há 5 horas</Text>
+                                    </View>
                                 </View>
-                                <Text style={styles.Nomepost}>Há 5 horas</Text>
-                            </View>
-                        </View>
-                        <View style={styles.postDesc}>
-                            <Text style={styles.postDescricao}>HAUHAUHA</Text>
-                        </View>
-                        <View style={{marginLeft:25, paddingBottom:5, flexDirection:'row', alignItems:'center'}}>
-                            <TouchableOpacity>
-                                <FontAwesome name="heart-o" style={{color:'red', fontSize:12}} />
-                            </TouchableOpacity>
-                            <Text style={{marginLeft:3,fontSize:12,color:'gray'}}>15</Text>
-                        </View>
-                    </Animatable.View>
-
-                    <Animatable.View 
-                    style={styles.post}
-                    animation="fadeInDown"
-                    duration={1000}>
-                        <View style={styles.postHeader}>
-                            <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center'}}>
-                                <View style={styles.postTitulo}>
-                                    <Feather name="camera" size={30} color='#D8D9DB'></Feather>
-                                    <Text style={styles.postTitle}>Reidner</Text>
+                                <View style={styles.postDesc}>
+                                    <Text style={styles.postDescricao}>{comment.message}</Text>
                                 </View>
-                                <Text style={styles.Nomepost}>Há 5 horas</Text>
-                            </View>
-                        </View>
-                        <View style={styles.postDesc}>
-                            <Text style={styles.postDescricao}>HAUHAUHA</Text>
-                        </View>
-                        <View style={{marginLeft:25, paddingBottom:5, flexDirection:'row', alignItems:'center'}}>
-                            <TouchableOpacity>
-                                <FontAwesome name="heart-o" style={{color:'red', fontSize:12}} />
-                            </TouchableOpacity>
-                            <Text style={{marginLeft:3,fontSize:12,color:'gray'}}>15</Text>
-                        </View>
-                    </Animatable.View>
-
-                    <Animatable.View 
-                    style={styles.post}
-                    animation="fadeInDown"
-                    duration={1000}>
-                        <View style={styles.postHeader}>
-                            <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center'}}>
-                                <View style={styles.postTitulo}>
-                                    <Feather name="camera" size={30} color='#D8D9DB'></Feather>
-                                    <Text style={styles.postTitle}>Reidner</Text>
+                                <View style={{ marginLeft: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                    <TouchableOpacity>
+                                        <FontAwesome name="heart-o" style={{ color: 'red', fontSize: 12 }} />
+                                    </TouchableOpacity>
+                                    <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>15</Text>
                                 </View>
-                                <Text style={styles.Nomepost}>Há 5 horas</Text>
-                            </View>
-                        </View>
-                        <View style={styles.postDesc}>
-                            <Text style={styles.postDescricao}>HAUHAUHA</Text>
-                        </View>
-                        <View style={{marginLeft:25, paddingBottom:5, flexDirection:'row', alignItems:'center'}}>
-                            <TouchableOpacity>
-                                <FontAwesome name="heart-o" style={{color:'red', fontSize:12}} />
-                            </TouchableOpacity>
-                            <Text style={{marginLeft:3,fontSize:12,color:'gray'}}>15</Text>
-                        </View>
-                    </Animatable.View>
+                            </Animatable.View>
+                        )}>
+                    </FlatList>
                 </View>
 
-                <Animatable.View 
-                style={styles.footer}
-                animation="fadeInUp"
-                duration={900}>
+                <Animatable.View
+                    style={styles.footer}
+                    animation="fadeInUp"
+                    duration={900}>
                     <TextInput
+                        value={commentText}
+                        onChangeText={setCommentText}
                         placeholder="Escreva uma resposta..."
                         placeholderTextColor="#365478"
                         keyboardType="default"
                         autoCapitalize="none"
                         autoCorrect={false}
-                        multiline={true}
+                        multiline
                         numberOfLines={10}
                         style={styles.InputT}
                     />
-                    <Feather name="send" size={20} color='#FFC300'></Feather>
+                    <TouchableOpacity onPress={handlePostComment}>
+                        <Feather name="send" size={20} color='#FFC300'></Feather>
+                    </TouchableOpacity>
                 </Animatable.View>
             </View>
         </View>
