@@ -15,19 +15,34 @@ module.exports = app => {
         await resPost.populate('likes').populate('user').execPopulate()
         return res.json(resPost);
     }
+    const getTotalPosts = async (req, res) => {
+        const { user_id } = req.headers;
+        const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
+
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
+        }
+        const count = await Posts.find({ tags: { $in: user.tags } }).countDocuments()
+
+        res.header('X-Total-Count', count)
+        return res.json(count)
+        // return res.json(count)
+    }
 
     const index = async (req, res) => {
         const { user_id } = req.headers;
         //Páginação
         const qtdLoad = 5
         const { page = 1 } = req.query
-        const count = await Posts.countDocuments()
         //
         const user = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
+
+        //const count = await Posts.find({ tags: { $in: user.tags } }).countDocuments()
         let posts = await Posts.find({ tags: { $in: user.tags } })
             .sort({ postedIn: -1 })
             .skip((page - 1) * qtdLoad)
@@ -47,7 +62,7 @@ module.exports = app => {
         //console.log( await Posts.find({ }))
         //await posts[0].populate('posts').populate('user').execPopulate()
 
-        res.header('X-Total-Count', count)
+        //res.header('X-Total-Count', count)
         return res.json(posts);
     }
 
@@ -123,5 +138,5 @@ module.exports = app => {
 
     }
 
-    return { index, save, remove, getOne, like }
+    return { index, save, remove, getOne, getTotalPosts, like }
 }

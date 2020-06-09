@@ -14,6 +14,7 @@ module.exports = app => {
         //.all(app.config.passport.authenticate())
         .get(app.api.posts.index)
         .post(app.api.posts.save)
+        .head(app.api.posts.getTotalPosts)
 
     app.route('/post/:post')//get de único post
         // .all(app.config.passport.authenticate())

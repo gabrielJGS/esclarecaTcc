@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, ActivityIndicator } from 'react-native';
 import { Feather, Ionicons, FontAwesome } from '@expo/vector-icons'
 import { Icon, Button } from 'native-base'
 
@@ -19,7 +19,7 @@ export default function Home() {
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
-
+    const [refreshing, setRefreshing] = useState(false)
     function navigateToNewPost() {
         navigation.navigate('NewPost')
     }
@@ -38,35 +38,58 @@ export default function Home() {
             }, {
                 headers: { user_id }
             })
-            loadPosts()
+            reloadPosts()
         } catch (e) {
             showError(e)
         }
     }
     async function loadPosts() {
+        setRefreshing(false)
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
+        const getTotal = await api.head('/posts', { headers: { user_id } })
+        setTotal(getTotal.headers['x-total-count'])
         if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+            console.log(total + "-" + posts.length)
             return
         }
+
         setLoading(true)//Altera para o loading iniciado
         try {
             const response = await api.get('/posts', {
                 headers: { user_id },
                 params: { page }
             })
-            // setPosts(response.data)
+            //setPosts(response.data)
             setPosts([...posts, ...response.data])
-            setTotal(response.headers['x-total-count'])
-            setPage(page + 1)
+            //setTotal(response.headers['x-total-count'])
+            if (response.data.length > 0) {
+                console.log("array" + response.data.length)
+                setPage(page + 1)
+            }
+            console.log("page:" + page)
         } catch (e) {
             showError(e)
         }
         setLoading(false)//Conclui o load
     }
+    const reloadPosts = useCallback(() => {
+        setRefreshing(true)
+        setPage(1)
+        setPosts([])
+        loadPosts()
+    })
 
+    renderFooter = () => {
+        if (!loading) return null;
+        return (
+            <View style={styles.loading}>
+                <ActivityIndicator />
+            </View>
+        );
+    };
     useEffect(() => {
         loadPosts()
     }, [])
@@ -102,14 +125,18 @@ export default function Home() {
 
             <View style={styles.Body}>
                 <View style={styles.BodyFlat}>
+                    <Text>{loading}</Text>
                     <FlatList
                         data={posts}
                         style={styles.postsList}
                         keyExtractor={post => String(post._id)}
-                        //onTouchStart={loadPosts}
-                        onEndReached={loadPosts}
-                        onEndReachedThreshold={0.5}
-                        showsVerticalScrollIndicator={false}
+                        refreshing={refreshing}
+                        onRefresh={reloadPosts}
+                        // onTouchStart={reloadPosts}
+                        onEndReached={onLoadMore}
+                        onEndReachedThreshold={0.2}
+                        ListFooterComponent={renderFooter}
+                        showsVerticalScrollIndicator={true}//OBS:Trocar para false ao finalizar testes!!!!
                         renderItem={({ item: post }) => (
                             <Animatable.View
                                 style={styles.post}
@@ -157,7 +184,7 @@ export default function Home() {
                     style={styles.footer}
                     animation="fadeInUp"
                     duration={900}>
-                    <TouchableOpacity style={styles.detailsBar} onPress={() => loadPosts()}>
+                    <TouchableOpacity style={styles.detailsBar} onPress={() => reloadPosts()}>
                         <Text style={styles.detailsButtonTextHome}>Dúvidas</Text>
                         <Feather name="edit-3" size={16} color="#FFC300"></Feather>
                     </TouchableOpacity>
