@@ -12,12 +12,12 @@ module.exports = app => {
         const email = req.body.email.trim().toLowerCase()
         const tags = req.body.tags.trim().toLowerCase()
 
-        const user = await Users.findOne({ email })
-        if (user) {
+        const userExist = await Users.findOne({ email })
+        if (userExist) {
             res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`)
         } else {
             obterHash(req.body.password.trim().toLowerCase(), hash => {
-                user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()) })
+                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()) })
                     .then(_ => res.status(204).send())
                     .catch(err => res.status(400).json(err))
             })

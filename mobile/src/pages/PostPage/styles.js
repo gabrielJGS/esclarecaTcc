@@ -197,7 +197,7 @@ export default StyleSheet.create({
 
   InputT: {
     color: '#365478',
-    width: hp('50%'),
+    width: hp('40%'),
     backgroundColor: '#FAFAFA',
     borderRadius: 10,
     paddingHorizontal: 10,

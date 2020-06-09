@@ -1,20 +1,20 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add native-base
 
 PATH: 
-  C:\Python27\;C:\Python27\Scripts;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\Git\cmd;C:\Users\gabri\AppData\Local\Microsoft\WindowsApps;D:\Arquivos e Programas\Microsoft VS Code\bin;C:\xampp\php;C:\xampp\php\php.exe;C:\Users\gabri\AppData\Roaming\npm;C:\Users\gabri\AppData\Local\Yarn\bin;C:\Users\gabri\AppData\Local\GitHubDesktop\bin;D:\Program Files\PostgreSQL\12\bin;
+  C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\nodejs\;C:\Users\reidn\AppData\Local\Microsoft\WindowsApps;C:\Users\reidn\AppData\Local\Yarn\bin;C:\Users\reidn\AppData\Roaming\npm;C:\Users\reidn\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\reidn\AppData\Local\GitHubDesktop\bin;C:\ProgramData\reidn\GitHubDesktop\bin
 
 Yarn version: 
-  1.22.0
+  1.21.1
 
 Node version: 
-  12.16.1
+  13.9.0
 
 Platform: 
   win32 x64
 
 Trace: 
-  Invariant Violation: could not find a copy of react-native to link in C:\react\tcc\mobile\node_modules\react-native-dynamic-search-bar\node_modules
+  Invariant Violation: could not find a copy of react-native to link in D:\Faculdade\4º ano\TCC\Esclareça\esclarecaTcc\mobile\node_modules\react-native-dynamic-search-bar\node_modules
       at invariant (C:\Program Files (x86)\Yarn\lib\cli.js:2314:15)
       at PackageLinker.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:48335:7)
       at Generator.next (<anonymous>)
@@ -66,6 +66,7 @@ npm manifest:
       "react-native-responsive-screen": "^1.4.1",
       "react-native-safe-area-context": "^0.7.3",
       "react-native-screens": "^2.2.0",
+      "react-native-shadow-cards": "^1.0.2",
       "react-native-vector-icons": "^6.6.0",
       "react-native-web": "^0.11.7",
       "react-navigation": "^4.0.10",
@@ -75,7 +76,7 @@ npm manifest:
       "@babel/core": "^7.8.6",
       "babel-preset-expo": "^8.1.0"
     },
-    "private": false
+    "private": true
   }
 
 yarn manifest: 
