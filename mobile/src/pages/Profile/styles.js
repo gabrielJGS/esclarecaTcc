@@ -4,7 +4,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 export default StyleSheet.create({
     header:{
         backgroundColor: "#365478",
-        height:200,
+        height:150,
         flexDirection:'row',
         justifyContent:'space-between',
         paddingVertical:15,
@@ -21,7 +21,7 @@ export default StyleSheet.create({
         marginBottom:10,
         alignSelf:'center',
         position: 'absolute',
-        marginTop:130
+        marginTop:80
       },
       name:{
         fontSize:22,
@@ -29,12 +29,12 @@ export default StyleSheet.create({
         fontWeight:'600',
       },
       body:{
-        marginTop:40,
+        marginTop:30,
       },
       bodyContent: {
         flex: 1,
         alignItems: 'center',
-        padding:30,
+        padding:24,
       },
       name:{
         fontSize:28,
@@ -44,7 +44,7 @@ export default StyleSheet.create({
       info:{
         fontSize:16,
         color: "#365478",
-        marginTop:5
+        marginTop:1
       },
       description:{
         fontSize:16,
@@ -68,4 +68,7 @@ export default StyleSheet.create({
         justifyContent: 'flex-end',
         marginTop:17
       },
+      container:{
+        flex:1
+      }
 })

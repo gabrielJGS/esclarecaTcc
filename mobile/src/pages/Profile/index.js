@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
-import { Image, Alert, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar } from "react-native";
+import { Image, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import api from '../../services/api'
+import { Card, CardItem, Left, Right, Title, Subtitle } from 'native-base'
 
-import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo maior
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 import Feather from 'react-native-vector-icons/Feather';
-import LinearGradient from 'react-native-linear-gradient';
 import {AuthContext} from '../../context'
 
 export default function Profile(){
@@ -48,15 +47,104 @@ export default function Profile(){
             <View style={styles.bodyContent}>
               <Text style={styles.name}>Reidner Rocha</Text>
               <Text style={styles.info}>Tags</Text>
-              <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
-              
-              <TouchableOpacity style={styles.buttonContainer}>
-                <Text>Opcion 1</Text>  
-              </TouchableOpacity>              
-              <TouchableOpacity style={styles.buttonContainer}>
-                <Text>Opcion 2</Text> 
-              </TouchableOpacity>
             </View>
+            <View style={{marginTop:40}}>
+              <View style={{alignItems:"center"}}>
+                <Text style={{fontSize:20, fontWeight:'bold'}}>Dúvidas</Text>
+              </View>
+              <Text style={{fontSize:17, fontWeight:'bold', paddingHorizontal:24}}>Enviadas</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:24}}>
+              <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={{width:100, height:50}}>
+                        <Text style={{fontSize:15, fontWeight:'bold'}}>Erro código</Text>
+                        <Text style={{fontSize:12}}>Tags</Text>
+                        <Text style={{marginLeft:60, marginTop:12, fontSize:9}}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={{width:100, height:50}}>
+                        <Text style={{fontSize:15, fontWeight:'bold'}}>Erro código</Text>
+                        <Text style={{fontSize:12}}>Tags</Text>
+                        <Text style={{marginLeft:60, marginTop:12, fontSize:9}}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={{width:100, height:50}}>
+                        <Text style={{fontSize:15, fontWeight:'bold'}}>Erro código</Text>
+                        <Text style={{fontSize:12}}>Tags</Text>
+                        <Text style={{marginLeft:60, marginTop:12, fontSize:9}}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={{width:100, height:50}}>
+                        <Text style={{fontSize:15, fontWeight:'bold'}}>Erro código</Text>
+                        <Text style={{fontSize:12}}>Tags</Text>
+                        <Text style={{marginLeft:60, marginTop:12, fontSize:9}}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+              </ScrollView>
+              <Text style={{fontSize:17, fontWeight:'bold', marginHorizontal:24, marginTop:5}}>Favoritas</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:24}}>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={{width:100, height:50}}>
+                        <Text style={{fontSize:15, fontWeight:'bold'}}>Erro código</Text>
+                        <Text style={{fontSize:12}}>Tags</Text>
+                        <Text style={{marginLeft:60, marginTop:12, fontSize:9}}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+              </ScrollView>
+              <View style={{alignItems:"center"}}>
+                <Text style={{fontSize:20, fontWeight:'bold', marginTop:20}}>Conteúdos</Text>
+              </View>
+              <Text style={{fontSize:17, fontWeight:'bold', marginHorizontal:24}}>Enviados</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:20}}>
+              <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={{width:100, height:50}}>
+                        <Text style={{fontSize:15, fontWeight:'bold'}}>Erro código</Text>
+                        <Text style={{fontSize:12}}>Tags</Text>
+                        <Text style={{marginLeft:60, marginTop:12, fontSize:9}}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+              </ScrollView>
+              <Text style={{fontSize:17, fontWeight:'bold', marginHorizontal:24, marginTop:5}}>Favoritos</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:24}}>
+              <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={{width:100, height:50}}>
+                        <Text style={{fontSize:15, fontWeight:'bold'}}>Erro código</Text>
+                        <Text style={{fontSize:12}}>Tags</Text>
+                        <Text style={{marginLeft:60, marginTop:12, fontSize:9}}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+              </ScrollView>
+          </View>
         </View>
       </View>
     )
