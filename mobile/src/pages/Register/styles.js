@@ -27,7 +27,7 @@ export default StyleSheet.create({
         flex: 3,
         alignSelf: 'stretch',
         paddingHorizontal: hp('6%'),
-        marginTop: hp('1%')
+        marginTop: hp('0%')
     },
     label1: {
         fontWeight: 'bold',
@@ -96,6 +96,6 @@ export default StyleSheet.create({
         height: 100,
         borderRadius: 100 / 2,
         backgroundColor: '#B2BABB',
-        marginTop: hp('2%')
+        marginTop: hp('0%')
     }
 });
