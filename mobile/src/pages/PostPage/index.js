@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, TextInput } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, TextInput, Switch } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 
 import api from '../../services/api'
@@ -16,6 +16,10 @@ export default function PostPage({ route, navigation }) {
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
+    
+    //switch
+    const [isEnabled, setIsEnabled] = useState(false);
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     const post = route.params.post
 
@@ -100,11 +104,26 @@ export default function PostPage({ route, navigation }) {
                         </View>
                     </View>
                 </View>
-                <View style={{ marginLeft: 32, paddingBottom: 8, flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity>
-                        <FontAwesome name="heart-o" style={{ color: '#FFC300', fontSize: 12 }} />
-                    </TouchableOpacity>
-                    <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>15</Text>
+                <View style={{flexDirection:'row',justifyContent:'space-between', alignItems: 'center' , marginHorizontal:32, paddingBottom: 8}}>
+                    <View style={{flexDirection: 'row'}}>
+                        <TouchableOpacity>
+                            <FontAwesome name="heart-o" style={{ color: '#FFC300', fontSize: 12 }} />
+                        </TouchableOpacity>
+                        <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>15</Text>
+                    </View>
+                    <View style={{flexDirection: 'row', alignItems:'center'}}>
+                        {isEnabled ?
+                            <>
+                                <Text style={{color:'#7DCEA0', fontWeight:'bold', paddingRight:5}}>Esclarecido</Text> 
+                                <Feather name="check-circle" size={20} color='#7DCEA0'></Feather>
+                            </> 
+                        :
+                            <>
+                                <Text style={{color:'#E73751', fontWeight:'bold', paddingRight:5}}>Esclarecido</Text> 
+                                <Feather name="x-circle" size={20} color='#E73751'></Feather>
+                            </>
+                        }
+                    </View>
                 </View>
             </View>
 

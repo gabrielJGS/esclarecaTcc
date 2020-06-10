@@ -4,7 +4,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 export default StyleSheet.create({
     header:{
         backgroundColor: "#365478",
-        height:150,
+        height:hp('16%'),
         flexDirection:'row',
         justifyContent:'space-between',
         paddingVertical:15,
@@ -13,35 +13,29 @@ export default StyleSheet.create({
         borderBottomColor:'#D8D9DB',
       },
       avatar: {
-        width: 130,
-        height: 130,
-        borderRadius: 63,
-        borderWidth: 4,
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        borderWidth: 2,
         borderColor: "white",
-        marginBottom:10,
         alignSelf:'center',
         position: 'absolute',
-        marginTop:80
-      },
-      name:{
-        fontSize:22,
-        color:"#FFFFFF",
-        fontWeight:'600',
+        marginTop:hp('10%')
       },
       body:{
-        marginTop:30,
+        marginTop:hp('1.5%'),
       },
       bodyContent: {
-        marginTop:20
+        marginTop:hp('2%')
       },
       name:{
-        fontSize:28,
+        fontSize:hp('3%'),
         color: "#696969",
-        fontWeight: "600"
+        fontWeight: 'bold'
       },
       info:{
-        fontSize:16,
-        color: "#365478",
+        fontSize:hp('1.8%'),
+        color: "#FFC300",
         marginTop:1
       },
       description:{
@@ -70,37 +64,40 @@ export default StyleSheet.create({
         flex:1
       },
       contentCard:{
-        alignItems:"center"
+        alignItems:'center',
+        flexDirection:'row',
+        justifyContent:'center',
       },
       contentTitle:{
-        fontSize:20, 
+        fontSize:hp('2.2%'), 
         fontWeight:'bold'
       },
       contentTitle2:{
-        fontSize:20, 
+        fontSize:hp('2.2%'),
         fontWeight:'bold',
-        marginTop:10
+        marginTop:hp('1%')
       },
       contentSubtitle:{
-        fontSize:17, 
+        fontSize:hp('1.8%'), 
         fontWeight:'bold', 
-        paddingHorizontal:24
+        paddingHorizontal:24,
       },
       Card:{
-        width:100, 
-        height:50
+        width:wp('22%'), 
+        height:hp('5.5%'),
       },
       cardTitle:{
-        fontSize:15, 
-        fontWeight:'bold'
+        fontSize:hp('1.6%'), 
+        fontWeight:'bold',
+        color:'#365478'
       },
       cardTags:{
-        fontSize:12
+        fontSize:hp('1.2')
       },
       cardDate:{
-        marginLeft:60, 
-        marginTop:12, 
-        fontSize:9
+        marginLeft:wp('11%'), 
+        marginTop:hp('1.5%'), 
+        fontSize:hp('1%')
       },
       modalView:{
         alignItems:'center',
@@ -141,15 +138,15 @@ export default StyleSheet.create({
       },
       input: {
         paddingHorizontal: 8,
-        fontSize: hp('1.8%'),
+        fontSize: hp('1.6%'),
         color: '#444',
         height: hp('4%'),
         borderRadius: 2,
     },
     modalSubtitle:{
-      fontSize:16,
+      fontSize:hp('1.8%'),
       color: "#365478",
-      marginTop:5
+      marginTop:3
     },
     button: {
       height: hp('5%'),
@@ -170,22 +167,27 @@ export default StyleSheet.create({
     flexDirection:'row', 
     justifyContent:'space-between', 
     paddingHorizontal:36, 
-    paddingVertical:12
+    paddingVertical:hp('1.8%')
   },
   modalPerfil:{
     alignItems:'center', 
     justifyContent:'center', 
-    marginTop:16, 
+    marginTop:hp('1.5%'), 
     flexDirection:'row'
   },
   perfilTitle:{
-    fontSize:20, 
+    fontSize:hp('2.2%'), 
     fontWeight:'bold', 
     color:'#444'
   },
   viewInput:{
-    paddingVertical:10, 
+    paddingVertical:hp('1%'), 
     paddingHorizontal:16
   },
+  perfilName:{
+    alignItems:'center', 
+    marginTop:hp('4%'),
+    justifyContent:'center'
+  }
 
 })

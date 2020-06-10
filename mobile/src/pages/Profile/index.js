@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import { Image, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal } from "react-native";
 import api from '../../services/api'
-import { Card, CardItem, Left} from 'native-base'
+import { Card, CardItem, Left, Header} from 'native-base'
 
 import styles from './styles'
 import Feather from 'react-native-vector-icons/Feather';
@@ -128,18 +128,19 @@ export default function Profile(){
           </View>
           <Image style={styles.avatar} source={{uri: 'https://scontent.fstu3-1.fna.fbcdn.net/v/t1.0-9/p960x960/87283876_1614904885331971_5523389541076959232_o.jpg?_nc_cat=102&_nc_sid=85a577&_nc_ohc=FY3G_XQYr4YAX_jln8U&_nc_ht=scontent.fstu3-1.fna&_nc_tp=6&oh=6892c35abdfc7a8e7f4786b477890cfc&oe=5EDAE0E2'}}/>
           <View style={styles.body}>
-            <View style={{alignItems:'center', marginTop:30}}>
+            <View style={styles.perfilName}>
               <Text style={styles.name}>Reidner Rocha</Text>
               <Text style={styles.info}>Tags</Text>
             </View>
             <View style={styles.bodyContent}>
               <View style={styles.contentCard}>
-                <Text style={styles.contentTitle}>Dúvidas</Text>
+                <Text style={styles.contentTitle}>Dúvidas </Text>
+                <Feather name="help-circle" size={12} color="#365478" style={{marginTop:2}}></Feather>
               </View>
               <Text style={styles.contentSubtitle}>Enviadas</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:24}}>
               <Card>
-                  <CardItem button>
+                  <CardItem button bordered>
                     <Left>
                       <View style={styles.Card}>
                         <Text style={styles.cardTitle}>Erro código</Text>
@@ -198,7 +199,8 @@ export default function Profile(){
                 </Card>
               </ScrollView>
               <View style={styles.contentCard}>
-                <Text style={styles.contentTitle2}>Conteúdos</Text>
+                <Text style={styles.contentTitle2}>Conteúdos </Text>
+                <Feather name="book-open" size={12} color="#365478" style={{marginTop:10}}></Feather>
               </View>
               <Text style={styles.contentSubtitle}>Enviados</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:24}}>
