@@ -16,6 +16,7 @@ export default function PostPage({ route, navigation }) {
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
+    const [trueUser, setTrueUser] = useState(false)
     
     //switch
     const [isEnabled, setIsEnabled] = useState(false);
@@ -25,6 +26,16 @@ export default function PostPage({ route, navigation }) {
 
     useEffect(() => {
         loadComments()
+    }, [])
+
+    useEffect(() => {
+        handleID()
+        async function handleID(){
+            const user_id = await AsyncStorage.getItem('user');
+            if(user_id === post.user._id){
+                setTrueUser(true);
+            }
+        }
     }, [])
 
 
@@ -112,7 +123,7 @@ export default function PostPage({ route, navigation }) {
                         <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>15</Text>
                     </View>
                     <View style={{flexDirection: 'row', alignItems:'center'}}>
-                        {isEnabled ?
+                        {post.close ?
                             <>
                                 <Text style={{color:'#7DCEA0', fontWeight:'bold', paddingRight:5}}>Esclarecido</Text> 
                                 <Feather name="check-circle" size={20} color='#7DCEA0'></Feather>
@@ -154,11 +165,30 @@ export default function PostPage({ route, navigation }) {
                                 <View style={styles.postDesc}>
                                     <Text style={styles.postDescricao}>{comment.message}</Text>
                                 </View>
-                                <View style={{ marginLeft: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                    <TouchableOpacity>
-                                        <FontAwesome name="heart-o" style={{ color: 'red', fontSize: 12 }} />
-                                    </TouchableOpacity>
-                                    <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>15</Text>
+                                <View style={{ marginLeft: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent:'space-between' }}>
+                                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent:'center'}}>
+                                        <TouchableOpacity>
+                                            <FontAwesome name="heart-o" style={{ color: 'red', fontSize: 12 }} />
+                                        </TouchableOpacity>
+                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>15</Text>
+                                    </View>
+                                    {trueUser ?
+                                        <>
+                                            <View style={{flexDirection: 'row', alignItems: 'center',justifyContent:'center', paddingRight:10}}>
+                                                <Text style={{color:'#7DCEA0', fontSize: 12, paddingRight:2}}>Esclarecido</Text> 
+                                                <Switch
+                                                    trackColor={{ false: "#D8D9DB", true: "#7DCEA0" }}
+                                                    thumbColor={isEnabled ? "#7DCEA0" : "#f4f3f4"}
+                                                    ios_backgroundColor="#3e3e3e"
+                                                    onValueChange={toggleSwitch}
+                                                    value={isEnabled}
+                                                />
+                                            </View>
+                                        </>
+                                    :
+                                        <>
+                                        </>
+                                    }
                                 </View>
                             </Animatable.View>
                         )}>

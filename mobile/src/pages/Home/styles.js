@@ -175,6 +175,66 @@ export default StyleSheet.create({
   Nomepost:{
     fontSize:10,
     color:'#C8C8C8'
-  }
+  },
+
+  modalContent:{
+    width: '100%',
+    height: '100%',
+    position: 'absolute'
+  },
+  modalBody:{
+    right:33,
+    top:55,
+    position: 'absolute',
+    height: 120,
+    backgroundColor: '#fff',
+    width: 95,
+    borderRadius:5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
+  },
+  modalFilter:{
+    height:28, 
+    backgroundColor:'#C8C8C8', 
+    borderTopLeftRadius:5, 
+    borderTopRightRadius:5, 
+    justifyContent:'center', 
+    alignItems:'center'
+  },
+  filterTitle:{
+    color:'black', 
+    fontWeight:'bold',
+    fontSize:16
+  },
+  filterView:{
+    paddingHorizontal:5
+  },
+  filterSub:{
+    paddingVertical:3
+  },
+  filterButton:{
+    flexDirection:'row', 
+    justifyContent:'space-between', 
+    alignItems:'center'
+  },
+  filterText:{
+    color:'black', 
+    fontSize:14, 
+    color:'#365478', 
+    fontWeight:'bold'
+  },
+  filterExit:{
+    marginTop:1,
+    paddingVertical:3,
+    borderTopWidth:1,
+    alignItems:'center',
+    borderTopColor:'#C8C8C8'
+  },
 
 })

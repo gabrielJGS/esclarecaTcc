@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
-import { Image, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal } from "react-native";
+import { Image, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback } from "react-native";
 import api from '../../services/api'
 import { Card, CardItem, Left, Header} from 'native-base'
 
@@ -33,74 +33,76 @@ export default function Profile(){
               visible={modalVisible}
               onRequestClose={handleModal}
             >
-              <View style={styles.modalContent}>
-                <View style={styles.modalBody}>
-                  <View style={styles.indicator} />
-                  
-                  <View style={styles.modalPerfil}>
-                    <Text style={styles.perfilTitle}>Editar Perfil  </Text>
-                    <Feather name="edit" size={17} color="#365478"></Feather>
-                  </View>
-                  <View style={styles.viewInput}>
-                    <Text style={styles.modalSubtitle}>Nome</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Altere seu nome..."
-                      placeholderTextColor="#999"
-                      autoCapitalize="words"
-                      autoCorrect={false}
-                      //value={title}
-                      //onChangeText={setTitle}
-                      numberOfLines={2}
-                    />
-                    <Text style={styles.modalSubtitle}>Email</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Altere seu email..."
-                      placeholderTextColor="#999"
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      //value={title}
-                      //onChangeText={setTitle}
-                      numberOfLines={2}
-                    />
-                    <Text style={styles.modalSubtitle}>Tags</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Altere suas tags de preferência..."
-                      placeholderTextColor="#999"
-                      autoCapitalize="words"
-                      autoCorrect={false}
-                      //value={title}
-                      //onChangeText={setTitle}
-                      numberOfLines={2}
-                    />
-                    <Text style={styles.modalSubtitle}>Senha</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Atere sua senha..."
-                      placeholderTextColor="#999"
-                      secureTextEntry={true}
-                      password={true}
-                      autoCapitalize="words"
-                      autoCorrect={false}
-                      //value={senha}
-                      //onChangeText={setSenha}
-                      returnKeyType="done"
-                    />
-                  </View>
-                  <View style={styles.buttonView}>
-                    <TouchableOpacity onPress={handleModal} style={styles.button}>
-                      <Text style={styles.buttonText}>Salvar</Text>
-                      <Feather name="check" size={15} color="#FFC300"></Feather>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={handleModal} style={styles.button}>
-                      <Text style={styles.buttonText}>Cancelar</Text>
-                      <Feather name="x-circle" size={15} color="#FFC300"></Feather>
-                    </TouchableOpacity>
+              <TouchableWithoutFeedback onPress={handleModal}>
+                <View style={styles.modalContent}>
+                  <View style={styles.modalBody}>
+                    <View style={styles.indicator} />
+                    
+                    <View style={styles.modalPerfil}>
+                      <Text style={styles.perfilTitle}>Editar Perfil  </Text>
+                      <Feather name="edit" size={17} color="#365478"></Feather>
+                    </View>
+                    <View style={styles.viewInput}>
+                      <Text style={styles.modalSubtitle}>Nome</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Altere seu nome..."
+                        placeholderTextColor="#999"
+                        autoCapitalize="words"
+                        autoCorrect={false}
+                        //value={title}
+                        //onChangeText={setTitle}
+                        numberOfLines={2}
+                      />
+                      <Text style={styles.modalSubtitle}>Email</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Altere seu email..."
+                        placeholderTextColor="#999"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        //value={title}
+                        //onChangeText={setTitle}
+                        numberOfLines={2}
+                      />
+                      <Text style={styles.modalSubtitle}>Tags</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Altere suas tags de preferência..."
+                        placeholderTextColor="#999"
+                        autoCapitalize="words"
+                        autoCorrect={false}
+                        //value={title}
+                        //onChangeText={setTitle}
+                        numberOfLines={2}
+                      />
+                      <Text style={styles.modalSubtitle}>Senha</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Atere sua senha..."
+                        placeholderTextColor="#999"
+                        secureTextEntry={true}
+                        password={true}
+                        autoCapitalize="words"
+                        autoCorrect={false}
+                        //value={senha}
+                        //onChangeText={setSenha}
+                        returnKeyType="done"
+                      />
+                    </View>
+                    <View style={styles.buttonView}>
+                      <TouchableOpacity onPress={handleModal} style={styles.button}>
+                        <Text style={styles.buttonText}>Salvar</Text>
+                        <Feather name="check" size={15} color="#FFC300"></Feather>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={handleModal} style={styles.button}>
+                        <Text style={styles.buttonText}>Cancelar</Text>
+                        <Feather name="x-circle" size={15} color="#FFC300"></Feather>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
-              </View>
+              </TouchableWithoutFeedback>
             </Modal>
           </View>
           <View style={styles.header}>

@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, ActivityIndicator } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, ActivityIndicator, Modal,TouchableWithoutFeedback } from 'react-native';
 import { Feather, Ionicons, FontAwesome } from '@expo/vector-icons'
 import { Icon, Button } from 'native-base'
 
@@ -98,16 +98,67 @@ export default function Home() {
         loadPosts();
     })
 
+    const [modalVisible, setModalVisible] = useState(false);
+    function handleModal(){
+        setModalVisible(!modalVisible)
+      }
+
     return (
         //reidner 26/04
         <View style={styles.container}>
+
+            <View>
+                <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={handleModal}
+                >
+                    <TouchableWithoutFeedback onPress={handleModal}>
+                        <View style={styles.modalContent}>
+                            <View style={styles.modalBody}>
+                                <View style={styles.modalFilter}>
+                                    <Text style={styles.filterTitle}>Filtrar Por:</Text>
+                                </View>
+                                <View style={styles.filterView}>
+                                    <View style={styles.filterSub}>
+                                        <TouchableOpacity style={styles.filterButton}>
+                                            <Text style={styles.filterText}>Data</Text>
+                                            <Feather name="calendar" size={12} color="#FFC300"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.filterSub}>
+                                        <TouchableOpacity style={styles.filterButton}>
+                                            <Text style={styles.filterText}>Favoritos</Text>
+                                            <Feather name="heart" size={12} color="#FFC300"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.filterSub}>
+                                        <TouchableOpacity style={styles.filterButton}>
+                                            <Text style={styles.filterText}>Esclarecidos</Text>
+                                            <Feather name="check-circle" size={12} color="#FFC300"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.filterExit}>
+                                        <TouchableOpacity style={styles.filterButton}>
+                                            <Text style={styles.filterText}>Sem filtro </Text>
+                                            <Feather name="x-circle" size={12} color="#E73751"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            </View>
+            
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
                 <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.openDrawer()}>
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <Text style={{ fontWeight: 'bold', color: "white", fontSize: 25 }}>Dúvidas</Text>
-                <TouchableOpacity style={styles.detailsButton}>
+                <TouchableOpacity style={styles.detailsButton} onPress={handleModal}>
                     <Feather name="filter" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
             </View>
@@ -170,8 +221,8 @@ export default function Home() {
                                         <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>20</Text>
                                     </View>
                                     {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Text style={{ fontSize: 13, color: '#117A65', fontWeight: '800' }}>Dúvida finalizada</Text>
-                                        <Feather name="check-circle" size={15} color='#117A65' style={{ marginLeft: 5 }}></Feather>
+                                        <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
+                                        <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
                                     </View> : null}
 
                                 </View>
