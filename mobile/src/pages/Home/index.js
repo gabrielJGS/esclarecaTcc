@@ -20,6 +20,8 @@ export default function Home() {
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
+    const [search, setSearch] = useState('');
+
     function navigateToNewPost() {
         navigation.navigate('NewPost')
     }
@@ -171,6 +173,8 @@ export default function Home() {
                     placeholder='Pesquise o assunto de interesse...'
                     containerStyle={styles.Barheight}
                     inputStyle={{ fontSize: 15 }}
+                    onChangeText={setSearch}
+                    value={search}
                 />
             </View>
 

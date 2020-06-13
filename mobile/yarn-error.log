@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add native-base@2.13.8
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add react-native-search-bar
 
 PATH: 
   C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\nodejs\;C:\Users\reidn\AppData\Local\Microsoft\WindowsApps;C:\Users\reidn\AppData\Local\Yarn\bin;C:\Users\reidn\AppData\Roaming\npm;C:\Users\reidn\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\reidn\AppData\Local\GitHubDesktop\bin;C:\ProgramData\reidn\GitHubDesktop\bin
@@ -34,6 +34,7 @@ npm manifest:
       "eject": "expo eject"
     },
     "dependencies": {
+      "@expo/vector-icons": "^10.2.0",
       "@react-native-community/art": "^1.2.0",
       "@react-native-community/masked-view": "^0.1.6",
       "@react-navigation/bottom-tabs": "^5.2.8",
