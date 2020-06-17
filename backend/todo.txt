@@ -1,8 +1,5 @@
 This sprint:
 
->Pesquisar(tela e rota)
->Se o usuário estiver entre os que curtiram, exibir botão preenchido(apenas heart)/exige user_id no estado, rota: se ja tiver curtido descurtir
->Qtd comentários post
 >Likes comments
 >Tipo de post na Header do get /posts
 >Trocar na rota/tela de comment para user ir no header
@@ -10,16 +7,24 @@ This sprint:
 >Rota de perfil do usuário(retornar dados do usuário e posts)
 >Foto de perfil(backend)
 >Rota de perfil(com posts e duvidas publicadas)
->Solucionar dúvida(post solucionado e comentário q solucionou)
+>Comentário q solucionou ser ordenado antes doq os demais, independente da data
+>Descurtir post
+>Paginação no get posts do usuário e pesquisa
 >Conferir tratamento/validações nas requisições
 >Conferir status code certos https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 >Remover certos campos dos populates: https://stackoverflow.com/questions/37562129/how-to-select-specific-field-in-nested-populate-in-mogoose
+ //$project − Used to select some specific fields from a collection.
 >Aprender a usar promise para fazer no registro, evitando retornar para a tela de login e digitar dnv
 >Rota/tela de esqueceu a senha(inserir referencia a ela no login/registro)
+>Pesquisar(tela e rota)
 
 Done:
 //>Data no post e comentário(ordenar gets por data tbm)
-//>Paginação //Ok no insomnia, mas realmente está ok no app?
+//>Paginação
+//>Solucionar dúvida(post solucionado e comentário q solucionou)
+//>Se o usuário estiver entre os que curtiram, exibir botão preenchido(apenas heart)/exige user_id no estado, rota: se ja tiver curtido descurtir
+//>Qtd comentários post
+
 Reid:
 >Botão solucionar dúvida no comentário
 >Nomes de usuário ser um botão para o perfil

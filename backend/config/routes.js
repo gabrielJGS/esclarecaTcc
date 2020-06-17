@@ -8,6 +8,7 @@ module.exports = app => {
         .get(app.api.users.profile)
         .put(app.api.users.update)
         .patch(app.api.users.patch)
+    app.get('/users/:id/posts', app.api.posts.getByUser)//Posts do usuário
 
     //Posts
     app.route('/posts')
@@ -15,12 +16,13 @@ module.exports = app => {
         .get(app.api.posts.index)
         .post(app.api.posts.save)
         .head(app.api.posts.getTotalPosts)
+    app.post('/posts/search', app.api.posts.searchPost)//Posts do usuário
 
     app.route('/post/:post')//get de único post
         // .all(app.config.passport.authenticate())
         .get(app.api.posts.getOne)
 
-    //Like no post
+    //Dar like no post
     app.post('/posts/:post/like', app.api.posts.like)
 
     //Comentários
@@ -30,7 +32,13 @@ module.exports = app => {
         .get(app.api.comments.index)
         .post(app.api.comments.save)
 
+    //Deletar comentário
     app.route('/posts/:post/:comm')
         // .all(app.config.passport.authenticate())
         .delete(app.api.comments.remove)//Deletar comentário
+
+    //Resolver o post
+    app.route('/posts/:post/:comm/solve')
+        // .all(app.config.passport.authenticate())
+        .post(app.api.comments.solvePost)
 }

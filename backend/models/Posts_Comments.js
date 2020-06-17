@@ -27,6 +27,7 @@ const PostsSchema = new mongoose.Schema({
     },
     postedIn: Date,
     message: String,
+    solvedPost: Boolean
 });
 
 module.exports = mongoose.model('Posts_Comments', PostsSchema);

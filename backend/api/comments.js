@@ -69,5 +69,44 @@ module.exports = app => {
 
     }
 
-    return { index, save, remove }
+    const solvePost = async (req, res) => {
+        const { user_id } = req.headers;
+        const { comment } = req.params;
+
+        const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
+        }
+        const commentToUpdate = await Posts_Comments.findById(comment)
+            .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
+        if (!commentToUpdate) {
+            res.status(400).send("Comentário não encontrado com o id: " + req.params)
+        } else {//Caso encontre o comentário, entra para as modificações
+            if (commentToUpdate.solvedPost == true) {
+                res.status(204).send()//Caso já esteja resolvido, envia uma requisição vazia
+            }
+            commentToUpdate.solvedPost = true
+            commentToUpdate.save()
+                .catch(err => res.status(400).json(err))
+            const postToUpdate = await Posts.findById(commentToUpdate.post)
+                .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
+            if (!postToUpdate) {//Caso o id seja válido mas não exista vai cair aqui
+                res.status(400).send("Post não encontrado com o id: " + req.params)
+            } else {
+                if (postToUpdate.solved == true) {
+                    res.status(204).send()//Caso já esteja resolvido, envia uma requisição vazia
+                }
+                else {
+                    postToUpdate.solved = true
+                    await postToUpdate.save()
+                        .catch(err => res.status(400).json(err))
+
+                    res.status(201).send()
+                }
+            }
+        }
+    }
+
+    return { index, save, remove, solvePost }
 }

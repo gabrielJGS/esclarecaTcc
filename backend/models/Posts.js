@@ -27,7 +27,7 @@ const PostsSchema = new mongoose.Schema({
     postedIn: Date,
     tags: [String],
     type: Boolean,
-    closed: Boolean,
+    solved: Boolean,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'

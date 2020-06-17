@@ -1,5 +1,6 @@
 var momentTz = require('moment-timezone');
 //var moment = require('moment'); // require
+const mongoose = require('mongoose');
 
 const Users = require('../models/Users');
 const Posts = require('../models/Posts');
@@ -8,11 +9,38 @@ module.exports = app => {
     const getOne = async (req, res) => {
         const { post } = req.params;
         const resPost = await Posts.findById(post)
+            .populate('user')
+            .populate('likes')
             .catch(err => res.status(400).json(err))
         if (!resPost) {
             return res.status(400).send('Post não encontrado')
         }
-        await resPost.populate('likes').populate('user').execPopulate()
+        return res.json(resPost);
+    }
+    const getByUser = async (req, res) => {
+        const { id } = req.params;
+        const { type } = req.headers
+        const resPost = await Posts.find({ user: id, type })
+            .populate('user')
+            .populate('likes')
+            .catch(err => res.status(400).json(err))
+        if (!resPost) {
+            return res.status(400).send('Nenhum post encontrado para o usuário')
+        }
+        return res.json(resPost);
+    }
+    const searchPost = async (req, res) => {
+        //const { user_id } = req.headers
+        const { searchText } = req.body
+        console.log(searchText)
+        //const resPost = await Posts.find({ "desc": /.*searchText.*/ })//{'name': {'$regex': 'sometext'}}
+        const resPost = await Posts.find({ 'desc': { '$regex': searchText } })
+            .populate('user')
+            .populate('likes')
+            .catch(err => res.status(400).json(err))
+        if (!resPost) {
+            return res.status(400).send('Nenhum post encontrado com o texto informado')
+        }
         return res.json(resPost);
     }
     const getTotalPosts = async (req, res) => {
@@ -43,24 +71,45 @@ module.exports = app => {
         }
 
         //const count = await Posts.find({ tags: { $in: user.tags } }).countDocuments()
+        const teste = await Posts
+            .aggregate([
+                { $match: { tags: { $in: user.tags } } },
+                { $sort: { postedIn: -1 } },
+                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
+                {
+                    $lookup: {
+                        from: 'posts_comments',
+                        let: { postId: "$_id" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$$postId", "$post"] } } },
+                            { $count: "count" }
+                        ],
+                        as: 'commentsCount'
+                    }
+                },
+                {
+                    "$addFields": {
+                        "didILiked": {
+                            "$in": [mongoose.Types.ObjectId(user_id), "$likes"]
+                        },
+                        "commentsCount": { "$ifNull": [{ "$arrayElemAt": ["$commentsCount.count", 0] }, 0] }
+                    }
+                },
+                { $skip: (page - 1) * qtdLoad },
+                { $limit: qtdLoad },
+            ])
+
+            .catch(err => res.status(400).json(err))
+
+        return res.json(teste)
         let posts = await Posts.find({ tags: { $in: user.tags } })
-            .sort({ postedIn: -1 })
-            .skip((page - 1) * qtdLoad)
-            .limit(qtdLoad)
+
+
             .populate('user')
             .populate('likes')
             .catch(err => res.status(400).json(err))
-        // posts.map(function (item) {
-        //     return {
-        //         hasLiked: item.likes.map(function (lik) {
-        //             if (lik.users == user_id) {
-        //                 return true;
-        //             }
-        //         }) != null ? true : false
-        //     }
-        // })
-        //console.log( await Posts.find({ }))
-        //await posts[0].populate('posts').populate('user').execPopulate()
+
 
         //res.header('X-Total-Count', count)
         return res.json(posts);
@@ -135,8 +184,7 @@ module.exports = app => {
                 res.status(201).send()
             }
         }
-
     }
 
-    return { index, save, remove, getOne, getTotalPosts, like }
+    return { index, save, remove, getOne, getTotalPosts, like, getByUser, searchPost }
 }

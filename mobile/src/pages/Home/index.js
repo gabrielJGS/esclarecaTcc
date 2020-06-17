@@ -20,6 +20,9 @@ export default function Home() {
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
+    const [searchText, setSearchText] = useState('')
+    const [isSearching, setIsSearching] = useState(false)
+
     function navigateToNewPost() {
         navigation.navigate('NewPost')
     }
@@ -31,6 +34,18 @@ export default function Home() {
             post
         })
     }
+    renderFooter = () => {
+        if (!loading) return null;
+        return (
+            <View style={styles.loading}>
+                <ActivityIndicator />
+            </View>
+        );
+    };
+    useEffect(() => {
+        loadPosts()
+    }, [])
+
     async function handleLike(postId) {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         try {
@@ -66,37 +81,61 @@ export default function Home() {
             setPosts([...posts, ...response.data])
             //setTotal(response.headers['x-total-count'])
             if (response.data.length > 0) {
-                console.log("array" + response.data.length)
                 setPage(page + 1)
             }
-            console.log("page:" + page)
         } catch (e) {
             showError(e)
         }
         setLoading(false)//Conclui o load
     }
     const reloadPosts = useCallback(() => {
+        setIsSearching(false)
         setRefreshing(true)
         setPage(1)
         setPosts([])
         loadPosts()
     })
 
-    renderFooter = () => {
-        if (!loading) return null;
-        return (
-            <View style={styles.loading}>
-                <ActivityIndicator />
-            </View>
-        );
-    };
-    useEffect(() => {
-        loadPosts()
-    }, [])
-
     const onLoadMore = useCallback(() => {
-        loadPosts();
+        if (isSearching == true) {
+
+        } else {
+            loadPosts()
+        }
     })
+
+    async function onSearchPress() {
+        if (searchText.trim() == '') {
+            reloadPosts()
+        }
+        else {
+            if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+                return
+            }
+            setIsSearching(true)
+            //setTotal(getTotal.headers['x-total-count'])
+            // if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+            //     console.log(total + "-" + posts.length)
+            //     return
+            // }
+
+            setLoading(true)//Altera para o loading iniciado
+            try {
+                const response = await api.post('/posts/search', {
+                    searchText
+                })
+                setPosts(response.data)
+                //setPosts([...posts, ...response.data])
+                //setTotal(response.headers['x-total-count'])
+                if (response.data.length > 0) {
+                    //    setPage(page + 1)
+                }
+            } catch (e) {
+                showError(e)
+            }
+            setLoading(false)//Conclui o load
+        }
+    }
 
     return (
         //reidner 26/04
@@ -107,13 +146,16 @@ export default function Home() {
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <Text style={{ fontWeight: 'bold', color: "white", fontSize: 25 }}>Dúvidas</Text>
-                <TouchableOpacity style={styles.detailsButton}>
+                <TouchableOpacity style={styles.detailsButton} onPress={onSearchPress}>
                     <Feather name="filter" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
             </View>
 
             <View style={styles.Search}>
                 <SearchBar
+                    onChangeText={setSearchText}
+                    value={searchText}
+                    on
                     round
                     platform="ios"
                     cancelButtonTitle="Cancelar"
@@ -163,11 +205,11 @@ export default function Home() {
                                 <View style={{ paddingHorizontal: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <TouchableOpacity onPress={() => handleLike(post._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <FontAwesome name="heart-o" style={{ color: 'red', fontSize: 12 }} />
+                                            <FontAwesome name={post.didILiked == false ? "heart-o" : "heart"} style={{ color: 'red', fontSize: 12 }} />
                                             <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.likes.length}</Text>
                                         </TouchableOpacity>
                                         <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
-                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>20</Text>
+                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount }</Text>
                                     </View>
                                     {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <Text style={{ fontSize: 13, color: '#117A65', fontWeight: '800' }}>Dúvida finalizada</Text>
