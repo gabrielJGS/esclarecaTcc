@@ -20,6 +20,7 @@ import NewContent from './pages/NewContent'
 import Profile from './pages/Profile'
 import PostPage from './pages/PostPage'
 import ContentPage from './pages/ContentPage'
+import Preferences from './pages/Preferences'
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -57,6 +58,7 @@ const drawerNavigator = () => (
         <drawer.Screen name="Home" component={PostStack}></drawer.Screen>
         <drawer.Screen name="HomeContent" component={ContentStack}></drawer.Screen>
         <drawer.Screen name="Profile" component={Profile}></drawer.Screen>
+        <drawer.Screen name="Preferences" component={Preferences}></drawer.Screen>
     </drawer.Navigator>
 )
 
@@ -126,6 +128,7 @@ function CustomDrawerContent(props) {
                             <Feather name="settings" size={20} color="#365478"></Feather>
                         )}
                         label="Preferências"
+                        onPress={()=>{props.navigation.navigate('Preferences')}}
                     />
                 </View>
 

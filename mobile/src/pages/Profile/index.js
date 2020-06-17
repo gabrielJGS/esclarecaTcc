@@ -54,6 +54,9 @@ export default function Profile(){
                           //value={title}
                           //onChangeText={setTitle}
                           numberOfLines={2}
+                          returnKeyType = "next"
+                          onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                          blurOnSubmit={false}
                         />
                         <Text style={styles.modalSubtitle}>Email</Text>
                         <TextInput
@@ -65,6 +68,10 @@ export default function Profile(){
                           //value={title}
                           //onChangeText={setTitle}
                           numberOfLines={2}
+                          ref={(input) => { this.secondTextInput = input; }}
+                          returnKeyType = "next"
+                          onSubmitEditing={() => { this.thirdTextInput.focus(); }}
+                          blurOnSubmit={false}
                         />
                         <Text style={styles.modalSubtitle}>Tags</Text>
                         <TextInput
@@ -76,6 +83,10 @@ export default function Profile(){
                           //value={title}
                           //onChangeText={setTitle}
                           numberOfLines={2}
+                          ref={(input) => { this.thirdTextInput = input; }}
+                          returnKeyType = "next"
+                          onSubmitEditing={() => { this.fourthTextInput.focus(); }}
+                          blurOnSubmit={false}
                         />
                         <Text style={styles.modalSubtitle}>Senha</Text>
                         <TextInput
@@ -88,7 +99,10 @@ export default function Profile(){
                           autoCorrect={false}
                           //value={senha}
                           //onChangeText={setSenha}
+                          numberOfLines={2}
+                          ref={(input) => { this.fourthTextInput = input; }}
                           returnKeyType="done"
+                          onSubmitEditing={handleModal}
                         />
                       </View>
                       <View style={styles.buttonView}>
