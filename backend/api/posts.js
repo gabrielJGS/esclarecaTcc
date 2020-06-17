@@ -71,12 +71,10 @@ module.exports = app => {
         }
 
         //const count = await Posts.find({ tags: { $in: user.tags } }).countDocuments()
-        const teste = await Posts
+        const posts = await Posts
             .aggregate([
                 { $match: { tags: { $in: user.tags } } },
                 { $sort: { postedIn: -1 } },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
-                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
                 {
                     $lookup: {
                         from: 'posts_comments',
@@ -98,21 +96,13 @@ module.exports = app => {
                 },
                 { $skip: (page - 1) * qtdLoad },
                 { $limit: qtdLoad },
+                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
             ])
-
             .catch(err => res.status(400).json(err))
 
-        return res.json(teste)
-        let posts = await Posts.find({ tags: { $in: user.tags } })
-
-
-            .populate('user')
-            .populate('likes')
-            .catch(err => res.status(400).json(err))
-
-
+        return res.json(posts)
         //res.header('X-Total-Count', count)
-        return res.json(posts);
     }
 
     const save = async (req, res) => {
@@ -173,10 +163,16 @@ module.exports = app => {
         if (!postToUpdate) {//Caso o id seja válido mas não exista vai cair aqui
             res.status(400).send("Post não encontrado com o id: " + req.params)
         } else {
-            if (postToUpdate.likes.find(u => u == user_id)) {
-                res.status(204).send()
+            if (postToUpdate.likes.find(u => u == user_id)) {//Descurtindo
+                const index = postToUpdate.likes.indexOf(user_id);
+                if (index > -1) {
+                    postToUpdate.likes.splice(index, 1);
+                }
+                await postToUpdate.save()
+                    .catch(err => res.status(400).json(err))
+                res.status(201).send()
             }
-            else {
+            else {//Curtindo
                 postToUpdate.likes.push(user.id)
                 await postToUpdate.save()
                     .catch(err => res.status(400).json(err))

@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, ActivityIndicator, Modal,TouchableWithoutFeedback } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
 import { Feather, Ionicons, FontAwesome } from '@expo/vector-icons'
 import { Icon, Button } from 'native-base'
 
@@ -40,21 +40,19 @@ export default function Home() {
             }, {
                 headers: { user_id }
             })
-            reloadPosts()
+            await reloadPosts()
         } catch (e) {
             showError(e)
         }
     }
     async function loadPosts() {
-        setRefreshing(false)
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-        if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+        if (loading ) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
         const getTotal = await api.head('/posts', { headers: { user_id } })
         setTotal(getTotal.headers['x-total-count'])
         if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-            console.log(total + "-" + posts.length)
             return
         }
 
@@ -68,21 +66,41 @@ export default function Home() {
             setPosts([...posts, ...response.data])
             //setTotal(response.headers['x-total-count'])
             if (response.data.length > 0) {
-                console.log("array" + response.data.length)
                 setPage(page + 1)
             }
-            console.log("page:" + page)
         } catch (e) {
             showError(e)
         }
         setLoading(false)//Conclui o load
     }
-    const reloadPosts = useCallback(() => {
-        setRefreshing(true)
-        setPage(1)
-        setPosts([])
-        loadPosts()
-    })
+    async function reloadPosts() {
+        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+        if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+            return
+        }
+        const getTotal = await api.head('/posts', { headers: { user_id } })
+        setTotal(getTotal.headers['x-total-count'])
+        if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+            return
+        }
+        setRefreshing(true)//Altera para o loading iniciado
+
+        try {
+            const response = await api.get('/posts', {
+                headers: { user_id },
+                params: { page: 1 }
+            })
+            //setPosts(response.data)
+            setPosts(response.data)
+            //setTotal(response.headers['x-total-count'])
+            if (response.data.length > 0) {
+                setPage(2)
+            }
+        } catch (e) {
+            showError(e)
+        }
+        setRefreshing(false)
+    }
 
     renderFooter = () => {
         if (!loading) return null;
@@ -101,9 +119,9 @@ export default function Home() {
     })
 
     const [modalVisible, setModalVisible] = useState(false);
-    function handleModal(){
+    function handleModal() {
         setModalVisible(!modalVisible)
-      }
+    }
 
     return (
         //reidner 26/04
@@ -111,10 +129,10 @@ export default function Home() {
 
             <View>
                 <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={handleModal}
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={handleModal}
                 >
                     <TouchableWithoutFeedback onPress={handleModal}>
                         <View style={styles.modalContent}>
@@ -153,7 +171,7 @@ export default function Home() {
                     </TouchableWithoutFeedback>
                 </Modal>
             </View>
-            
+
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
                 <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.openDrawer()}>
@@ -191,7 +209,7 @@ export default function Home() {
                         onEndReached={onLoadMore}
                         onEndReachedThreshold={0.2}
                         ListFooterComponent={renderFooter}
-                        showsVerticalScrollIndicator={true}//OBS:Trocar para false ao finalizar testes!!!!
+                        showsVerticalScrollIndicator={false}//OBS:Trocar para false ao finalizar testes!!!!
                         renderItem={({ item: post }) => (
                             <Animatable.View
                                 style={styles.post}
@@ -203,7 +221,7 @@ export default function Home() {
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
                                             <Text style={styles.postTitle}>{post.title}</Text>
                                         </View>
-                                        <Text style={styles.Nomepost}>{post.user.name}</Text>
+                                        <Text style={styles.Nomepost}>{post.user[0].name}</Text>
                                     </View>
                                     <View style={styles.headerTags}>
                                         <Text style={styles.postTag}>{post.tags.toString()}</Text>
@@ -218,11 +236,11 @@ export default function Home() {
                                 <View style={{ paddingHorizontal: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <TouchableOpacity onPress={() => handleLike(post._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <FontAwesome name="heart-o" style={{ color: 'red', fontSize: 12 }} />
+                                            <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: 'red', fontSize: 12 }} />
                                             <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.likes.length}</Text>
                                         </TouchableOpacity>
                                         <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
-                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>20</Text>
+                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
                                     </View>
                                     {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
@@ -239,7 +257,7 @@ export default function Home() {
                     style={styles.footer}
                     animation="fadeInUp"
                     duration={900}>
-                    <TouchableOpacity style={styles.detailsBar} onPress={() => reloadPosts()}>
+                    <TouchableOpacity style={styles.detailsBar} onPress={reloadPosts}>
                         <Text style={styles.detailsButtonTextHome}>Dúvidas</Text>
                         <Feather name="edit-3" size={16} color="#FFC300"></Feather>
                     </TouchableOpacity>
