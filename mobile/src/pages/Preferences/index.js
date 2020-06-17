@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity,Switch,AsyncStorage,Alert,Linking } from '
 import {Camera} from 'expo-camera';
 import { Feather, Ionicons,FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import * as MailComposer from 'expo-mail-composer';
 
 import styles from './styles'
 
@@ -22,24 +23,28 @@ export default function Preferences (){
         setCameraEnabled(previousState => !previousState);
     }
 
-    const loadLinkedin = () => {
-        Linking.openURL("").catch(err => console.error("Couldn't load page", err));
-    };
     const loadFacebook = () => {
-        Linking.openURL("").catch(err => console.error("Couldn't load page", err));
+        Linking.openURL("https://www.facebook.com/esclareca.app.50").catch(err => console.error("Couldn't load page", err));
     };
     const loadInstagram = () => {
-        Linking.openURL("").catch(err => console.error("Couldn't load page", err));
+        Linking.openURL("https://www.instagram.com/appesclareca/").catch(err => console.error("Couldn't load page", err));
     };
     const loadTwitter = () => {
-        Linking.openURL("").catch(err => console.error("Couldn't load page", err));
+        Linking.openURL("https://twitter.com/esclarecaapp").catch(err => console.error("Couldn't load page", err));
     };
     const loadGithub = () => {
-        Linking.openURL("").catch(err => console.error("Couldn't load page", err));
+        Linking.openURL("https://github.com/EsclarecaApp/esclarecaTcc.git").catch(err => console.error("Couldn't load page", err));
     };
     const loadWhatsapp = () => {
-        Linking.openURL("").catch(err => console.error("Couldn't load page", err));
+        Linking.openURL("whatsapp://send?phone=5524999562378&text=Olá, Equipe Esclareça!").catch(err => console.error("Couldn't load page", err));
     };
+
+    function handleComposeMail(){
+        MailComposer.composeAsync({
+            subject:'Contato Equipe Esclareça',
+            recipients: ['appesclareca@gmail.com'],
+        });
+    }
 
     return(
         <View style={styles.container}>
@@ -49,14 +54,14 @@ export default function Preferences (){
                 </TouchableOpacity>
                 <View style={{flexDirection:'row', alignItems:'center',justifyContent:'center'}}>
                     <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight:5 }}>Preferências</Text>
-                    <Feather name="settings" size={20} color="#FFC300"/>
+                    <Feather name="sliders" size={18} color="#FFC300" style={{marginTop:2}} />
                 </View>
             </View>
 
             <View style={{marginHorizontal:32,top:50,flex:1}}>
                 <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center',paddingBottom:5, borderBottomWidth:1, borderBottomColor:'#D8D8D8'}}>
                     <View style={{flexDirection:'row', alignItems:'center'}}>
-                        <Feather name="check" size={24} color="#5CBA58"/>
+                        <Feather name="alert-octagon" size={24} color="#CAA859"/>
                         <Text style={{fontSize:18, paddingLeft:10, color:'#8C8C8C'}}>Permissões</Text>
                     </View>
                     <Switch
@@ -87,7 +92,7 @@ export default function Preferences (){
                 </View>
                 <View style={{flexDirection:'row', justifyContent:'space-between',alignItems:'center',paddingBottom:5, borderBottomWidth:1, borderBottomColor:'#D8D8D8', top:67}}>
                     <View style={{flexDirection:'row', alignItems:'center'}}>
-                        <Feather name="book-open" size={24} color="#CAA859"/>
+                        <Feather name="book-open" size={24} color="#5CBA58"/>
                         <Text style={{fontSize:18, paddingLeft:10, color:'#8C8C8C'}}>Manual do usuário</Text>
                     </View>
                     <TouchableOpacity>
@@ -99,8 +104,8 @@ export default function Preferences (){
                 <View>
                     <Text style={{fontSize:18, fontWeight:'bold'}}>FIQUE LIGADO EM NOSSAS REDES</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-between', paddingHorizontal:30, paddingVertical:20}}>
-                        <TouchableOpacity onPress={loadLinkedin}>
-                            <Feather name="linkedin" size={30} color="#0e76a8"/>
+                        <TouchableOpacity onPress={handleComposeMail}>
+                            <Feather name="mail" size={30} color="#D44638"/>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={loadFacebook}>
                             <Feather name="facebook" size={30} color="#39569c"/>    
