@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, ActivityIndicator } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, ActivityIndicator, Modal,TouchableWithoutFeedback } from 'react-native';
 import { Feather, Ionicons, FontAwesome } from '@expo/vector-icons'
 import { Icon, Button } from 'native-base'
 
@@ -20,8 +20,7 @@ export default function Home() {
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
-    const [searchText, setSearchText] = useState('')
-    const [isSearching, setIsSearching] = useState(false)
+    const [search, setSearch] = useState('');
 
     function navigateToNewPost() {
         navigation.navigate('NewPost')
@@ -34,18 +33,6 @@ export default function Home() {
             post
         })
     }
-    renderFooter = () => {
-        if (!loading) return null;
-        return (
-            <View style={styles.loading}>
-                <ActivityIndicator />
-            </View>
-        );
-    };
-    useEffect(() => {
-        loadPosts()
-    }, [])
-
     async function handleLike(postId) {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         try {
@@ -81,87 +68,113 @@ export default function Home() {
             setPosts([...posts, ...response.data])
             //setTotal(response.headers['x-total-count'])
             if (response.data.length > 0) {
+                console.log("array" + response.data.length)
                 setPage(page + 1)
             }
+            console.log("page:" + page)
         } catch (e) {
             showError(e)
         }
         setLoading(false)//Conclui o load
     }
     const reloadPosts = useCallback(() => {
-        setIsSearching(false)
         setRefreshing(true)
         setPage(1)
         setPosts([])
         loadPosts()
     })
 
-    const onLoadMore = useCallback(() => {
-        if (isSearching == true) {
+    renderFooter = () => {
+        if (!loading) return null;
+        return (
+            <View style={styles.loading}>
+                <ActivityIndicator />
+            </View>
+        );
+    };
+    useEffect(() => {
+        loadPosts()
+    }, [])
 
-        } else {
-            loadPosts()
-        }
+    const onLoadMore = useCallback(() => {
+        loadPosts();
     })
 
-    async function onSearchPress() {
-        if (searchText.trim() == '') {
-            reloadPosts()
-        }
-        else {
-            if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
-                return
-            }
-            setIsSearching(true)
-            //setTotal(getTotal.headers['x-total-count'])
-            // if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-            //     console.log(total + "-" + posts.length)
-            //     return
-            // }
-
-            setLoading(true)//Altera para o loading iniciado
-            try {
-                const response = await api.post('/posts/search', {
-                    searchText
-                })
-                setPosts(response.data)
-                //setPosts([...posts, ...response.data])
-                //setTotal(response.headers['x-total-count'])
-                if (response.data.length > 0) {
-                    //    setPage(page + 1)
-                }
-            } catch (e) {
-                showError(e)
-            }
-            setLoading(false)//Conclui o load
-        }
-    }
+    const [modalVisible, setModalVisible] = useState(false);
+    function handleModal(){
+        setModalVisible(!modalVisible)
+      }
 
     return (
         //reidner 26/04
         <View style={styles.container}>
+
+            <View>
+                <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={handleModal}
+                >
+                    <TouchableWithoutFeedback onPress={handleModal}>
+                        <View style={styles.modalContent}>
+                            <View style={styles.modalBody}>
+                                <View style={styles.modalFilter}>
+                                    <Text style={styles.filterTitle}>Filtrar Por:</Text>
+                                </View>
+                                <View style={styles.filterView}>
+                                    <View style={styles.filterSub}>
+                                        <TouchableOpacity style={styles.filterButton}>
+                                            <Text style={styles.filterText}>Data</Text>
+                                            <Feather name="calendar" size={12} color="#FFC300"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.filterSub}>
+                                        <TouchableOpacity style={styles.filterButton}>
+                                            <Text style={styles.filterText}>Favoritos</Text>
+                                            <Feather name="heart" size={12} color="#FFC300"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.filterSub}>
+                                        <TouchableOpacity style={styles.filterButton}>
+                                            <Text style={styles.filterText}>Esclarecidos</Text>
+                                            <Feather name="check-circle" size={12} color="#FFC300"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.filterExit}>
+                                        <TouchableOpacity style={styles.filterButton}>
+                                            <Text style={styles.filterText}>Sem filtro </Text>
+                                            <Feather name="x-circle" size={12} color="#E73751"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            </View>
+            
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
                 <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.openDrawer()}>
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <Text style={{ fontWeight: 'bold', color: "white", fontSize: 25 }}>Dúvidas</Text>
-                <TouchableOpacity style={styles.detailsButton} onPress={onSearchPress}>
+                <TouchableOpacity style={styles.detailsButton} onPress={handleModal}>
                     <Feather name="filter" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
             </View>
 
             <View style={styles.Search}>
                 <SearchBar
-                    onChangeText={setSearchText}
-                    value={searchText}
-                    on
                     round
                     platform="ios"
                     cancelButtonTitle="Cancelar"
                     placeholder='Pesquise o assunto de interesse...'
                     containerStyle={styles.Barheight}
                     inputStyle={{ fontSize: 15 }}
+                    onChangeText={setSearch}
+                    value={search}
                 />
             </View>
 
@@ -205,15 +218,15 @@ export default function Home() {
                                 <View style={{ paddingHorizontal: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <TouchableOpacity onPress={() => handleLike(post._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <FontAwesome name={post.didILiked == false ? "heart-o" : "heart"} style={{ color: 'red', fontSize: 12 }} />
+                                            <FontAwesome name="heart-o" style={{ color: 'red', fontSize: 12 }} />
                                             <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.likes.length}</Text>
                                         </TouchableOpacity>
                                         <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
-                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount }</Text>
+                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>20</Text>
                                     </View>
                                     {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Text style={{ fontSize: 13, color: '#117A65', fontWeight: '800' }}>Dúvida finalizada</Text>
-                                        <Feather name="check-circle" size={15} color='#117A65' style={{ marginLeft: 5 }}></Feather>
+                                        <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
+                                        <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
                                     </View> : null}
 
                                 </View>
