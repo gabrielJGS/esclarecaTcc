@@ -25,6 +25,10 @@ export default StyleSheet.create({
       body:{
         marginTop:hp('1.5%'),
       },
+      body2:{
+        paddingBottom:20,
+        alignItems:"center"
+      },
       bodyContent: {
         marginTop:hp('2%')
       },
