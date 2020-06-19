@@ -190,7 +190,7 @@ export default StyleSheet.create({
   },
   perfilName:{
     alignItems:'center', 
-    marginTop:hp('4%'),
+    marginTop:hp('4.8%'),
     justifyContent:'center'
   }
 

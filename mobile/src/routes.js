@@ -133,7 +133,7 @@ function CustomDrawerContent(props) {
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <Feather name="settings" size={20} color="#365478"></Feather>
+                                <Feather name="sliders" size={20} color="#365478"></Feather>
                             )}
                             label="Preferências"
                             onPress={() => { props.navigation.navigate('Preferences') }}
