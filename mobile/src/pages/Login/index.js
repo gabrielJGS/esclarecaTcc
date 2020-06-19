@@ -33,9 +33,11 @@ export default function Login() {
             const response = await api.post('/signin', {
                 email, password: senha
             });
-            const { id } = response.data;
+            const user = response.data;
             try {
-                await AsyncStorage.setItem('user', id.toString());
+                await AsyncStorage.setItem('user', user.id.toString());
+                await AsyncStorage.setItem('userName', user.name.toString());
+                await AsyncStorage.setItem('userTags', user.tags.toString());
                 singIn();
             } catch (e) {
                 showError(e)

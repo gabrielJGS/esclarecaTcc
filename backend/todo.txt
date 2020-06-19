@@ -8,8 +8,8 @@ This sprint:
 >Foto de perfil(backend)
 >Rota de perfil(com posts e duvidas publicadas)
 >Comentário q solucionou ser ordenado antes doq os demais, independente da data
->Descurtir post
 >Paginação no get posts do usuário e pesquisa
+>Data no comentário
 >Conferir tratamento/validações nas requisições
 >Conferir status code certos https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 >Remover certos campos dos populates: https://stackoverflow.com/questions/37562129/how-to-select-specific-field-in-nested-populate-in-mogoose
@@ -24,6 +24,7 @@ Done:
 //>Solucionar dúvida(post solucionado e comentário q solucionou)
 //>Se o usuário estiver entre os que curtiram, exibir botão preenchido(apenas heart)/exige user_id no estado, rota: se ja tiver curtido descurtir
 //>Qtd comentários post
+//>Descurtir post
 
 Reid:
 >Botão solucionar dúvida no comentário

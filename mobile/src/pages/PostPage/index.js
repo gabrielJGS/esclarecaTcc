@@ -16,8 +16,8 @@ export default function PostPage({ route, navigation }) {
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
-    const [trueUser, setTrueUser] = useState(false)
-    
+    const [userIsPostOwner, setUserIsPostOwner] = useState(false)
+
     //switch
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
@@ -30,10 +30,10 @@ export default function PostPage({ route, navigation }) {
 
     useEffect(() => {
         handleID()
-        async function handleID(){
+        async function handleID() {
             const user_id = await AsyncStorage.getItem('user');
-            if(user_id === post.user._id){
-                setTrueUser(true);
+            if (user_id === post.user._id) {
+                setUserIsPostOwner(true);
             }
         }
     }, [])
@@ -115,22 +115,22 @@ export default function PostPage({ route, navigation }) {
                         </View>
                     </View>
                 </View>
-                <View style={{flexDirection:'row',justifyContent:'space-between', alignItems: 'center' , marginHorizontal:32, paddingBottom: 8}}>
-                    <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 32, paddingBottom: 8 }}>
+                    <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity>
                             <FontAwesome name="heart-o" style={{ color: '#FFC300', fontSize: 12 }} />
                         </TouchableOpacity>
                         <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>15</Text>
                     </View>
-                    <View style={{flexDirection: 'row', alignItems:'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         {post.close ?
                             <>
-                                <Text style={{color:'#7DCEA0', fontWeight:'bold', paddingRight:5}}>Esclarecido</Text> 
+                                <Text style={{ color: '#7DCEA0', fontWeight: 'bold', paddingRight: 5 }}>Esclarecido</Text>
                                 <Feather name="check-circle" size={20} color='#7DCEA0'></Feather>
-                            </> 
-                        :
+                            </>
+                            :
                             <>
-                                <Text style={{color:'#E73751', fontWeight:'bold', paddingRight:5}}>Esclarecido</Text> 
+                                <Text style={{ color: '#E73751', fontWeight: 'bold', paddingRight: 5 }}>Esclarecido</Text>
                                 <Feather name="x-circle" size={20} color='#E73751'></Feather>
                             </>
                         }
@@ -165,17 +165,17 @@ export default function PostPage({ route, navigation }) {
                                 <View style={styles.postDesc}>
                                     <Text style={styles.postDescricao}>{comment.message}</Text>
                                 </View>
-                                <View style={{ marginLeft: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent:'space-between' }}>
-                                    <View style={{flexDirection: 'row', alignItems: 'center',justifyContent:'center'}}>
+                                <View style={{ marginLeft: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                         <TouchableOpacity>
                                             <FontAwesome name="heart-o" style={{ color: 'red', fontSize: 12 }} />
                                         </TouchableOpacity>
                                         <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>15</Text>
                                     </View>
-                                    {trueUser ?
+                                    {userIsPostOwner ?
                                         <>
-                                            <View style={{flexDirection: 'row', alignItems: 'center',justifyContent:'center', paddingRight:10}}>
-                                                <Text style={{color:'#7DCEA0', fontSize: 12, paddingRight:2}}>Esclarecido</Text> 
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingRight: 10 }}>
+                                                <Text style={{ color: '#7DCEA0', fontSize: 12, paddingRight: 2 }}>Esclarecido</Text>
                                                 <Switch
                                                     trackColor={{ false: "#D8D9DB", true: "#7DCEA0" }}
                                                     thumbColor={isEnabled ? "#7DCEA0" : "#f4f3f4"}
@@ -185,7 +185,7 @@ export default function PostPage({ route, navigation }) {
                                                 />
                                             </View>
                                         </>
-                                    :
+                                        :
                                         <>
                                         </>
                                     }
