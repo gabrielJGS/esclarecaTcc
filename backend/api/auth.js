@@ -30,6 +30,7 @@ module.exports = app => {
                     id: user.id,//REMOVER
                     name: user.name,
                     email: user.email,
+                    tags: user.tags,
                     token: jwt.encode(payload, authSecret),
                 })
             })
