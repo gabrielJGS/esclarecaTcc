@@ -32,7 +32,7 @@ export default function PostPage({ route, navigation }) {
         handleID()
         async function handleID() {
             const user_id = await AsyncStorage.getItem('user');
-            if (user_id === post.user._id) {
+            if (user_id === post.user[0]._id) {
                 setUserIsPostOwner(true);
             }
         }
