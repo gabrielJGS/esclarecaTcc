@@ -101,7 +101,7 @@ export default function PostPage({ route, navigation }) {
             text = "Há menos de 1 hora"
         }
         else{
-            text = "Há " + horasArrend + " atrás"
+            text = "Há " + horasArrend + " horas atrás"
         }
         
         return text

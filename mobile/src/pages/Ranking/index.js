@@ -24,7 +24,7 @@ export default function Ranking(){
                 <Feather name="trending-up" size={18} color="#5CBA58"/>
                 <Text style={{fontWeight:'bold',fontSize:22, color:'#2E4053'}}> Maiores Participações</Text>
             </View>
-            <View style={{marginHorizontal:60,top:60,flex:1, paddingBottom:20}}>
+            <View style={{marginHorizontal:40,top:60,flex:1, paddingBottom:20}}>
                 <View style={{flexDirection:'row', alignItems:"center", justifyContent:'space-between', paddingBottom:15}}>
                     <View style={{flexDirection:'row', alignItems:"center", justifyContent:'space-between'}}>
                         <Feather name="award" size={17} color="#F5B7B1"/>

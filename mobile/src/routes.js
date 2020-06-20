@@ -22,6 +22,8 @@ import PostPage from './pages/PostPage'
 import ContentPage from './pages/ContentPage'
 import Preferences from './pages/Preferences'
 import Ranking from './pages/Ranking'
+import HomeSlack from './pages/HomeSlack';
+import SlackPage from './pages/SlackPage';
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -29,6 +31,7 @@ const HomeStack = createStackNavigator()
 const MainStack = createStackNavigator()
 const Main2Stack = createStackNavigator()
 const drawer = createDrawerNavigator()
+const Main3Stack = createStackNavigator();
 
 const AuthStack = () => (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
@@ -54,6 +57,13 @@ const ContentStack = () => (
     </Main2Stack.Navigator>
 )
 
+const SlackStack = () => (
+    <Main3Stack.Navigator screenOptions={{headerShown: false}}>
+        <Main3Stack.Screen name="HomeSlack" component={HomeSlack}></Main3Stack.Screen>
+        <Main3Stack.Screen name="SlackPage" component={SlackPage}></Main3Stack.Screen>
+    </Main3Stack.Navigator>
+)
+
 const drawerNavigator = () => (
     <drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
         <drawer.Screen name="Home" component={PostStack}></drawer.Screen>
@@ -61,6 +71,7 @@ const drawerNavigator = () => (
         <drawer.Screen name="Profile" component={Profile}></drawer.Screen>
         <drawer.Screen name="Preferences" component={Preferences}></drawer.Screen>
         <drawer.Screen name="Ranking" component={Ranking}></drawer.Screen>
+        <drawer.Screen name="HomeSlack" component={SlackStack}></drawer.Screen>
     </drawer.Navigator>
 )
 
@@ -126,6 +137,7 @@ function CustomDrawerContent(props) {
                                 <Feather name="slack" size={20} color="#365478"></Feather>
                             )}
                             label="Slack"
+                            onPress={() => { props.navigation.navigate('HomeSlack') }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
