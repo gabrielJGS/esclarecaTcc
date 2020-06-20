@@ -21,6 +21,7 @@ import Profile from './pages/Profile'
 import PostPage from './pages/PostPage'
 import ContentPage from './pages/ContentPage'
 import Preferences from './pages/Preferences'
+import Ranking from './pages/Ranking'
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -59,6 +60,7 @@ const drawerNavigator = () => (
         <drawer.Screen name="HomeContent" component={ContentStack}></drawer.Screen>
         <drawer.Screen name="Profile" component={Profile}></drawer.Screen>
         <drawer.Screen name="Preferences" component={Preferences}></drawer.Screen>
+        <drawer.Screen name="Ranking" component={Ranking}></drawer.Screen>
     </drawer.Navigator>
 )
 
@@ -130,6 +132,7 @@ function CustomDrawerContent(props) {
                                 <FontAwesome5 name="medal" size={20} color="#365478"></FontAwesome5>
                             )}
                             label="Ranking"
+                            onPress={() => { props.navigation.navigate('Ranking') }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
