@@ -24,9 +24,14 @@ export default StyleSheet.create({
       },
       body:{
         marginTop:hp('1.5%'),
+        paddingBottom:5
+      },
+      body2:{
+        paddingBottom:20,
+        alignItems:"center"
       },
       bodyContent: {
-        marginTop:hp('2%')
+        marginTop:hp('1%')
       },
       name:{
         fontSize:hp('3%'),
@@ -186,7 +191,7 @@ export default StyleSheet.create({
   },
   perfilName:{
     alignItems:'center', 
-    marginTop:hp('4%'),
+    marginTop:hp('4.8%'),
     justifyContent:'center'
   }
 

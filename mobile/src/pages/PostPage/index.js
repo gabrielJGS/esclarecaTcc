@@ -85,6 +85,28 @@ export default function PostPage({ route, navigation }) {
         setLoading(false)//Conclui o load
     }
 
+    function handledate(data){
+        var day = new Date(data);
+        var today = new Date();
+        var d = new String(data);
+        let text = new String();
+        
+        var horas = Math.abs(day - today) / 36e5;
+        var horasArrend = Math.round(horas)
+          
+        if (horasArrend > 24){
+            text = "" + d.substring(8,10) +"/"+ d.substring(5,7) +"/"+ d.substring(0,4)
+        }
+        else if(horasArrend < 1){
+            text = "Há menos de 1 hora"
+        }
+        else{
+            text = "Há " + horasArrend + " atrás"
+        }
+        
+        return text
+    }
+
     return (
         //reidner 26/04
         <View style={styles.container}>
@@ -100,7 +122,7 @@ export default function PostPage({ route, navigation }) {
                 <View style={styles.DuvidaCorpo}>
                     <Feather name="camera" size={30} color='white'></Feather>
                     <View style={{ paddingLeft: 30 }}>
-                        <Text style={styles.CorpoTitle}>{post.user.name}</Text>
+                        <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
                         <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
                         <Text style={{ marginTop: 10, fontSize: 15, color: 'white' }}>{post.desc}</Text>
 
@@ -116,11 +138,11 @@ export default function PostPage({ route, navigation }) {
                     </View>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 32, paddingBottom: 8 }}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center' }}>
                         <TouchableOpacity>
                             <FontAwesome name="heart-o" style={{ color: '#FFC300', fontSize: 12 }} />
                         </TouchableOpacity>
-                        <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>15</Text>
+                        <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>{post.likes.length}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         {post.close ?
@@ -159,7 +181,7 @@ export default function PostPage({ route, navigation }) {
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
                                             <Text style={styles.postTitle}>{comment.user.name}</Text>
                                         </View>
-                                        <Text style={styles.Nomepost}>Há 5 horas</Text>
+                                        <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
                                     </View>
                                 </View>
                                 <View style={styles.postDesc}>

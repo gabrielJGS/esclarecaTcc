@@ -73,8 +73,6 @@ export default function Profile() {
                       //onChangeText={setTitle}
                       numberOfLines={2}
                       returnKeyType="next"
-                      onSubmitEditing={() => { this.secondTextInput.focus(); }}
-                      blurOnSubmit={false}
                     />
                     <Text style={styles.modalSubtitle}>Email</Text>
                     <TextInput
@@ -86,10 +84,7 @@ export default function Profile() {
                       //value={title}
                       //onChangeText={setTitle}
                       numberOfLines={2}
-                      ref={(input) => { this.secondTextInput = input; }}
                       returnKeyType="next"
-                      onSubmitEditing={() => { this.thirdTextInput.focus(); }}
-                      blurOnSubmit={false}
                     />
                     <Text style={styles.modalSubtitle}>Tags</Text>
                     <TextInput
@@ -101,10 +96,7 @@ export default function Profile() {
                       //value={title}
                       //onChangeText={setTitle}
                       numberOfLines={2}
-                      ref={(input) => { this.thirdTextInput = input; }}
                       returnKeyType="next"
-                      onSubmitEditing={() => { this.fourthTextInput.focus(); }}
-                      blurOnSubmit={false}
                     />
                     <Text style={styles.modalSubtitle}>Senha</Text>
                     <TextInput
@@ -118,8 +110,6 @@ export default function Profile() {
                       //value={senha}
                       //onChangeText={setSenha}
                       numberOfLines={2}
-                      ref={(input) => { this.fourthTextInput = input; }}
-                      returnKeyType="done"
                       onSubmitEditing={handleModal}
                     />
                   </View>
@@ -168,113 +158,115 @@ export default function Profile() {
         //'https://scontent.fstu3-1.fna.fbcdn.net/v/t1.0-9/p960x960/87283876_1614904885331971_5523389541076959232_o.jpg?_nc_cat=102&_nc_sid=85a577&_nc_ohc=FY3G_XQYr4YAX_jln8U&_nc_ht=scontent.fstu3-1.fna&_nc_tp=6&oh=6892c35abdfc7a8e7f4786b477890cfc&oe=5EDAE0E2' 
         'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'
       }} />
-      <ScrollView>
         <View style={styles.body}>
           <View style={styles.perfilName}>
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.info}>{tags.toString()}</Text>
           </View>
-          <View style={styles.bodyContent}>
-            <View style={styles.contentCard}>
-              <Text style={styles.contentTitle}>Dúvidas </Text>
-              <Feather name="help-circle" size={12} color="#365478" style={{ marginTop: 2 }}></Feather>
-            </View>
-            <Text style={styles.contentSubtitle}>Enviadas</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-              <Card>
-                <CardItem button bordered>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-              <Card>
-                <CardItem button>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-              <Card>
-                <CardItem button>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-              <Card>
-                <CardItem button>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-            </ScrollView>
-            <Text style={styles.contentSubtitle}>Favoritas</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-              <Card>
-                <CardItem button>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-            </ScrollView>
-            <View style={styles.contentCard}>
-              <Text style={styles.contentTitle2}>Conteúdos </Text>
-              <Feather name="book-open" size={12} color="#365478" style={{ marginTop: 10 }}></Feather>
-            </View>
-            <Text style={styles.contentSubtitle}>Enviados</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-              <Card>
-                <CardItem button>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-            </ScrollView>
-            <Text style={styles.contentSubtitle}>Favoritos</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-              <Card>
-                <CardItem button>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-            </ScrollView>
-          </View>
         </View>
-      </ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.body2}>
+            <View style={styles.bodyContent}>
+              <View style={styles.contentCard}>
+                <Text style={styles.contentTitle}>Dúvidas </Text>
+                <Feather name="help-circle" size={12} color="#365478" style={{ marginTop: 2 }}></Feather>
+              </View>
+              <Text style={styles.contentSubtitle}>Enviadas</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
+                <Card>
+                  <CardItem button bordered>
+                    <Left>
+                      <View style={styles.Card}>
+                        <Text style={styles.cardTitle}>Erro código</Text>
+                        <Text style={styles.cardTags}>Tags</Text>
+                        <Text style={styles.cardDate}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={styles.Card}>
+                        <Text style={styles.cardTitle}>Erro código</Text>
+                        <Text style={styles.cardTags}>Tags</Text>
+                        <Text style={styles.cardDate}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={styles.Card}>
+                        <Text style={styles.cardTitle}>Erro código</Text>
+                        <Text style={styles.cardTags}>Tags</Text>
+                        <Text style={styles.cardDate}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={styles.Card}>
+                        <Text style={styles.cardTitle}>Erro código</Text>
+                        <Text style={styles.cardTags}>Tags</Text>
+                        <Text style={styles.cardDate}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+              </ScrollView>
+              <Text style={styles.contentSubtitle}>Favoritas</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={styles.Card}>
+                        <Text style={styles.cardTitle}>Erro código</Text>
+                        <Text style={styles.cardTags}>Tags</Text>
+                        <Text style={styles.cardDate}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+              </ScrollView>
+              <View style={styles.contentCard}>
+                <Text style={styles.contentTitle2}>Conteúdos </Text>
+                <Feather name="book-open" size={12} color="#365478" style={{ marginTop: 10 }}></Feather>
+              </View>
+              <Text style={styles.contentSubtitle}>Enviados</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={styles.Card}>
+                        <Text style={styles.cardTitle}>Erro código</Text>
+                        <Text style={styles.cardTags}>Tags</Text>
+                        <Text style={styles.cardDate}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+              </ScrollView>
+              <Text style={styles.contentSubtitle}>Favoritos</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
+                <Card>
+                  <CardItem button>
+                    <Left>
+                      <View style={styles.Card}>
+                        <Text style={styles.cardTitle}>Erro código</Text>
+                        <Text style={styles.cardTags}>Tags</Text>
+                        <Text style={styles.cardDate}>08/06/2020</Text>
+                      </View>
+                    </Left>
+                  </CardItem>
+                </Card>
+              </ScrollView>
+            </View>
+          </View>
+        </ScrollView>
     </View>
   )
 }

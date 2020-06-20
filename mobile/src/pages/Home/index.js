@@ -123,6 +123,43 @@ export default function Home() {
         setModalVisible(!modalVisible)
     }
 
+    function handledate(data){
+        var day = new Date(data);
+        var today = new Date();
+        var d = new String(data);
+        let text = new String();
+        
+        var horas = Math.abs(day - today) / 36e5;
+        var horasArrend = Math.round(horas)
+          
+        if (horasArrend > 24){
+            text = "" + d.substring(8,10) +"/"+ d.substring(5,7) +"/"+ d.substring(0,4)
+        }
+        else if(horasArrend < 1){
+            text = "Há menos de 1 hora"
+        }
+        else{
+            text = "Há " + horasArrend + " atrás"
+        }
+        
+        return text
+    }
+
+    function handletitle(title){
+        var titulo = new String(title);
+        var tam = new Number(titulo.length)
+        let text = new String();
+
+        if (tam > 20){
+            text = titulo.substring(0,20) + "..."
+        }
+        else{
+            text = titulo
+        }
+
+        return text
+    }
+    
     return (
         //reidner 26/04
         <View style={styles.container}>
@@ -219,9 +256,12 @@ export default function Home() {
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <View style={styles.postTitulo}>
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
-                                            <Text style={styles.postTitle}>{post.title}</Text>
+                                            <Text style={styles.postTitle}>{handletitle(post.title)}</Text>
                                         </View>
-                                        <Text style={styles.Nomepost}>{post.user[0].name}</Text>
+                                        <View style={{alignItems:'flex-end'}}>
+                                            <Text style={styles.Nomepost}>{post.user[0].name}</Text>
+                                            <Text style={styles.Nomepost}>{handledate(post.postedIn)}</Text>
+                                        </View>
                                     </View>
                                     <View style={styles.headerTags}>
                                         <Text style={styles.postTag}>{post.tags.toString()}</Text>
