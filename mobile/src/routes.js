@@ -86,7 +86,7 @@ function CustomDrawerContent(props) {
                 <View style={styles.drawerContent}>
                     <View style={styles.User}>
                         <TouchableOpacity onPress={() => { props.navigation.navigate('Profile') }}>
-                            <View style={{ flexDirection: 'row', marginTop: 15 }}>
+                            <View style={{ flexDirection: 'row', marginTop: 15, alignItems:'center' }}>
                                 <Avatar
                                     rounded
                                     source={{
@@ -96,7 +96,7 @@ function CustomDrawerContent(props) {
                                     }}
                                     size={50}
                                 />
-                                <View style={{ marginLeft: 15, flexDirection: 'column', marginTop: 5 }}>
+                                <View style={{ marginLeft: 15, flexDirection: 'column', marginTop: 10 }}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{userName?userName:'Meu perfil'}</Text>
                                     <Text style={{ fontSize: 13, color: '#365478' }}>{userTags?userTags:''}</Text>
                                 </View>
