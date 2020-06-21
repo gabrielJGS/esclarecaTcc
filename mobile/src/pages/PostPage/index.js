@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, TextInput, Switch } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, TextInput, Switch,Alert } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 
 import api from '../../services/api'
@@ -139,10 +139,33 @@ export default function PostPage({ route, navigation }) {
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 32, paddingBottom: 8 }}>
                     <View style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center' }}>
-                        <TouchableOpacity>
-                            <FontAwesome name="heart-o" style={{ color: '#FFC300', fontSize: 12 }} />
+                        <TouchableOpacity style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center' }}>
+                            <FontAwesome name="heart-o" style={{ color: '#FFC300', fontSize: 15 }} />
+                            <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>{post.likes.length}</Text>
                         </TouchableOpacity>
-                        <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>{post.likes.length}</Text>
+                        {userIsPostOwner ?
+                            <>
+                                <TouchableOpacity onPress={() =>
+                                Alert.alert(
+                                    'Excluir',
+                                    'Deseja excluir sua dúvida?',
+                                    [
+                                    { text: 'Não', onPress: () => { return null } },
+                                    {
+                                        text: 'Sim', onPress: () => {}
+                                    },
+                                    ],
+                                    { cancelable: false }
+                                )}
+                                style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:15 }}
+                                >
+                                    <Feather name="trash-2" size={20} color='#E73751'></Feather>
+                                </TouchableOpacity>
+                            </>
+                        :
+                            <>
+                            </>
+                        }
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         {post.close ?
