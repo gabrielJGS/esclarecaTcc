@@ -58,8 +58,34 @@ export default function Profile() {
                   <View style={styles.indicator} />
 
                   <View style={styles.modalPerfil}>
-                    <Text style={styles.perfilTitle}>Editar Perfil  </Text>
-                    <Feather name="edit" size={17} color="#365478"></Feather>
+                    <Text></Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Text style={styles.perfilTitle}>Editar Perfil  </Text>
+                      <Feather name="edit" size={17} color="#365478"></Feather>
+                    </View>
+                    {true  ?
+                        <>
+                            <TouchableOpacity onPress={() =>
+                            Alert.alert(
+                                'Excluir',
+                                'Deseja excluir seu perfil?',
+                                [
+                                { text: 'Não', onPress: () => { return null } },
+                                {
+                                    text: 'Sim', onPress: () => {}
+                                },
+                                ],
+                                { cancelable: false }
+                            )}
+                            style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:10 }}
+                            >
+                                <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                            </TouchableOpacity>
+                        </>
+                    :
+                        <>
+                        </>
+                    }
                   </View>
                   <View style={styles.viewInput}>
                     <Text style={styles.modalSubtitle}>Nome</Text>

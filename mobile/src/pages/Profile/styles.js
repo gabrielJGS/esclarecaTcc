@@ -176,7 +176,7 @@ export default StyleSheet.create({
   },
   modalPerfil:{
     alignItems:'center', 
-    justifyContent:'center', 
+    justifyContent:'space-between', 
     marginTop:hp('1.5%'), 
     flexDirection:'row'
   },

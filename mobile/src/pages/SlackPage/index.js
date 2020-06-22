@@ -35,7 +35,32 @@ export default function SlackPage(){
                                         <Feather name="camera" size={30} color='#D8D9DB'></Feather>
                                         <Text style={styles.postTitle}>Reidner</Text>
                                     </View>
-                                    <Text style={styles.Nomepost}>Hoje</Text>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Text style={styles.Nomepost}>Hoje</Text>
+                                        {true  ?
+                                            <>
+                                                <TouchableOpacity onPress={() =>
+                                                Alert.alert(
+                                                    'Excluir',
+                                                    'Deseja excluir sua mensagem?',
+                                                    [
+                                                    { text: 'Não', onPress: () => { return null } },
+                                                    {
+                                                        text: 'Sim', onPress: () => {}
+                                                    },
+                                                    ],
+                                                    { cancelable: false }
+                                                )}
+                                                style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:10 }}
+                                                >
+                                                    <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                                                </TouchableOpacity>
+                                            </>
+                                        :
+                                            <>
+                                            </>
+                                        }
+                                    </View>
                                 </View>
                             </View>
                             <View style={styles.postDesc}>

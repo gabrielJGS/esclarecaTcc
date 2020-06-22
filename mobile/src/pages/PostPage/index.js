@@ -17,6 +17,7 @@ export default function PostPage({ route, navigation }) {
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
     const [userIsPostOwner, setUserIsPostOwner] = useState(false)
+    const [activeUser, setActiveUser] = useState('')
 
     //switch
     const [isEnabled, setIsEnabled] = useState(false);
@@ -26,12 +27,13 @@ export default function PostPage({ route, navigation }) {
 
     useEffect(() => {
         loadComments()
-    }, [])
+    }, [loading])
 
     useEffect(() => {
         handleID()
         async function handleID() {
             const user_id = await AsyncStorage.getItem('user');
+            setActiveUser(user_id);
             if (user_id === post.user[0]._id) {
                 setUserIsPostOwner(true);
             }
@@ -159,11 +161,27 @@ export default function PostPage({ route, navigation }) {
                                 )}
                                 style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:15 }}
                                 >
-                                    <Feather name="trash-2" size={20} color='#E73751'></Feather>
+                                    <Feather name="trash-2" size={15} color='#E73751'></Feather>
                                 </TouchableOpacity>
                             </>
                         :
                             <>
+                                <TouchableOpacity onPress={() =>
+                                Alert.alert(
+                                    'Reportar',
+                                    'Deseja reportar essa dúvida por possuir conteúdo ofensivo ou inapropriado?',
+                                    [
+                                    { text: 'Não', onPress: () => { return null } },
+                                    {
+                                        text: 'Sim', onPress: () => {Alert.alert('Equipe Esclareça', 'Obrigado pelo seu feedback!')}
+                                    },
+                                    ],
+                                    { cancelable: false }
+                                )}
+                                style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:15 }}
+                                >
+                                    <Feather name="alert-octagon" size={15} color='#FF5733'></Feather>
+                                </TouchableOpacity>
                             </>
                         }
                     </View>
@@ -204,7 +222,32 @@ export default function PostPage({ route, navigation }) {
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
                                             <Text style={styles.postTitle}>{comment.user.name}</Text>
                                         </View>
-                                        <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
+                                            {comment.user.name === activeUser ?
+                                                <>
+                                                    <TouchableOpacity onPress={() =>
+                                                    Alert.alert(
+                                                        'Excluir',
+                                                        'Deseja excluir sua Resposta?',
+                                                        [
+                                                        { text: 'Não', onPress: () => { return null } },
+                                                        {
+                                                            text: 'Sim', onPress: () => {}
+                                                        },
+                                                        ],
+                                                        { cancelable: false }
+                                                    )}
+                                                    style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:10 }}
+                                                    >
+                                                        <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                                                    </TouchableOpacity>
+                                                </>
+                                            :
+                                                <>
+                                                </>
+                                            }
+                                        </View>
                                     </View>
                                 </View>
                                 <View style={styles.postDesc}>

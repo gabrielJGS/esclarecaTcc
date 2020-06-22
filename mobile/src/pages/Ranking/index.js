@@ -12,8 +12,8 @@ export default function Ranking(){
     return(
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress ={ ( ) => navigation.goBack()}>
-                    <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
+                <TouchableOpacity onPress ={() => navigation.openDrawer()}>
+                    <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <View style={{flexDirection:'row', alignItems:'center',justifyContent:'center'}}>
                     <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight:5 }}>Ranking</Text>

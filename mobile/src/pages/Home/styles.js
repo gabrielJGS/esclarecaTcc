@@ -102,7 +102,12 @@ export default StyleSheet.create({
     fontWeight: 'bold'
   },
   Search:{
-    marginTop:5
+    marginTop:23,
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    height:7,
+    paddingHorizontal:32,
   },
   Barheight:{
     height: hp('5%')
@@ -236,5 +241,12 @@ export default StyleSheet.create({
     alignItems:'center',
     borderTopColor:'#C8C8C8'
   },
+  input: {
+    paddingHorizontal: 8,
+    fontSize: hp('1.6%'),
+    color: '#444',
+    height: hp('4%'),
+    borderRadius: 2,
+    },
 
 })

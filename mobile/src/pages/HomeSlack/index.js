@@ -69,8 +69,8 @@ export default function HomeSlack(){
             </View>
 
             <View style={styles.header}>
-                <TouchableOpacity onPress ={ ( ) => navigation.goBack()}>
-                    <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
+                <TouchableOpacity onPress ={() => navigation.openDrawer()}>
+                    <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <View style={{flexDirection:'row', alignItems:'center',justifyContent:'center'}}>
                     <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight:5 }}>Slack</Text>
@@ -91,7 +91,7 @@ export default function HomeSlack(){
                     returnKeyType="done"
                 />
                 <TouchableOpacity>
-                <Feather name="search" size={18} color="#FFC300" style={{marginTop:2}} />
+                    <Feather name="search" size={18} color="#FFC300" style={{marginTop:2}} />
                 </TouchableOpacity>
             </View>
 
@@ -105,11 +105,35 @@ export default function HomeSlack(){
                         <View style={styles.postTitulo}>
                             <Text style={styles.postTitle}>SLACK 1</Text>
                         </View>
+                        
                     </View>
                     <View style={styles.headerTags}>
                         <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                             <Text style={styles.Nomepost}>NOME</Text>
                             <Text style={styles.Nomepost}>Data</Text>
+                            {true  ?
+                                <>
+                                    <TouchableOpacity onPress={() =>
+                                    Alert.alert(
+                                        'Excluir',
+                                        'Deseja excluir sua slack?',
+                                        [
+                                        { text: 'Não', onPress: () => { return null } },
+                                        {
+                                            text: 'Sim', onPress: () => {}
+                                        },
+                                        ],
+                                        { cancelable: false }
+                                    )}
+                                    style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center' }}
+                                    >
+                                        <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                                    </TouchableOpacity>
+                                </>
+                            :
+                                <>
+                                </>
+                            }
                         </View>
                         <TouchableOpacity style={styles.Ver} onPress={navigateToSlackPage}>
                             <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
