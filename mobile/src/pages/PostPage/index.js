@@ -45,6 +45,10 @@ export default function PostPage({ route, navigation }) {
         navigation.navigate('Home')
     }
 
+    function navigateToProfile() {
+        navigation.navigate('Profile')
+    }
+
     async function handlePostComment() {
         if (commentText.trim() == '') {
             showError("Digite um comentário válido")
@@ -122,10 +126,14 @@ export default function PostPage({ route, navigation }) {
                     <Text></Text>
                 </View>
                 <View style={styles.DuvidaCorpo}>
-                    <Feather name="camera" size={30} color='white'></Feather>
+                    <TouchableOpacity onPress={navigateToProfile}>
+                        <Feather name="camera" size={30} color='white'></Feather>
+                    </TouchableOpacity>
                     <View style={{ paddingLeft: 30 }}>
-                        <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
-                        <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
+                        <TouchableOpacity onPress={navigateToProfile}>
+                            <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
+                            <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
+                        </TouchableOpacity>
                         <Text style={{ marginTop: 10, fontSize: 15, color: 'white' }}>{post.desc}</Text>
 
                         <View style={{ flexDirection: 'row', paddingTop: 20, alignItems: 'flex-end' }}>
@@ -218,10 +226,10 @@ export default function PostPage({ route, navigation }) {
                                 duration={1000}>
                                 <View style={styles.postHeader}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <View style={styles.postTitulo}>
+                                        <TouchableOpacity style={styles.postTitulo} onPress={navigateToProfile}>
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
                                             <Text style={styles.postTitle}>{comment.user.name}</Text>
-                                        </View>
+                                        </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
                                             {comment.user._id === activeUser ?

@@ -33,6 +33,9 @@ export default function Home() {
             post
         })
     }
+    function navigateToProfile() {
+        navigation.navigate('Profile')
+    }
     async function handleLike(postId) {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         try {
@@ -263,8 +266,10 @@ export default function Home() {
                                             <Text style={styles.postTitle}>{handletitle(post.title)}</Text>
                                         </View>
                                         <View style={{alignItems:'flex-end'}}>
-                                            <Text style={styles.Nomepost}>{post.user[0].name}</Text>
-                                            <Text style={styles.Nomepost}>{handledate(post.postedIn)}</Text>
+                                            <TouchableOpacity style={{alignItems:'flex-end'}} onPress={navigateToProfile}>
+                                                <Text style={styles.Nomepost}>{post.user[0].name}</Text>
+                                                <Text style={styles.Nomepost}>{handledate(post.postedIn)}</Text>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                     <View style={styles.headerTags}>
