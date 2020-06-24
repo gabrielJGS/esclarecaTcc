@@ -27,7 +27,7 @@ export default function PostPage({ route, navigation }) {
 
     useEffect(() => {
         loadComments()
-    }, [loading])
+    }, [])
 
     useEffect(() => {
         handleID()
@@ -224,7 +224,7 @@ export default function PostPage({ route, navigation }) {
                                         </View>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
-                                            {comment.user.name === activeUser ?
+                                            {comment.user._id === activeUser ?
                                                 <>
                                                     <TouchableOpacity onPress={() =>
                                                     Alert.alert(

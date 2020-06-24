@@ -17,6 +17,7 @@ export default function Profile() {
 
   const [name, setName] = useState('');
   const [tags, setTags] = useState('');
+  const [email, setEmail] = useState('');
 
   async function loadUser() {
     const user = await AsyncStorage.getItem('user')
@@ -25,6 +26,7 @@ export default function Profile() {
         if (response.data) {
           setName(response.data.name)
           setTags(response.data.tags)
+          setEmail(response.data.email)
         }
       }
   }
@@ -95,7 +97,7 @@ export default function Profile() {
                       placeholderTextColor="#999"
                       autoCapitalize="words"
                       autoCorrect={false}
-                      //value={title}
+                      value={name}
                       //onChangeText={setTitle}
                       numberOfLines={2}
                       returnKeyType="next"
@@ -107,7 +109,7 @@ export default function Profile() {
                       placeholderTextColor="#999"
                       keyboardType="email-address"
                       autoCapitalize="none"
-                      //value={title}
+                      value={email}
                       //onChangeText={setTitle}
                       numberOfLines={2}
                       returnKeyType="next"
@@ -119,7 +121,7 @@ export default function Profile() {
                       placeholderTextColor="#999"
                       autoCapitalize="words"
                       autoCorrect={false}
-                      //value={title}
+                      value={tags.toString()}
                       //onChangeText={setTitle}
                       numberOfLines={2}
                       returnKeyType="next"

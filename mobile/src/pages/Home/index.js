@@ -112,7 +112,7 @@ export default function Home() {
     };
     useEffect(() => {
         loadPosts()
-    }, [])
+    }, [loading])
 
     const onLoadMore = useCallback(() => {
         loadPosts();

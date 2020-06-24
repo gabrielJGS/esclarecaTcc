@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   modalBody:{
     bottom: 0,
     position: 'absolute',
-    height: '30%',
+    height: '38%',
     backgroundColor: '#fff',
     width: '100%',
     borderTopLeftRadius: 20,
@@ -93,6 +93,10 @@ const styles = StyleSheet.create({
       color: "#365478",
       marginTop:3
     },
+    modalSubtitle2:{
+      fontSize:hp('1.8%'),
+      color: "#365478",
+    },
     button: {
       height: hp('5%'),
       width: wp('30%'),
@@ -112,7 +116,7 @@ const styles = StyleSheet.create({
     flexDirection:'row', 
     justifyContent:'space-between', 
     paddingHorizontal:36, 
-    paddingVertical:hp('1.8%')
+    paddingVertical:hp('2.8%')
   },
   modalPerfil:{
     alignItems:'center', 
@@ -205,7 +209,7 @@ const styles = StyleSheet.create({
   post: {
     borderRadius: 8,
     backgroundColor: '#fff',
-    marginBottom: 10,
+    marginBottom: 5,
     shadowColor: 'rgb(0, 0, 0)',
             shadowOffset: {
               width: 3,
