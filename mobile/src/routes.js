@@ -5,6 +5,7 @@ import { Feather, FontAwesome5 } from '@expo/vector-icons'
 import { Avatar } from 'react-native-elements';
 import { DotsLoader } from 'react-native-indicator';
 import { AuthContext } from './context'
+import api from './services/api'
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -77,8 +78,9 @@ const drawerNavigator = () => (
 
 //continuar aqui
 function CustomDrawerContent(props) {
-    const [userName, setUserName] = useState('')
-    const [userTags, setUserTags] = useState('')
+    const [userName, setName] = useState('')
+    const [userTags, setTags] = useState('')
+    const [userId, setId] = useState('')
     //const navigation = useNavigation()
 
     const { singOut } = React.useContext(AuthContext);
@@ -88,9 +90,20 @@ function CustomDrawerContent(props) {
         singOut()
     }
 
+    async function loadUser() {
+        const user = await AsyncStorage.getItem('user')
+          if (user) {
+            const response = await api.get(`/users/${user}`)
+            if (response.data) {
+              setName(response.data.name)
+              setTags(response.data.tags)
+              setId(response.data._id)
+            }
+          }
+      }
+
     useEffect(() => {
-        //setUserName(AsyncStorage.getItem('userName'))//Fazer esse puto entrar no estado
-        //setUserTags(AsyncStorage.getItem('userTags'))//Fazer esse puto entrar no estado
+        loadUser();
     }, [])
 
     return (
@@ -109,9 +122,9 @@ function CustomDrawerContent(props) {
                                     }}
                                     size={50}
                                 />
-                                <View style={{ marginLeft: 15, flexDirection: 'column', marginTop: 10 }}>
+                                <View style={{ marginLeft: 15, flexDirection: 'column', marginTop: 0 }}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{userName?userName:'Meu perfil'}</Text>
-                                    <Text style={{ fontSize: 13, color: '#365478' }}>{userTags?userTags:''}</Text>
+                                    <Text style={{ fontSize: 13, color: '#365478' }}>{userTags?userTags.toString():''}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
