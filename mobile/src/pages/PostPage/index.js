@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, TextInput, Switch,Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, Switch, ActivityIndicator, Alert } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 
 import api from '../../services/api'
@@ -16,37 +15,36 @@ export default function PostPage({ route, navigation }) {
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
+    const [refreshing, setRefreshing] = useState(false)
     const [userIsPostOwner, setUserIsPostOwner] = useState(false)
+    const [post, setPost] = useState(route.params.post)
     const [activeUser, setActiveUser] = useState('')
 
     //switch
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-    const post = route.params.post
-
-    useEffect(() => {
-        loadComments()
-    }, [])
 
     useEffect(() => {
         handleID()
+        loadComments()
         async function handleID() {
+
             const user_id = await AsyncStorage.getItem('user');
             setActiveUser(user_id);
             if (user_id === post.user[0]._id) {
                 setUserIsPostOwner(true);
             }
         }
-    }, [])
 
+    }, [])
 
     function navigateToHome() {
         navigation.navigate('Home')
     }
 
     function navigateToProfile(userId) {
-        navigation.navigate('Profile',{
+        navigation.navigate('Profile', {
             userId
         })
     }
@@ -76,42 +74,124 @@ export default function PostPage({ route, navigation }) {
         if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
-        // if (total > 0 && comments.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-        //     return
-        // }
+        const getTotal = await api.head(`/posts/${post._id}`)
+        setTotal(getTotal.headers['x-total-count'])
+        if (total > 0 && comments.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+            return
+        }
+
         setLoading(true)//Altera para o loading iniciado
         try {
-            const response = await api.get(`/posts/${post._id}`)
-            //const response = await api.get(`/posts/5ec88a62d7634b14384c66e9`)
-            setComments(response.data)
-            //setComments([...comments, ...response.data])
-            setTotal(response.headers['x-total-count'])
-            setPage(page + 1)
+            const user_id = await AsyncStorage.getItem('user');
+            const response = await api.get(`/posts/${post._id}`,
+                {
+                    headers: { user_id },
+                    params: { page }
+                })
+            setComments([...comments, ...response.data])
+            if (response.data.length > 0) {
+                setPage(page + 1)
+            }
         } catch (e) {
             showError(e)
         }
         setLoading(false)//Conclui o load
     }
+    async function reloadPost(user_id) {
+        try {
+            const response = await api.get(`/post/${post._id}`, {
+                headers: { user_id }
+            })
+            setPost(response.data[0])
 
-    function handledate(data){
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+    async function reloadPage() {
+        if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+            return
+        }
+console.log("reload")
+        const user_id = await AsyncStorage.getItem('user');
+        await reloadPost(user_id)
+        const getTotal = await api.head(`/posts/${post._id}`)
+        setTotal(getTotal.headers['x-total-count'])
+        if (total > 0 && comments.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+            return
+        }
+        setRefreshing(true)//Altera para o loading iniciado
+
+        try {
+            const response = await api.get(`/posts/${post._id}`,
+                {
+                    headers: { user_id },
+                    params: { page: 1 }
+                })
+            setComments(response.data)
+            if (response.data.length > 0) {
+                setPage(2)
+            }
+        } catch (e) {
+            showError(e)
+        }
+        setRefreshing(false)
+    }
+
+    async function handleLikePost() {
+        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+        try {
+            const response = await api.post(`/posts/${post._id}/like`, {
+            }, {
+                headers: { user_id }
+            })
+            await reloadPage()
+        } catch (e) {
+            showError(e)
+        }
+    }
+    async function handleLikeComment(commId) {
+        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+        try {
+            const response = await api.post(`/posts/${post.id}/${commId}/like`, {
+            }, {
+                headers: { user_id }
+            })
+
+        } catch (e) {
+            showError(e)
+        }
+        await reloadPage()
+    }
+    renderFooter = () => {
+        if (!loading) return null;
+        return (
+            <View style={styles.loading}>
+                <ActivityIndicator />
+            </View>
+        );
+    };
+
+    function handledate(data) {
         var day = new Date(data);
         var today = new Date();
         var d = new String(data);
         let text = new String();
-        
+
         var horas = Math.abs(day - today) / 36e5;
         var horasArrend = Math.round(horas)
-          
-        if (horasArrend > 24){
-            text = "" + d.substring(8,10) +"/"+ d.substring(5,7) +"/"+ d.substring(0,4)
+
+        if (horasArrend > 24) {
+            text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
         }
-        else if(horasArrend < 1){
+        else if (horasArrend < 1) {
             text = "Há menos de 1 hora"
         }
-        else{
+        else {
             text = "Há " + horasArrend + " horas atrás"
         }
-        
+
         return text
     }
 
@@ -150,45 +230,45 @@ export default function PostPage({ route, navigation }) {
                     </View>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 32, paddingBottom: 8 }}>
-                    <View style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center' }}>
-                        <TouchableOpacity style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center' }}>
-                            <FontAwesome name="heart-o" style={{ color: '#FFC300', fontSize: 15 }} />
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                        <TouchableOpacity onPress={handleLikePost} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                            <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: '#FFC300', fontSize: 15 }} />
                             <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>{post.likes.length}</Text>
                         </TouchableOpacity>
                         {userIsPostOwner ?
                             <>
                                 <TouchableOpacity onPress={() =>
-                                Alert.alert(
-                                    'Excluir',
-                                    'Deseja excluir sua dúvida?',
-                                    [
-                                    { text: 'Não', onPress: () => { return null } },
-                                    {
-                                        text: 'Sim', onPress: () => {}
-                                    },
-                                    ],
-                                    { cancelable: false }
-                                )}
-                                style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:15 }}
+                                    Alert.alert(
+                                        'Excluir',
+                                        'Deseja excluir sua dúvida?',
+                                        [
+                                            { text: 'Não', onPress: () => { return null } },
+                                            {
+                                                text: 'Sim', onPress: () => { }
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    )}
+                                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 15 }}
                                 >
                                     <Feather name="trash-2" size={15} color='#E73751'></Feather>
                                 </TouchableOpacity>
                             </>
-                        :
+                            :
                             <>
                                 <TouchableOpacity onPress={() =>
-                                Alert.alert(
-                                    'Reportar',
-                                    'Deseja reportar essa dúvida por possuir conteúdo ofensivo ou inapropriado?',
-                                    [
-                                    { text: 'Não', onPress: () => { return null } },
-                                    {
-                                        text: 'Sim', onPress: () => {Alert.alert('Equipe Esclareça', 'Obrigado pelo seu feedback!')}
-                                    },
-                                    ],
-                                    { cancelable: false }
-                                )}
-                                style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:15 }}
+                                    Alert.alert(
+                                        'Reportar',
+                                        'Deseja reportar essa dúvida por possuir conteúdo ofensivo ou inapropriado?',
+                                        [
+                                            { text: 'Não', onPress: () => { return null } },
+                                            {
+                                                text: 'Sim', onPress: () => { Alert.alert('Equipe Esclareça', 'Obrigado pelo seu feedback!') }
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    )}
+                                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 15 }}
                                 >
                                     <Feather name="alert-octagon" size={15} color='#FF5733'></Feather>
                                 </TouchableOpacity>
@@ -217,10 +297,12 @@ export default function PostPage({ route, navigation }) {
                         data={comments}
                         // style={styles.commentsList}
                         keyExtractor={comment => String(comment._id)}
-                        onTouchStart={loadComments}
                         onEndReached={loadComments}
                         onEndReachedThreshold={0.2}
                         showsVerticalScrollIndicator={false}
+                        refreshing={refreshing}
+                        onRefresh={reloadPage}
+                        ListFooterComponent={renderFooter}
                         renderItem={({ item: comment }) => (
                             <Animatable.View
                                 style={styles.post}
@@ -230,30 +312,30 @@ export default function PostPage({ route, navigation }) {
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <TouchableOpacity style={styles.postTitulo} onPress={() => navigateToProfile(comment.user._id)}>
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
-                                            <Text style={styles.postTitle}>{comment.user.name}</Text>
+                                            <Text style={styles.postTitle}>{comment.user[0].name}</Text>
                                         </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
                                             {comment.user._id === activeUser ?
                                                 <>
                                                     <TouchableOpacity onPress={() =>
-                                                    Alert.alert(
-                                                        'Excluir',
-                                                        'Deseja excluir sua Resposta?',
-                                                        [
-                                                        { text: 'Não', onPress: () => { return null } },
-                                                        {
-                                                            text: 'Sim', onPress: () => {}
-                                                        },
-                                                        ],
-                                                        { cancelable: false }
-                                                    )}
-                                                    style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:10 }}
+                                                        Alert.alert(
+                                                            'Excluir',
+                                                            'Deseja excluir sua Resposta?',
+                                                            [
+                                                                { text: 'Não', onPress: () => { return null } },
+                                                                {
+                                                                    text: 'Sim', onPress: () => { }
+                                                                },
+                                                            ],
+                                                            { cancelable: false }
+                                                        )}
+                                                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
                                                     >
                                                         <Feather name="trash-2" size={15} color='#E73751'></Feather>
                                                     </TouchableOpacity>
                                                 </>
-                                            :
+                                                :
                                                 <>
                                                 </>
                                             }
@@ -265,10 +347,10 @@ export default function PostPage({ route, navigation }) {
                                 </View>
                                 <View style={{ marginLeft: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                        <TouchableOpacity>
-                                            <FontAwesome name="heart-o" style={{ color: 'red', fontSize: 12 }} />
+                                        <TouchableOpacity onPress={() => handleLikeComment(comment._id)}>
+                                            <FontAwesome name={comment.didILiked == true ? "heart" : "heart-o"} style={{ color: 'red', fontSize: 12 }} />
                                         </TouchableOpacity>
-                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>15</Text>
+                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{comment.likes.length}</Text>
                                     </View>
                                     {userIsPostOwner ?
                                         <>

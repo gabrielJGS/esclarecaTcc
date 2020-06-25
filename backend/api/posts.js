@@ -1,5 +1,4 @@
 var momentTz = require('moment-timezone');
-//var moment = require('moment'); // require
 const mongoose = require('mongoose');
 
 const Users = require('../models/Users');
@@ -7,15 +6,32 @@ const Posts = require('../models/Posts');
 
 module.exports = app => {
     const getOne = async (req, res) => {
-        const { post } = req.params;
-        const resPost = await Posts.findById(post)
-            .populate('user')
-            .populate('likes')
+        const { post } = req.params
+        const { user_id } = req.headers
+        
+        const user = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))
-        if (!resPost) {
-            return res.status(400).send('Post não encontrado')
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
         }
-        return res.json(resPost);
+
+        const posts = await Posts
+            .aggregate([
+                { $match: { _id: mongoose.Types.ObjectId(post) } },
+                { $sort: { postedIn: -1 } },
+                {
+                    "$addFields": {
+                        "didILiked": {
+                            "$in": [mongoose.Types.ObjectId(user._id), "$likes"]
+                        }
+                    }
+                },
+                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
+            ])
+            .catch(err => res.status(400).json(err))
+
+        return res.json(posts)
     }
     const getByUser = async (req, res) => {
         const { id } = req.params;
@@ -63,14 +79,13 @@ module.exports = app => {
         //Páginação
         const qtdLoad = 5
         const { page = 1 } = req.query
-        //
+        
         const user = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
 
-        //const count = await Posts.find({ tags: { $in: user.tags } }).countDocuments()
         const posts = await Posts
             .aggregate([
                 { $match: { tags: { $in: user.tags } } },
@@ -102,7 +117,6 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
 
         return res.json(posts)
-        //res.header('X-Total-Count', count)
     }
 
     const save = async (req, res) => {

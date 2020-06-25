@@ -1,17 +1,17 @@
-import React, { Component, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar,TextInput, BackHandler, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
-import { Feather, Ionicons, FontAwesome } from '@expo/vector-icons'
-import { Icon, Button } from 'native-base'
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar,TextInput, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
+import { Feather, FontAwesome } from '@expo/vector-icons'
+
+//import { Icon, Button } from 'native-base'
 
 import api from '../../services/api'
 
-import logoImg from '../../assets/logo.png'
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
-import { SearchBar } from 'react-native-elements'
+//import { SearchBar } from 'react-native-elements'
 
-import { showError, showSucess } from '../../common'
+import { showError } from '../../common'
 
 export default function Home() {
     const navigation = useNavigation()

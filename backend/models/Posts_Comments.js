@@ -16,7 +16,7 @@
 
 const mongoose = require('mongoose');
 
-const PostsSchema = new mongoose.Schema({
+const Posts_CommentsSchema = new mongoose.Schema({
     post: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Posts'
@@ -25,9 +25,13 @@ const PostsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users'
+    }],
     postedIn: Date,
     message: String,
     solvedPost: Boolean
 });
 
-module.exports = mongoose.model('Posts_Comments', PostsSchema);
+module.exports = mongoose.model('Posts_Comments', Posts_CommentsSchema);

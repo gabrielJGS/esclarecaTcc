@@ -29,18 +29,23 @@ export default function Login() {
     }, [])
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
+
         if (email != '' && senha != '') {
-            const response = await api.post('/signin', {
-                email, password: senha
-            });
-            const user = response.data;
             try {
-                await AsyncStorage.setItem('user', user.id.toString());
-                await AsyncStorage.setItem('userName', user.name.toString());
-                await AsyncStorage.setItem('userTags', user.tags.toString());
-                singIn();
+                const response = await api.post('/signin', {
+                    email, password: senha
+                });
+                const user = response.data;
+                try {
+                    await AsyncStorage.setItem('user', user.id.toString());
+                    await AsyncStorage.setItem('userName', user.name.toString());
+                    await AsyncStorage.setItem('userTags', user.tags.toString());
+                    singIn();
+                } catch (x) {
+                    showError(x)
+                }
             } catch (e) {
-                showError(e)
+                alert("Error:\n" + e)
             }
         }
         else {
@@ -53,7 +58,7 @@ export default function Login() {
             const response = await api.post('/forget', {
                 email
             });
-            showSucess("Senha enviada para o email "+email)
+            showSucess("Senha enviada para o email " + email)
         } catch (e) {
             showError(e)
         }

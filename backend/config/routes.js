@@ -30,7 +30,11 @@ module.exports = app => {
         // .all(app.config.passport.authenticate())
         .delete(app.api.posts.remove)//Deletar post
         .get(app.api.comments.index)
+        .head(app.api.comments.getTotalComments)
         .post(app.api.comments.save)
+
+    //Dar like no post
+    app.post('/posts/:post/:comm/like', app.api.comments.like)
 
     //Deletar comentário
     app.route('/posts/:post/:comm')
