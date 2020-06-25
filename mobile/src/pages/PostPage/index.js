@@ -19,10 +19,11 @@ export default function PostPage({ route, navigation }) {
     const [userIsPostOwner, setUserIsPostOwner] = useState(false)
     const [post, setPost] = useState(route.params.post)
     const [activeUser, setActiveUser] = useState('')
+    const [press, setPress] = useState(false)
+
     //switch
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
 
     useEffect(() => {
         handleID()
@@ -36,7 +37,11 @@ export default function PostPage({ route, navigation }) {
             }
         }
 
-    }, [])
+    }, [press])
+
+    useEffect(() => {
+        reloadPage()
+    }, [press])
 
     function navigateToHome() {
         navigation.navigate('Home')
@@ -63,6 +68,7 @@ export default function PostPage({ route, navigation }) {
                 if (comm.status == 204) {
                     showSucess("Comentário cadastrado com sucesso")
                     setCommentText('')
+                    setPress(previousState => !previousState)
                 } else {
                     showError("Ocorreu um erro")
                 }
@@ -313,7 +319,7 @@ export default function PostPage({ route, navigation }) {
                                         </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={styles.Nomepost}>{handleDate(comment.postedIn)}</Text>
-                                            {comment.user._id === activeUser ?
+                                            {comment.user[0]._id === activeUser ?
                                                 <>
                                                     <TouchableOpacity onPress={() =>
                                                         Alert.alert(
@@ -351,16 +357,10 @@ export default function PostPage({ route, navigation }) {
                                     </View>
                                     {userIsPostOwner ?
                                         <>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingRight: 10 }}>
-                                                <Text style={{ color: '#7DCEA0', fontSize: 12, paddingRight: 2 }}>Esclarecido</Text>
-                                                <Switch
-                                                    trackColor={{ false: "#D8D9DB", true: "#7DCEA0" }}
-                                                    thumbColor={isEnabled ? "#7DCEA0" : "#f4f3f4"}
-                                                    ios_backgroundColor="#3e3e3e"
-                                                    onValueChange={toggleSwitch}
-                                                    value={isEnabled}
-                                                />
-                                            </View>
+                                            <TouchableOpacity onPress={toggleSwitch} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingRight: 15 }}>
+                                                <Text style={{ color: '#7DCEA0', fontSize: 12, paddingRight: 2 }}>Esclareceu sua dúvida? </Text>
+                                                <Feather name={isEnabled == true ? "check-circle" : "circle"} size={15} color='#7DCEA0'></Feather>
+                                            </TouchableOpacity>
                                         </>
                                         :
                                         <>

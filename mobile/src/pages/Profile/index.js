@@ -19,6 +19,7 @@ export default function Profile({route,navigation}) {
   const [tags, setTags] = useState('');
   const [email, setEmail] = useState('');
   const [user, setUser] = useState(false);
+  const [press, setPress] = useState(false);
 
   async function loadUser(id) {
         const response = await api.get(`/users/${id}`)
@@ -38,7 +39,8 @@ export default function Profile({route,navigation}) {
 
   useEffect(() => {
     loadUser(route.params.userId)
-  }, [route.params.userId])
+    console.log(press)
+  }, [route.params.userId,press])
 
   function logoutUser() {
     AsyncStorage.clear()
@@ -147,7 +149,7 @@ export default function Profile({route,navigation}) {
                     />
                   </View>
                   <View style={styles.buttonView}>
-                    <TouchableOpacity onPress={handleModal} style={styles.button}>
+                    <TouchableOpacity onPress={() => {setPress(previousState => !previousState); handleModal}} style={styles.button}>
                       <Text style={styles.buttonText}>Salvar</Text>
                       <Feather name="check" size={15} color="#FFC300"></Feather>
                     </TouchableOpacity>
