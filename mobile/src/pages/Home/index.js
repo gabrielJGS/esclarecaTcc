@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar,TextInput, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 
 //import { Icon, Button } from 'native-base'
@@ -21,12 +21,20 @@ export default function Home() {
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
     const [search, setSearch] = useState('');
+    const [type, setType] = useState(false)
 
     function navigateToNewPost() {
-        navigation.navigate('NewPost')
+        navigation.navigate('NewPost', {
+            type
+        })
+    }
+    function navigateToDoubts() {
+        setType(false)
+        reloadPosts()
     }
     function navigateToContent() {
-        navigation.navigate('HomeContent')
+        setType(true)
+        reloadPosts()
     }
     function navigateToPost(post) {
         navigation.navigate('PostPage', {
@@ -34,7 +42,7 @@ export default function Home() {
         })
     }
     function navigateToProfile(userId) {
-        navigation.navigate('Profile',{
+        navigation.navigate('Profile', {
             userId
         })
     }
@@ -51,11 +59,11 @@ export default function Home() {
         }
     }
     async function loadPosts() {
-        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-        if (loading ) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+        if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
-        const getTotal = await api.head('/posts', { headers: { user_id } })
+        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+        const getTotal = await api.head('/posts', { headers: { user_id, type } })
         setTotal(getTotal.headers['x-total-count'])
         if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
             return
@@ -64,7 +72,7 @@ export default function Home() {
         setLoading(true)//Altera para o loading iniciado
         try {
             const response = await api.get('/posts', {
-                headers: { user_id },
+                headers: { user_id, type },
                 params: { page }
             })
             //setPosts(response.data)
@@ -79,20 +87,20 @@ export default function Home() {
         setLoading(false)//Conclui o load
     }
     async function reloadPosts() {
-        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
-        const getTotal = await api.head('/posts', { headers: { user_id } })
-        setTotal(getTotal.headers['x-total-count'])
-        if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-            return
-        }
+        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+        // const getTotal = await api.head('/posts', { headers: { user_id, type } })
+        // setTotal(getTotal.headers['x-total-count'])
+        // if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+        //     return
+        // }
         setRefreshing(true)//Altera para o loading iniciado
 
         try {
             const response = await api.get('/posts', {
-                headers: { user_id },
+                headers: { user_id, type },
                 params: { page: 1 }
             })
             //setPosts(response.data)
@@ -115,6 +123,7 @@ export default function Home() {
             </View>
         );
     };
+    
     useEffect(() => {
         loadPosts()
     }, [loading])
@@ -128,43 +137,43 @@ export default function Home() {
         setModalVisible(!modalVisible)
     }
 
-    function handledate(data){
+    function handleDate(data) {
         var day = new Date(data);
         var today = new Date();
         var d = new String(data);
         let text = new String();
-        
+
         var horas = Math.abs(day - today) / 36e5;
         var horasArrend = Math.round(horas)
-          
-        if (horasArrend > 24){
-            text = "" + d.substring(8,10) +"/"+ d.substring(5,7) +"/"+ d.substring(0,4)
+
+        if (horasArrend > 24) {
+            text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
         }
-        else if(horasArrend < 1){
+        else if (horasArrend < 1) {
             text = "Há menos de 1 hora"
         }
-        else{
+        else {
             text = "Há " + horasArrend + " horas atrás"
         }
-        
+
         return text
     }
 
-    function handletitle(title){
+    function handleTitle(title) {
         var titulo = new String(title);
         var tam = new Number(titulo.length)
         let text = new String();
 
-        if (tam > 20){
-            text = titulo.substring(0,20) + "..."
+        if (tam > 20) {
+            text = titulo.substring(0, 20) + "..."
         }
-        else{
+        else {
             text = titulo
         }
 
         return text
     }
-    
+
     return (
         //reidner 26/04
         <View style={styles.container}>
@@ -219,7 +228,7 @@ export default function Home() {
                 <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.openDrawer()}>
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
-                <Text style={{ fontWeight: 'bold', color: "white", fontSize: 25 }}>Dúvidas</Text>
+                <Text style={{ fontWeight: 'bold', color: "white", fontSize: 25 }}>{type == false ? 'Dúvidas' : 'Conteúdos'}</Text>
                 <TouchableOpacity style={styles.detailsButton} onPress={handleModal}>
                     <Feather name="filter" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
@@ -238,7 +247,7 @@ export default function Home() {
                     returnKeyType="done"
                 />
                 <TouchableOpacity>
-                    <Feather name="search" size={18} color="#FFC300" style={{marginTop:2}} />
+                    <Feather name="search" size={18} color="#FFC300" style={{ marginTop: 2 }} />
                 </TouchableOpacity>
             </View>
 
@@ -265,12 +274,12 @@ export default function Home() {
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <View style={styles.postTitulo}>
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
-                                            <Text style={styles.postTitle}>{handletitle(post.title)}</Text>
+                                            <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
                                         </View>
-                                        <View style={{alignItems:'flex-end'}}>
-                                            <TouchableOpacity style={{alignItems:'flex-end'}} onPress={() => navigateToProfile(post.user[0]._id)}>
+                                        <View style={{ alignItems: 'flex-end' }}>
+                                            <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => navigateToProfile(post.user[0]._id)}>
                                                 <Text style={styles.Nomepost}>{post.user[0].name}</Text>
-                                                <Text style={styles.Nomepost}>{handledate(post.postedIn)}</Text>
+                                                <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -308,13 +317,13 @@ export default function Home() {
                     style={styles.footer}
                     animation="fadeInUp"
                     duration={900}>
-                    <TouchableOpacity style={styles.detailsBar} onPress={reloadPosts}>
-                        <Text style={styles.detailsButtonTextHome}>Dúvidas</Text>
-                        <Feather name="edit-3" size={16} color="#FFC300"></Feather>
+                    <TouchableOpacity style={styles.detailsBar} onPress={navigateToDoubts}>
+                        <Text style={[styles.detailsButtonText, { color: type == false ? "#FFC300" : "white" }]}>Dúvidas</Text>
+                        <Feather name="edit-3" size={16} color={type == false ? "#FFC300" : "white"}></Feather>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.detailsBar} onPress={() => navigateToContent()}>
-                        <Text style={styles.detailsButtonText}>Conteúdos</Text>
-                        <Feather name="book-open" size={16} color="white"></Feather>
+                    <TouchableOpacity style={styles.detailsBar} onPress={navigateToContent}>
+                        <Text style={[styles.detailsButtonText, { color: type == true ? "#FFC300" : "white" }]}>Conteúdos</Text>
+                        <Feather name="book-open" size={16} color={type == true ? "#FFC300" : "white"}></Feather>
                     </TouchableOpacity>
                 </Animatable.View>
             </View>

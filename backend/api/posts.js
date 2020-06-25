@@ -8,7 +8,7 @@ module.exports = app => {
     const getOne = async (req, res) => {
         const { post } = req.params
         const { user_id } = req.headers
-        
+
         const user = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))
         if (!user) {
@@ -36,7 +36,8 @@ module.exports = app => {
     const getByUser = async (req, res) => {
         const { id } = req.params;
         const { type } = req.headers
-        const resPost = await Posts.find({ user: id, type })
+        const typeSearch = type == 'false' ? false : true
+        const resPost = await Posts.find({ user: id, type: typeSearch })
             .populate('user')
             .populate('likes')
             .catch(err => res.status(400).json(err))
@@ -48,7 +49,6 @@ module.exports = app => {
     const searchPost = async (req, res) => {
         //const { user_id } = req.headers
         const { searchText } = req.body
-        console.log(searchText)
         //const resPost = await Posts.find({ "desc": /.*searchText.*/ })//{'name': {'$regex': 'sometext'}}
         const resPost = await Posts.find({ 'desc': { '$regex': searchText } })
             .populate('user')
@@ -60,26 +60,27 @@ module.exports = app => {
         return res.json(resPost);
     }
     const getTotalPosts = async (req, res) => {
-        const { user_id } = req.headers;
+        const { user_id, type } = req.headers;
+        const typeSearch = type == 'false' ? false : true
         const user = await Users.findById(user_id)
-            .catch(err => res.status(400).json(err))
-
+            .catch(err => res.status(400).send(err))
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
-        const count = await Posts.find({ tags: { $in: user.tags } }).countDocuments()
-
+        const count = await Posts.find({ tags: { $in: user.tags }, type: typeSearch }).countDocuments()
         res.header('X-Total-Count', count)
         return res.json(count)
         // return res.json(count)
     }
 
     const index = async (req, res) => {
-        const { user_id } = req.headers;
+        const { user_id, type } = req.headers;
+        const typeSearch = type == 'false' ? false : true
+    
         //Páginação
         const qtdLoad = 5
         const { page = 1 } = req.query
-        
+
         const user = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))
         if (!user) {
@@ -88,7 +89,7 @@ module.exports = app => {
 
         const posts = await Posts
             .aggregate([
-                { $match: { tags: { $in: user.tags } } },
+                { $match: { tags: { $in: user.tags }, type: typeSearch } },
                 { $sort: { postedIn: -1 } },
                 {
                     $lookup: {

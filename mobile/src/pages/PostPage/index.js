@@ -19,7 +19,6 @@ export default function PostPage({ route, navigation }) {
     const [userIsPostOwner, setUserIsPostOwner] = useState(false)
     const [post, setPost] = useState(route.params.post)
     const [activeUser, setActiveUser] = useState('')
-
     //switch
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
@@ -56,7 +55,10 @@ export default function PostPage({ route, navigation }) {
             const user_id = await AsyncStorage.getItem('user');
             try {
                 const comm = await api.post(`/posts/${post._id}`, {
-                    user: user_id, message: commentText
+                    header: {
+                        user: user_id,
+                    },
+                    message: commentText
                 })
                 if (comm.status == 204) {
                     showSucess("Comentário cadastrado com sucesso")
@@ -113,14 +115,9 @@ export default function PostPage({ route, navigation }) {
         if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
-console.log("reload")
         const user_id = await AsyncStorage.getItem('user');
         await reloadPost(user_id)
-        const getTotal = await api.head(`/posts/${post._id}`)
-        setTotal(getTotal.headers['x-total-count'])
-        if (total > 0 && comments.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-            return
-        }
+
         setRefreshing(true)//Altera para o loading iniciado
 
         try {
@@ -173,7 +170,7 @@ console.log("reload")
         );
     };
 
-    function handledate(data) {
+    function handleDate(data) {
         var day = new Date(data);
         var today = new Date();
         var d = new String(data);
@@ -315,7 +312,7 @@ console.log("reload")
                                             <Text style={styles.postTitle}>{comment.user[0].name}</Text>
                                         </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
+                                            <Text style={styles.Nomepost}>{handleDate(comment.postedIn)}</Text>
                                             {comment.user._id === activeUser ?
                                                 <>
                                                     <TouchableOpacity onPress={() =>

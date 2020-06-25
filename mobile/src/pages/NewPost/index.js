@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native'
+//import { useNavigation } from '@react-navigation/native'
 
 import { SafeAreaView, View, TextInput, TouchableOpacity, AsyncStorage, Text, Image } from 'react-native';
 import { Ionicons } from "@expo/vector-icons"
@@ -10,22 +10,22 @@ import styles from './styles'
 
 import { showError, showSucess } from '../../common'
 
-export default function NewPost() {
-  const navigation = useNavigation()
+export default function NewPost({ route, navigation }) {
+  //const navigation = useNavigation()
 
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [tags, setTags] = useState('');
-  const type = false
+  const [type, setType] = useState(route.params.type)
 
   async function handleSubmit() {
     const user_id = await AsyncStorage.getItem('user');
 
     try {
       const post = await api.post(`/posts`, {
-        title, desc, tags, type
+        title, desc, tags
       }, {
-        headers: { user_id }
+        headers: { user_id, type }
       })
       if (post.status == 204) {
         showSucess(`${type == false ? 'Dúvida' : 'Conteúdo'} cadastrad${type == false ? 'a' : 'o'} com sucesso`)
@@ -50,16 +50,16 @@ export default function NewPost() {
           <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSubmit}>
-          <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20 }}>Postar Dúvida</Text>
+          <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20 }}>Postar {type == false ? 'dúvida' : 'conteúdo'}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={{ paddingHorizontal: 30, marginTop: 40 }}>
-        <Text style={styles.label}>Título da dúvida</Text>
+        <Text style={styles.label}>Título d{type == false ? 'a dúvida' : 'o conteúdo'}</Text>
         <TextInput
           autoFocus={true}
           style={styles.input}
-          placeholder="Título que deseja dar à sua dúvida..."
+          placeholder={"Título que deseja dar "+(type==false?"à sua dúvida":"ao seu conteúdo")}
           placeholderTextColor="#999"
           autoCapitalize="words"
           autoCorrect={false}
@@ -72,14 +72,14 @@ export default function NewPost() {
           style={styles.input}
           multiline={true}
           numberOfLines={4}
-          placeholder="Descreva qual a sua dúvida..."
+          placeholder={"Descreva qual "+(type==false?"à sua dúvida":"ao seu conteúdo")}
           value={desc}
           onChangeText={setDesc}
         />
         <Text style={styles.label}>Tags</Text>
         <TextInput
           style={styles.input}
-          placeholder="Temas relacionados à sua dúvida separados por ','"
+          placeholder={"Temas relacionados  "+(type==false?"à sua dúvida":"ao seu conteúdo")+" separados por ' , '"}
           placeholderTextColor="#999"
           autoCapitalize="words"
           autoCorrect={false}

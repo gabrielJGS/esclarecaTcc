@@ -62,7 +62,6 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   detailsButtonText:{
-    color: 'white',
     fontSize: hp('2.2%'),
     fontWeight: 'bold'
   },
@@ -95,11 +94,6 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-end',
     alignItems: 'center'
-  },
-  detailsButtonTextHome:{
-    color: '#FFC300',
-    fontSize: hp('2.2%'),
-    fontWeight: 'bold'
   },
   Search:{
     marginTop:23,

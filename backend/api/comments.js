@@ -74,7 +74,8 @@ module.exports = app => {
 
     const save = async (req, res) => {
         //const { filename } = req.file;
-        const { user, message } = req.body
+        const { user } = req.headers
+        const { message } = req.body
         const { post } = req.params
         const userExiste = await Users.findById(user);
         if (!userExiste) {

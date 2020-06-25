@@ -1,7 +1,4 @@
 This sprint:
->Tipo de post na Header do get /posts
->Trocar na rota/tela de comment para user ir no header
->Deletar telas duplicadas no app(state no feed, passando como param para tela de cadastrar post)
 >Rota de perfil do usuário(retornar dados do usuário e posts)
 >Foto de perfil(backend)
 >Rota de perfil(com posts e duvidas publicadas)
@@ -25,8 +22,12 @@ Done:
 //>Likes comments
 //>Paginação no get posts do usuário e pesquisa
 //>Data no comentário
+//>Tipo de post na Header do get /posts
+//>Trocar na rota/tela de comment para user ir no header
+//>Deletar telas duplicadas no app(state no feed, passando como param para tela de cadastrar post)
 
 Reid:
+>Buscar sempre que o state type for atualizado na homePage
 >Botão solucionar dúvida no comentário
 >Nomes de usuário ser um botão para o perfil
 >Tela de perfil
