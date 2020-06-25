@@ -9,31 +9,36 @@ import styles from './styles'
 import Feather from 'react-native-vector-icons/Feather';
 import { AuthContext } from '../../context'
 
-export default function Profile() {
+export default function Profile({route,navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const navigation = useNavigation()
+  //const navigation = useNavigation()
   const { singOut } = React.useContext(AuthContext);
 
   const [name, setName] = useState('');
   const [tags, setTags] = useState('');
   const [email, setEmail] = useState('');
+  const [user, setUser] = useState(false);
 
-  async function loadUser() {
-    const user = await AsyncStorage.getItem('user')
-      if (user) {
-        const response = await api.get(`/users/${user}`)
+  async function loadUser(id) {
+        const response = await api.get(`/users/${id}`)
         if (response.data) {
           setName(response.data.name)
           setTags(response.data.tags)
           setEmail(response.data.email)
         }
-      }
+        const usuarioAtual = await AsyncStorage.getItem('user');
+        if(usuarioAtual === id){
+          setUser(true)
+        }
+        else{
+          setUser(false)
+        }
   }
 
   useEffect(() => {
-    loadUser()
-  }, [])
+    loadUser(route.params.userId)
+  }, [route.params.userId])
 
   function logoutUser() {
     AsyncStorage.clear()
@@ -161,9 +166,18 @@ export default function Profile() {
         <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.openDrawer()}>
           <Feather name="menu" size={20} color="#FFC300"></Feather>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleModal} style={styles.detailsButton}>
-          <Feather name="edit" size={20} color="#FFC300"></Feather>
-        </TouchableOpacity>
+        {user?
+          <>
+            <TouchableOpacity onPress={handleModal} style={styles.detailsButton}>
+              <Feather name="edit" size={20} color="#FFC300"></Feather>
+            </TouchableOpacity>
+          </>
+        :
+          <>
+            <TouchableOpacity>
+            </TouchableOpacity>
+          </>  
+        }
         <TouchableOpacity style={styles.detailsButton} onPress={() =>
           Alert.alert(
             'Sair',

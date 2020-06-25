@@ -45,8 +45,10 @@ export default function PostPage({ route, navigation }) {
         navigation.navigate('Home')
     }
 
-    function navigateToProfile() {
-        navigation.navigate('Profile')
+    function navigateToProfile(userId) {
+        navigation.navigate('Profile',{
+            userId
+        })
     }
 
     async function handlePostComment() {
@@ -126,7 +128,7 @@ export default function PostPage({ route, navigation }) {
                     <Text></Text>
                 </View>
                 <View style={styles.DuvidaCorpo}>
-                    <TouchableOpacity onPress={navigateToProfile}>
+                    <TouchableOpacity onPress={() => navigateToProfile(post.user[0]._id)}>
                         <Feather name="camera" size={30} color='white'></Feather>
                     </TouchableOpacity>
                     <View style={{ paddingLeft: 30 }}>
@@ -226,7 +228,7 @@ export default function PostPage({ route, navigation }) {
                                 duration={1000}>
                                 <View style={styles.postHeader}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.postTitulo} onPress={navigateToProfile}>
+                                        <TouchableOpacity style={styles.postTitulo} onPress={() => navigateToProfile(comment.user._id)}>
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
                                             <Text style={styles.postTitle}>{comment.user.name}</Text>
                                         </TouchableOpacity>

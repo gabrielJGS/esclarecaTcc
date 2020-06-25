@@ -111,7 +111,7 @@ function CustomDrawerContent(props) {
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                     <View style={styles.User}>
-                        <TouchableOpacity onPress={() => { props.navigation.navigate('Profile') }}>
+                        <TouchableOpacity onPress={() => { props.navigation.navigate('Profile',{userId}) }}>
                             <View style={{ flexDirection: 'row', marginTop: 15, alignItems:'center' }}>
                                 <Avatar
                                     rounded
