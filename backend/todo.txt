@@ -1,6 +1,4 @@
 This sprint:
-
->Likes comments
 >Tipo de post na Header do get /posts
 >Trocar na rota/tela de comment para user ir no header
 >Deletar telas duplicadas no app(state no feed, passando como param para tela de cadastrar post)
@@ -8,8 +6,7 @@ This sprint:
 >Foto de perfil(backend)
 >Rota de perfil(com posts e duvidas publicadas)
 >Comentário q solucionou ser ordenado antes doq os demais, independente da data
->Paginação no get posts do usuário e pesquisa
->Data no comentário
+
 >Conferir tratamento/validações nas requisições
 >Conferir status code certos https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 >Remover certos campos dos populates: https://stackoverflow.com/questions/37562129/how-to-select-specific-field-in-nested-populate-in-mogoose
@@ -25,6 +22,9 @@ Done:
 //>Se o usuário estiver entre os que curtiram, exibir botão preenchido(apenas heart)/exige user_id no estado, rota: se ja tiver curtido descurtir
 //>Qtd comentários post
 //>Descurtir post
+//>Likes comments
+//>Paginação no get posts do usuário e pesquisa
+//>Data no comentário
 
 Reid:
 >Botão solucionar dúvida no comentário

@@ -1,17 +1,15 @@
-import React, { Component, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
-import { Feather, Ionicons, FontAwesome } from '@expo/vector-icons'
-import { Icon, Button } from 'native-base'
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar,  ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
+import { Feather, FontAwesome } from '@expo/vector-icons'
 
 import api from '../../services/api'
 
-import logoImg from '../../assets/logo.png'
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 import { SearchBar } from 'react-native-elements'
 
-import { showError, showSucess } from '../../common'
+import { showError } from '../../common'
 
 export default function Home() {
     const navigation = useNavigation()
@@ -139,7 +137,7 @@ export default function Home() {
             text = "Há menos de 1 hora"
         }
         else{
-            text = "Há " + horasArrend + " atrás"
+            text = "Há " + horasArrend + " horas atrás"
         }
         
         return text
