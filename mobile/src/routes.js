@@ -81,6 +81,7 @@ function CustomDrawerContent(props) {
     const [userName, setName] = useState('')
     const [userTags, setTags] = useState('')
     const [userId, setId] = useState('')
+    const [press,setPress]=useState(false)
     //const navigation = useNavigation()
 
     const { singOut } = React.useContext(AuthContext);
@@ -104,14 +105,18 @@ function CustomDrawerContent(props) {
 
     useEffect(() => {
         loadUser();
-    }, [])
+    }, [press])
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                     <View style={styles.User}>
-                        <TouchableOpacity onPress={() => { props.navigation.navigate('Profile',{userId}) }}>
+                        <TouchableOpacity onPress={() => { 
+                            setPress(previousState => !previousState)
+                            props.navigation.navigate('Profile',{userId}) 
+                            }}
+                        >
                             <View style={{ flexDirection: 'row', marginTop: 15, alignItems:'center' }}>
                                 <Avatar
                                     rounded

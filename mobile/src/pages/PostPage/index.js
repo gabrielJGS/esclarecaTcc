@@ -19,11 +19,11 @@ export default function PostPage({ route, navigation }) {
     const [userIsPostOwner, setUserIsPostOwner] = useState(false)
     const [post, setPost] = useState(route.params.post)
     const [activeUser, setActiveUser] = useState('')
+    const [press, setPress] = useState(false)
 
     //switch
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
 
     useEffect(() => {
         handleID()
@@ -37,7 +37,11 @@ export default function PostPage({ route, navigation }) {
             }
         }
 
-    }, [])
+    }, [press])
+
+    useEffect(() => {
+        reloadPage()
+    }, [press])
 
     function navigateToHome() {
         navigation.navigate('Home')
@@ -61,6 +65,7 @@ export default function PostPage({ route, navigation }) {
                 if (comm.status == 204) {
                     showSucess("Comentário cadastrado com sucesso")
                     setCommentText('')
+                    setPress(previousState => !previousState)
                 } else {
                     showError("Ocorreu um erro")
                 }
@@ -113,14 +118,13 @@ export default function PostPage({ route, navigation }) {
         if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
-console.log("reload")
         const user_id = await AsyncStorage.getItem('user');
         await reloadPost(user_id)
         const getTotal = await api.head(`/posts/${post._id}`)
         setTotal(getTotal.headers['x-total-count'])
-        if (total > 0 && comments.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-            return
-        }
+        //if (total > 0 && comments.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+          //  return
+        //}
         setRefreshing(true)//Altera para o loading iniciado
 
         try {
@@ -316,7 +320,7 @@ console.log("reload")
                                         </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
-                                            {comment.user._id === activeUser ?
+                                            {comment.user[0]._id === activeUser ?
                                                 <>
                                                     <TouchableOpacity onPress={() =>
                                                         Alert.alert(
@@ -354,16 +358,10 @@ console.log("reload")
                                     </View>
                                     {userIsPostOwner ?
                                         <>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingRight: 10 }}>
-                                                <Text style={{ color: '#7DCEA0', fontSize: 12, paddingRight: 2 }}>Esclarecido</Text>
-                                                <Switch
-                                                    trackColor={{ false: "#D8D9DB", true: "#7DCEA0" }}
-                                                    thumbColor={isEnabled ? "#7DCEA0" : "#f4f3f4"}
-                                                    ios_backgroundColor="#3e3e3e"
-                                                    onValueChange={toggleSwitch}
-                                                    value={isEnabled}
-                                                />
-                                            </View>
+                                            <TouchableOpacity onPress={toggleSwitch} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingRight: 15 }}>
+                                                <Text style={{ color: '#7DCEA0', fontSize: 12, paddingRight: 2 }}>Esclareceu sua dúvida? </Text>
+                                                <Feather name={isEnabled == true ? "check-circle" : "circle"} size={15} color='#7DCEA0'></Feather>
+                                            </TouchableOpacity>
                                         </>
                                         :
                                         <>

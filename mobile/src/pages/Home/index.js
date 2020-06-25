@@ -85,9 +85,9 @@ export default function Home() {
         }
         const getTotal = await api.head('/posts', { headers: { user_id } })
         setTotal(getTotal.headers['x-total-count'])
-        if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-            return
-        }
+        //if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+            //return
+        //}
         setRefreshing(true)//Altera para o loading iniciado
 
         try {
@@ -117,7 +117,7 @@ export default function Home() {
     };
     useEffect(() => {
         loadPosts()
-    }, [loading])
+    }, [])
 
     const onLoadMore = useCallback(() => {
         loadPosts();
