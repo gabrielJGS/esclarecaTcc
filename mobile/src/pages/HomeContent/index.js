@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, BackHandler,TextInput } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons'
 
 import api from '../../services/api'
@@ -37,14 +37,20 @@ export default function HomeContent() {
             </View>
 
             <View style={styles.Search}>
-                <SearchBar
-                    round
-                    platform="ios"
-                    cancelButtonTitle="Cancelar"
-                    placeholder='Pesquise o assunto de interesse...'
-                    containerStyle={styles.Barheight}
-                    inputStyle={{fontSize:15}}
+                <TextInput
+                    style={styles.input}
+                    placeholder="Pesquise o assunto desejado..."
+                    placeholderTextColor="#999"
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                    //value={title}
+                    //onChangeText={setTitle}
+                    numberOfLines={2}
+                    returnKeyType="done"
                 />
+                <TouchableOpacity>
+                    <Feather name="search" size={18} color="#FFC300" style={{marginTop:2}} />
+                </TouchableOpacity>
             </View>
 
             <View style={styles.Body}>

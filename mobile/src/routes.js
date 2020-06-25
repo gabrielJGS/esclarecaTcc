@@ -5,6 +5,7 @@ import { Feather, FontAwesome5 } from '@expo/vector-icons'
 import { Avatar } from 'react-native-elements';
 import { DotsLoader } from 'react-native-indicator';
 import { AuthContext } from './context'
+import api from './services/api'
 
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -22,6 +23,8 @@ import PostPage from './pages/PostPage'
 import ContentPage from './pages/ContentPage'
 import Preferences from './pages/Preferences'
 import Ranking from './pages/Ranking'
+import HomeSlack from './pages/HomeSlack';
+import SlackPage from './pages/SlackPage';
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -29,6 +32,7 @@ const HomeStack = createStackNavigator()
 const MainStack = createStackNavigator()
 const Main2Stack = createStackNavigator()
 const drawer = createDrawerNavigator()
+const Main3Stack = createStackNavigator();
 
 const AuthStack = () => (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
@@ -54,6 +58,13 @@ const ContentStack = () => (
     </Main2Stack.Navigator>
 )
 
+const SlackStack = () => (
+    <Main3Stack.Navigator screenOptions={{headerShown: false}}>
+        <Main3Stack.Screen name="HomeSlack" component={HomeSlack}></Main3Stack.Screen>
+        <Main3Stack.Screen name="SlackPage" component={SlackPage}></Main3Stack.Screen>
+    </Main3Stack.Navigator>
+)
+
 const drawerNavigator = () => (
     <drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
         <drawer.Screen name="Home" component={PostStack}></drawer.Screen>
@@ -61,13 +72,15 @@ const drawerNavigator = () => (
         <drawer.Screen name="Profile" component={Profile}></drawer.Screen>
         <drawer.Screen name="Preferences" component={Preferences}></drawer.Screen>
         <drawer.Screen name="Ranking" component={Ranking}></drawer.Screen>
+        <drawer.Screen name="HomeSlack" component={SlackStack}></drawer.Screen>
     </drawer.Navigator>
 )
 
 //continuar aqui
 function CustomDrawerContent(props) {
-    const [userName, setUserName] = useState('')
-    const [userTags, setUserTags] = useState('')
+    const [userName, setName] = useState('')
+    const [userTags, setTags] = useState('')
+    const [userId, setId] = useState('')
     //const navigation = useNavigation()
 
     const { singOut } = React.useContext(AuthContext);
@@ -77,9 +90,20 @@ function CustomDrawerContent(props) {
         singOut()
     }
 
+    async function loadUser() {
+        const user = await AsyncStorage.getItem('user')
+          if (user) {
+            const response = await api.get(`/users/${user}`)
+            if (response.data) {
+              setName(response.data.name)
+              setTags(response.data.tags)
+              setId(response.data._id)
+            }
+          }
+      }
+
     useEffect(() => {
-        //setUserName(AsyncStorage.getItem('userName'))//Fazer esse puto entrar no estado
-        //setUserTags(AsyncStorage.getItem('userTags'))//Fazer esse puto entrar no estado
+        loadUser();
     }, [])
 
     return (
@@ -87,7 +111,7 @@ function CustomDrawerContent(props) {
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                     <View style={styles.User}>
-                        <TouchableOpacity onPress={() => { props.navigation.navigate('Profile') }}>
+                        <TouchableOpacity onPress={() => { props.navigation.navigate('Profile',{userId}) }}>
                             <View style={{ flexDirection: 'row', marginTop: 15, alignItems:'center' }}>
                                 <Avatar
                                     rounded
@@ -98,9 +122,9 @@ function CustomDrawerContent(props) {
                                     }}
                                     size={50}
                                 />
-                                <View style={{ marginLeft: 15, flexDirection: 'column', marginTop: 10 }}>
+                                <View style={{ marginLeft: 15, flexDirection: 'column', marginTop: 0 }}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{userName?userName:'Meu perfil'}</Text>
-                                    <Text style={{ fontSize: 13, color: '#365478' }}>{userTags?userTags:''}</Text>
+                                    <Text style={{ fontSize: 13, color: '#365478' }}>{userTags?userTags.toString():''}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
@@ -126,6 +150,7 @@ function CustomDrawerContent(props) {
                                 <Feather name="slack" size={20} color="#365478"></Feather>
                             )}
                             label="Slack"
+                            onPress={() => { props.navigation.navigate('HomeSlack') }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (

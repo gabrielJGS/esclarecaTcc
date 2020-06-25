@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar,  ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar,TextInput, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
+
+//import { Icon, Button } from 'native-base'
 
 import api from '../../services/api'
 
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
-import { SearchBar } from 'react-native-elements'
+//import { SearchBar } from 'react-native-elements'
 
 import { showError } from '../../common'
 
@@ -29,6 +31,11 @@ export default function Home() {
     function navigateToPost(post) {
         navigation.navigate('PostPage', {
             post
+        })
+    }
+    function navigateToProfile(userId) {
+        navigation.navigate('Profile',{
+            userId
         })
     }
     async function handleLike(postId) {
@@ -110,7 +117,7 @@ export default function Home() {
     };
     useEffect(() => {
         loadPosts()
-    }, [])
+    }, [loading])
 
     const onLoadMore = useCallback(() => {
         loadPosts();
@@ -219,16 +226,20 @@ export default function Home() {
             </View>
 
             <View style={styles.Search}>
-                <SearchBar
-                    round
-                    platform="ios"
-                    cancelButtonTitle="Cancelar"
-                    placeholder='Pesquise o assunto de interesse...'
-                    containerStyle={styles.Barheight}
-                    inputStyle={{ fontSize: 15 }}
-                    onChangeText={setSearch}
-                    value={search}
+                <TextInput
+                    style={styles.input}
+                    placeholder="Pesquise o assunto desejado..."
+                    placeholderTextColor="#999"
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                    //value={title}
+                    //onChangeText={setTitle}
+                    numberOfLines={2}
+                    returnKeyType="done"
                 />
+                <TouchableOpacity>
+                    <Feather name="search" size={18} color="#FFC300" style={{marginTop:2}} />
+                </TouchableOpacity>
             </View>
 
             <View style={styles.Body}>
@@ -257,8 +268,10 @@ export default function Home() {
                                             <Text style={styles.postTitle}>{handletitle(post.title)}</Text>
                                         </View>
                                         <View style={{alignItems:'flex-end'}}>
-                                            <Text style={styles.Nomepost}>{post.user[0].name}</Text>
-                                            <Text style={styles.Nomepost}>{handledate(post.postedIn)}</Text>
+                                            <TouchableOpacity style={{alignItems:'flex-end'}} onPress={() => navigateToProfile(post.user[0]._id)}>
+                                                <Text style={styles.Nomepost}>{post.user[0].name}</Text>
+                                                <Text style={styles.Nomepost}>{handledate(post.postedIn)}</Text>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                     <View style={styles.headerTags}>

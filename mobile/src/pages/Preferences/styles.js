@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     borderBottomColor:'#D8D9DB',
     height:70,
     alignItems:'center',
-    height:hp('12%'),
+    height:hp('10%'),
   },
 
 });

@@ -88,7 +88,8 @@ export default StyleSheet.create({
   },
   Body: {
     marginTop: 5,
-    flex: 1
+    flex: 1,
+    paddingBottom:28
   },
   BodyFlat: {
     flex: 0.9

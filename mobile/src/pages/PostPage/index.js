@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, Switch, ActivityIndicator } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, Switch, ActivityIndicator, Alert } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 
 import api from '../../services/api'
@@ -18,6 +18,8 @@ export default function PostPage({ route, navigation }) {
     const [refreshing, setRefreshing] = useState(false)
     const [userIsPostOwner, setUserIsPostOwner] = useState(false)
     const [post, setPost] = useState(route.params.post)
+    const [activeUser, setActiveUser] = useState('')
+
     //switch
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
@@ -29,7 +31,8 @@ export default function PostPage({ route, navigation }) {
         async function handleID() {
 
             const user_id = await AsyncStorage.getItem('user');
-            if (user_id === post.user._id) {
+            setActiveUser(user_id);
+            if (user_id === post.user[0]._id) {
                 setUserIsPostOwner(true);
             }
         }
@@ -38,6 +41,12 @@ export default function PostPage({ route, navigation }) {
 
     function navigateToHome() {
         navigation.navigate('Home')
+    }
+
+    function navigateToProfile(userId) {
+        navigation.navigate('Profile', {
+            userId
+        })
     }
 
     async function handlePostComment() {
@@ -104,7 +113,7 @@ export default function PostPage({ route, navigation }) {
         if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
-
+console.log("reload")
         const user_id = await AsyncStorage.getItem('user');
         await reloadPost(user_id)
         const getTotal = await api.head(`/posts/${post._id}`)
@@ -149,10 +158,11 @@ export default function PostPage({ route, navigation }) {
             }, {
                 headers: { user_id }
             })
-            await reloadPage()
+
         } catch (e) {
             showError(e)
         }
+        await reloadPage()
     }
     renderFooter = () => {
         if (!loading) return null;
@@ -198,10 +208,14 @@ export default function PostPage({ route, navigation }) {
                     <Text></Text>
                 </View>
                 <View style={styles.DuvidaCorpo}>
-                    <Feather name="camera" size={30} color='white'></Feather>
+                    <TouchableOpacity onPress={() => navigateToProfile(post.user[0]._id)}>
+                        <Feather name="camera" size={30} color='white'></Feather>
+                    </TouchableOpacity>
                     <View style={{ paddingLeft: 30 }}>
-                        <Text style={styles.CorpoTitle}>{post.user[0].name != undefined ? post.user[0].name : ''}</Text>
-                        <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
+                        <TouchableOpacity onPress={navigateToProfile}>
+                            <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
+                            <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
+                        </TouchableOpacity>
                         <Text style={{ marginTop: 10, fontSize: 15, color: 'white' }}>{post.desc}</Text>
 
                         <View style={{ flexDirection: 'row', paddingTop: 20, alignItems: 'flex-end' }}>
@@ -217,10 +231,49 @@ export default function PostPage({ route, navigation }) {
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 32, paddingBottom: 8 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <TouchableOpacity onPress={handleLikePost}>
-                            <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: '#FFC300', fontSize: 12 }} />
+                        <TouchableOpacity onPress={handleLikePost} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                            <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: '#FFC300', fontSize: 15 }} />
+                            <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>{post.likes.length}</Text>
                         </TouchableOpacity>
-                        <Text style={{ marginLeft: 3, fontSize: 12, color: '#C8C8C8' }}>{post.likes.length}</Text>
+                        {userIsPostOwner ?
+                            <>
+                                <TouchableOpacity onPress={() =>
+                                    Alert.alert(
+                                        'Excluir',
+                                        'Deseja excluir sua dúvida?',
+                                        [
+                                            { text: 'Não', onPress: () => { return null } },
+                                            {
+                                                text: 'Sim', onPress: () => { }
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    )}
+                                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 15 }}
+                                >
+                                    <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                                </TouchableOpacity>
+                            </>
+                            :
+                            <>
+                                <TouchableOpacity onPress={() =>
+                                    Alert.alert(
+                                        'Reportar',
+                                        'Deseja reportar essa dúvida por possuir conteúdo ofensivo ou inapropriado?',
+                                        [
+                                            { text: 'Não', onPress: () => { return null } },
+                                            {
+                                                text: 'Sim', onPress: () => { Alert.alert('Equipe Esclareça', 'Obrigado pelo seu feedback!') }
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    )}
+                                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 15 }}
+                                >
+                                    <Feather name="alert-octagon" size={15} color='#FF5733'></Feather>
+                                </TouchableOpacity>
+                            </>
+                        }
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         {post.close ?
@@ -257,11 +310,36 @@ export default function PostPage({ route, navigation }) {
                                 duration={1000}>
                                 <View style={styles.postHeader}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <View style={styles.postTitulo}>
+                                        <TouchableOpacity style={styles.postTitulo} onPress={() => navigateToProfile(comment.user._id)}>
                                             <Feather name="camera" size={30} color='#D8D9DB'></Feather>
                                             <Text style={styles.postTitle}>{comment.user[0].name}</Text>
+                                        </TouchableOpacity>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
+                                            {comment.user._id === activeUser ?
+                                                <>
+                                                    <TouchableOpacity onPress={() =>
+                                                        Alert.alert(
+                                                            'Excluir',
+                                                            'Deseja excluir sua Resposta?',
+                                                            [
+                                                                { text: 'Não', onPress: () => { return null } },
+                                                                {
+                                                                    text: 'Sim', onPress: () => { }
+                                                                },
+                                                            ],
+                                                            { cancelable: false }
+                                                        )}
+                                                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
+                                                    >
+                                                        <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                                                    </TouchableOpacity>
+                                                </>
+                                                :
+                                                <>
+                                                </>
+                                            }
                                         </View>
-                                        <Text style={styles.Nomepost}>{handledate(comment.postedIn)}</Text>
                                     </View>
                                 </View>
                                 <View style={styles.postDesc}>

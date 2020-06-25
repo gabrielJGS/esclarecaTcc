@@ -38,6 +38,12 @@ export default function Preferences (){
     const loadWhatsapp = () => {
         Linking.openURL("whatsapp://send?phone=5524999562378&text=Olá, Equipe Esclareça!").catch(err => console.error("Couldn't load page", err));
     };
+    const loadTermos = () => {
+        Linking.openURL("https://docs.google.com/uc?export=download&id=1N5NnNwp_jhIVKIo8m4Ih8bfDOJ_uKWId").catch(err => console.error("Couldn't load page", err));
+    };
+    const loadPrivacidade = () => {
+        Linking.openURL("https://docs.google.com/uc?export=download&id=16z5VqvJivEabAFiOSTVzB2tdiW_FqZkN").catch(err => console.error("Couldn't load page", err));
+    }
 
     function handleComposeMail(){
         MailComposer.composeAsync({
@@ -49,8 +55,8 @@ export default function Preferences (){
     return(
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress ={ ( ) => navigation.goBack()}>
-                    <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
+                <TouchableOpacity onPress ={() => navigation.openDrawer()}>
+                    <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <View style={{flexDirection:'row', alignItems:'center',justifyContent:'center'}}>
                     <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight:5 }}>Preferências</Text>
@@ -77,7 +83,7 @@ export default function Preferences (){
                         <Feather name="file-text" size={24} color="#356F7B"/>
                         <Text style={{fontSize:18, paddingLeft:10, color:'#8C8C8C'}}>Termos de uso</Text>
                     </View>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={loadTermos}>
                         <Feather name="external-link" size={24} color="#718FB0"/>
                     </TouchableOpacity>
                 </View>
@@ -86,7 +92,7 @@ export default function Preferences (){
                         <Feather name="shield" size={24} color="#6B5AC0"/>
                         <Text style={{fontSize:18, paddingLeft:10, color:'#8C8C8C'}}>Políticas de privacidade</Text>
                     </View>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={loadPrivacidade}>
                         <Feather name="external-link" size={24} color="#718FB0"/>
                     </TouchableOpacity>
                 </View>
