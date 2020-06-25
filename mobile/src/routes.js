@@ -16,11 +16,11 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
 import NewPost from './pages/NewPost'
-import HomeContent from './pages/HomeContent'
-import NewContent from './pages/NewContent'
+// import HomeContent from './pages/HomeContent'
+// import NewContent from './pages/NewContent'
 import Profile from './pages/Profile'
 import PostPage from './pages/PostPage'
-import ContentPage from './pages/ContentPage'
+// import ContentPage from './pages/ContentPage'
 import Preferences from './pages/Preferences'
 import Ranking from './pages/Ranking'
 import HomeSlack from './pages/HomeSlack';
@@ -50,13 +50,13 @@ const PostStack = () => (
     </MainStack.Navigator>
 )
 
-const ContentStack = () => (
-    <Main2Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Main2Stack.Screen name="HomeContent" component={HomeContent}></Main2Stack.Screen>
-        <Main2Stack.Screen name="NewContent" component={NewContent}></Main2Stack.Screen>
-        <MainStack.Screen name="ContentPage" component={ContentPage}></MainStack.Screen>
-    </Main2Stack.Navigator>
-)
+// const ContentStack = () => (
+//     <Main2Stack.Navigator screenOptions={{ headerShown: false }}>
+//         <Main2Stack.Screen name="HomeContent" component={HomeContent}></Main2Stack.Screen>
+//         <Main2Stack.Screen name="NewContent" component={NewContent}></Main2Stack.Screen>
+//         <MainStack.Screen name="ContentPage" component={ContentPage}></MainStack.Screen>
+//     </Main2Stack.Navigator>
+// )
 
 const SlackStack = () => (
     <Main3Stack.Navigator screenOptions={{headerShown: false}}>
@@ -68,7 +68,7 @@ const SlackStack = () => (
 const drawerNavigator = () => (
     <drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
         <drawer.Screen name="Home" component={PostStack}></drawer.Screen>
-        <drawer.Screen name="HomeContent" component={ContentStack}></drawer.Screen>
+        {/* <drawer.Screen name="HomeContent" component={ContentStack}></drawer.Screen> */}
         <drawer.Screen name="Profile" component={Profile}></drawer.Screen>
         <drawer.Screen name="Preferences" component={Preferences}></drawer.Screen>
         <drawer.Screen name="Ranking" component={Ranking}></drawer.Screen>
@@ -138,18 +138,18 @@ function CustomDrawerContent(props) {
                     <View style={styles.Section}>
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <Feather name="edit-3" size={20} color="#365478"></Feather>
+                                <Feather name="book-open" size={20} color="#365478"></Feather>//edit-3
                             )}
-                            label="Feed de Dúvidas"
+                            label="Feed"
                             onPress={() => { props.navigation.navigate('Home') }}
                         />
-                        <DrawerItem
+                        {/* <DrawerItem
                             icon={({ color, size }) => (
                                 <Feather name="book-open" size={20} color="#365478"></Feather>
                             )}
                             label="Feed de Conteúdos"
                             onPress={() => { props.navigation.navigate('HomeContent') }}
-                        />
+                        /> */}
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <Feather name="slack" size={20} color="#365478"></Feather>

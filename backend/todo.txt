@@ -3,14 +3,14 @@ This sprint:
 >Foto de perfil(backend)
 >Rota de perfil(com posts e duvidas publicadas)
 >Comentário q solucionou ser ordenado antes doq os demais, independente da data
+>Usar parametros para retornar para a tela de login, logando o usuário ao retornar de um registro bem sucedido
+>Pesquisar(tela e rota)
 
 >Conferir tratamento/validações nas requisições
 >Conferir status code certos https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+>Rota/tela de esqueceu a senha(inserir referencia a ela no login/registro)
 >Remover certos campos dos populates: https://stackoverflow.com/questions/37562129/how-to-select-specific-field-in-nested-populate-in-mogoose
  //$project − Used to select some specific fields from a collection.
->Aprender a usar promise para fazer no registro, evitando retornar para a tela de login e digitar dnv
->Rota/tela de esqueceu a senha(inserir referencia a ela no login/registro)
->Pesquisar(tela e rota)
 
 Done:
 //>Data no post e comentário(ordenar gets por data tbm)
