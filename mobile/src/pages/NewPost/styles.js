@@ -22,7 +22,7 @@ export default StyleSheet.create({
     
     inputContainer:{
       paddingHorizontal:32,
-      paddingTop:20,
+      paddingTop:10,
       flexDirection:'row',
     },
 

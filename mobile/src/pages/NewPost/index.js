@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 //import { useNavigation } from '@react-navigation/native'
 
-import { SafeAreaView, View, TextInput, TouchableOpacity, AsyncStorage, Text, Image } from 'react-native';
+import { SafeAreaView, View, TextInput, TouchableOpacity, AsyncStorage, Text, Image, ScrollView } from 'react-native';
 import { Ionicons } from "@expo/vector-icons"
 
 import api from '../../services/api'
@@ -54,48 +54,97 @@ export default function NewPost({ route, navigation }) {
         </TouchableOpacity>
       </View>
 
-      <View style={{ paddingHorizontal: 30, marginTop: 40 }}>
-        <Text style={styles.label}>Título d{type == false ? 'a dúvida' : 'o conteúdo'}</Text>
-        <TextInput
-          autoFocus={true}
-          style={styles.input}
-          placeholder={"Título que deseja dar "+(type==false?"à sua dúvida":"ao seu conteúdo")}
-          placeholderTextColor="#999"
-          autoCapitalize="words"
-          autoCorrect={false}
-          value={title}
-          onChangeText={setTitle}
-          numberOfLines={2}
-        />
-        <Text style={styles.label}>Descrição da dúvida</Text>
-        <TextInput
-          style={styles.input}
-          multiline={true}
-          numberOfLines={4}
-          placeholder={"Descreva qual "+(type==false?"à sua dúvida":"ao seu conteúdo")}
-          value={desc}
-          onChangeText={setDesc}
-        />
-        <Text style={styles.label}>Tags</Text>
-        <TextInput
-          style={styles.input}
-          placeholder={"Temas relacionados  "+(type==false?"à sua dúvida":"ao seu conteúdo")+" separados por ' , '"}
-          placeholderTextColor="#999"
-          autoCapitalize="words"
-          autoCorrect={false}
-          value={tags}
-          onChangeText={setTags}
-          numberOfLines={2}
-        />
-        <Text style={styles.label}>Anexo</Text>
-        <TouchableOpacity style={styles.anexo}>
-          <Ionicons name="md-attach" size={32} color='#D8D9DB'></Ionicons>
-        </TouchableOpacity>
-      </View>
-      {/* <View style={styles.inputContainer}>
-        <Ionicons name="md-camera" size={50} color='#D8D9DB' style={styles.avatar}></Ionicons>
+      <ScrollView>
+        {type == false ?
+          <>
+            <View style={{ paddingHorizontal: 30, marginTop: 40 }}>
+              <Text style={styles.label}>Título d{type == false ? 'a dúvida' : 'o conteúdo'}</Text>
+              <TextInput
+                autoFocus={true}
+                style={styles.input}
+                placeholder={"Título que deseja dar "+(type==false?"à sua dúvida":"ao seu conteúdo")}
+                placeholderTextColor="#999"
+                autoCapitalize="words"
+                autoCorrect={false}
+                value={title}
+                onChangeText={setTitle}
+                numberOfLines={2}
+              />
+              <Text style={styles.label}>Descrição d{type == false ? 'a dúvida' : 'o conteúdo'}</Text>
+              <TextInput
+                style={styles.input}
+                multiline={true}
+                numberOfLines={4}
+                placeholder={"Descreva qual "+(type==false?"à sua dúvida":"ao seu conteúdo")}
+                value={desc}
+                onChangeText={setDesc}
+              />
+              <Text style={styles.label}>Tags</Text>
+              <TextInput
+                style={styles.input}
+                placeholder={"Temas relacionados  "+(type==false?"à sua dúvida":"ao seu conteúdo")+" separados por ' , '"}
+                placeholderTextColor="#999"
+                autoCapitalize="words"
+                autoCorrect={false}
+                value={tags}
+                onChangeText={setTags}
+                numberOfLines={2}
+              />
+              <Text style={styles.label}>Anexo</Text>
+              <TouchableOpacity style={styles.anexo}>
+                <Ionicons name="md-attach" size={32} color='#D8D9DB'></Ionicons>
+              </TouchableOpacity>
+            </View>
+          </>
+        :
+          <>
+            <View>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  autoFocus={true}
+                  multiline={true}
+                  numberOfLines={7}
+                  style={{flex:1, fontSize:15}}
+                  placeholder="Compartilhe seu conhecimento com texto, indicações, links ou anexando arquivos..."
+                  value={desc}
+                  onChangeText={setDesc}
+                />
+              </View>
 
-      </View> */}
+              <View>
+                <TouchableOpacity style={styles.anexo}>
+                  <Ionicons name="md-attach" size={32} color='#D8D9DB'></Ionicons>
+                </TouchableOpacity>
+              </View>
+
+              <View style={{paddingHorizontal:30,marginTop:40}}>
+                <Text style={styles.label}>Título do Conteúdo</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={"Título que deseja dar "+(type==false?"à sua dúvida":"ao seu conteúdo")}
+                  placeholderTextColor="#999"
+                  autoCapitalize="words"
+                  autoCorrect={false}
+                  value={title}
+                  onChangeText={setTitle}
+                  numberOfLines={2}
+                />
+                <Text style={styles.label}>Tags</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={"Temas relacionados  "+(type==false?"à sua dúvida":"ao seu conteúdo")+" separados por ' , '"}
+                  placeholderTextColor="#999"
+                  autoCapitalize="words"
+                  autoCorrect={false}
+                  value={tags}
+                  onChangeText={setTags}
+                  numberOfLines={2}
+                />
+              </View>
+            </View>
+          </>
+        }
+      </ScrollView>
     </SafeAreaView>
   );
 }
