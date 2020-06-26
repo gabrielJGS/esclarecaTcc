@@ -129,6 +129,13 @@ export default function Home() {
         loadPosts()
     }, [])
 
+    useEffect(() => {
+        reload()
+        async function reload(){
+            await reloadPosts()
+        }
+    }, [type])
+
     const onLoadMore = useCallback(() => {
         loadPosts();
     })

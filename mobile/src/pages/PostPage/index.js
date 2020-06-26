@@ -225,7 +225,7 @@ export default function PostPage({ route, navigation }) {
                             <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
                             <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
                         </TouchableOpacity>
-                        <Text style={{ marginTop: 10, fontSize: 15, color: 'white' }}>{post.desc}</Text>
+                        <Text style={{ marginTop: 10, fontSize: 15, color: 'white', paddingRight:10 }}>{post.desc}</Text>
 
                         <View style={{ flexDirection: 'row', paddingTop: 20, alignItems: 'flex-end' }}>
                             <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>Anexos</Text>
