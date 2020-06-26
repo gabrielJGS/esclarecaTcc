@@ -8,7 +8,9 @@ module.exports = app => {
         .get(app.api.users.profile)
         .put(app.api.users.update)
         .patch(app.api.users.patch)
+        
     app.get('/users/:id/posts', app.api.posts.getByUser)//Posts do usuário
+    app.get('/users/:id/posts/liked', app.api.posts.getByUser)//Posts curtidos pelo usuário
 
     //Posts
     app.route('/posts')
@@ -16,6 +18,8 @@ module.exports = app => {
         .get(app.api.posts.index)
         .post(app.api.posts.save)
         .head(app.api.posts.getTotalPosts)
+
+    //Busca dos posts
     app.post('/posts/search', app.api.posts.searchPost)//Posts do usuário
 
     app.route('/post/:post')//get de único post
