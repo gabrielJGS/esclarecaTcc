@@ -38,14 +38,25 @@ module.exports = app => {
         const { type } = req.headers
         const typeSearch = type == 'false' ? false : true
         const resPost = await Posts.find({ user: id, type: typeSearch })
-            .populate('user')
-            .populate('likes')
             .catch(err => res.status(400).json(err))
         if (!resPost) {
             return res.status(400).send('Nenhum post encontrado para o usuário')
         }
         return res.json(resPost);
     }
+
+    const getLikesByUser = async (req, res) => {
+        const { id } = req.params;
+        const { type } = req.headers
+        const typeSearch = type == 'false' ? false : true
+        const resPost = await Posts.find({ likes: { $in: id }, type: typeSearch })
+            .catch(err => res.status(400).json(err))
+        if (!resPost) {
+            return res.status(400).send('Nenhum post encontrado para o usuário')
+        }
+        return res.json(resPost);
+    }
+
     const searchPost = async (req, res) => {
         //const { user_id } = req.headers
         const { searchText } = req.body
@@ -76,7 +87,7 @@ module.exports = app => {
     const index = async (req, res) => {
         const { user_id, type } = req.headers;
         const typeSearch = type == 'false' ? false : true
-    
+
         //Páginação
         const qtdLoad = 5
         const { page = 1 } = req.query
@@ -197,5 +208,5 @@ module.exports = app => {
         }
     }
 
-    return { index, save, remove, getOne, getTotalPosts, like, getByUser, searchPost }
+    return { index, save, remove, getOne, getTotalPosts, like, getByUser, getLikesByUser, searchPost }
 }

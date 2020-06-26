@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
-import { Image, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback } from "react-native";
+import { Image, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback, FlatList } from "react-native";
 import api from '../../services/api'
 import { Card, CardItem, Left, Header } from 'native-base'
 
@@ -9,7 +9,7 @@ import styles from './styles'
 import Feather from 'react-native-vector-icons/Feather';
 import { AuthContext } from '../../context'
 
-export default function Profile({route,navigation}) {
+export default function Profile({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   //const navigation = useNavigation()
@@ -21,26 +21,34 @@ export default function Profile({route,navigation}) {
   const [user, setUser] = useState(false);
   const [press, setPress] = useState(false);
 
+  //sobre os posts
+  const [posts, setPosts] = useState([])
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+
   async function loadUser(id) {
-        const response = await api.get(`/users/${id}`)
-        if (response.data) {
-          setName(response.data.name)
-          setTags(response.data.tags)
-          setEmail(response.data.email)
-        }
-        const usuarioAtual = await AsyncStorage.getItem('user');
-        if(usuarioAtual === id){
-          setUser(true)
-        }
-        else{
-          setUser(false)
-        }
+    const response = await api.get(`/users/${id}`)
+    if (response.data) {
+      setName(response.data.name)
+      setTags(response.data.tags)
+      setEmail(response.data.email)
+    }
+    const usuarioAtual = await AsyncStorage.getItem('user');
+    if (usuarioAtual === id) {
+      setUser(true)
+    }
+    else {
+      setUser(false)
+    }
   }
 
   useEffect(() => {
     loadUser(route.params.userId)
+    loadPosts()
     console.log(press)
-  }, [route.params.userId,press])
+  }, [route.params.userId, press])
 
   function logoutUser() {
     AsyncStorage.clear()
@@ -50,6 +58,73 @@ export default function Profile({route,navigation}) {
   function handleModal() {
     setModalVisible(!modalVisible)
   }
+
+  async function loadPosts() {
+    if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+      return
+    }
+    const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+    const getTotal = await api.head('/posts', { headers: { user_id, type } })
+    setTotal(getTotal.headers['x-total-count'])
+    if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+      return
+    }
+
+    setLoading(true)//Altera para o loading iniciado
+    try {
+      const response = await api.get('/posts', {
+        headers: { user_id, type },
+        params: { page }
+      })
+      //setPosts(response.data)
+      setPosts([...posts, ...response.data])
+      //setTotal(response.headers['x-total-count'])
+      if (response.data.length > 0) {
+        setPage(page + 1)
+      }
+    } catch (e) {
+      showError(e)
+    }
+    setLoading(false)//Conclui o load
+  }
+
+  async function reloadPosts() {
+    if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+      return
+    }
+    const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+    // const getTotal = await api.head('/posts', { headers: { user_id, type } })
+    // setTotal(getTotal.headers['x-total-count'])
+    // if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+    //     return
+    // }
+    setRefreshing(true)//Altera para o loading iniciado
+
+    try {
+      const response = await api.get('/posts', {
+        headers: { user_id, type },
+        params: { page: 1 }
+      })
+      //setPosts(response.data)
+      setPosts(response.data)
+      //setTotal(response.headers['x-total-count'])
+      if (response.data.length > 0) {
+        setPage(2)
+      }
+    } catch (e) {
+      showError(e)
+    }
+    setRefreshing(false)
+  }
+
+  renderFooter = () => {
+    if (!loading) return null;
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator />
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -72,28 +147,28 @@ export default function Profile({route,navigation}) {
                       <Text style={styles.perfilTitle}>Editar Perfil  </Text>
                       <Feather name="edit" size={17} color="#365478"></Feather>
                     </View>
-                    {true  ?
-                        <>
-                            <TouchableOpacity onPress={() =>
-                            Alert.alert(
-                                'Excluir',
-                                'Deseja excluir seu perfil?',
-                                [
-                                { text: 'Não', onPress: () => { return null } },
-                                {
-                                    text: 'Sim', onPress: () => {}
-                                },
-                                ],
-                                { cancelable: false }
-                            )}
-                            style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center', marginLeft:10 }}
-                            >
-                                <Feather name="trash-2" size={15} color='#E73751'></Feather>
-                            </TouchableOpacity>
-                        </>
-                    :
-                        <>
-                        </>
+                    {true ?
+                      <>
+                        <TouchableOpacity onPress={() =>
+                          Alert.alert(
+                            'Excluir',
+                            'Deseja excluir seu perfil?',
+                            [
+                              { text: 'Não', onPress: () => { return null } },
+                              {
+                                text: 'Sim', onPress: () => { }
+                              },
+                            ],
+                            { cancelable: false }
+                          )}
+                          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
+                        >
+                          <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                        </TouchableOpacity>
+                      </>
+                      :
+                      <>
+                      </>
                     }
                   </View>
                   <View style={styles.viewInput}>
@@ -136,7 +211,7 @@ export default function Profile({route,navigation}) {
                     <Text style={styles.modalSubtitle}>Senha</Text>
                     <TextInput
                       style={styles.input}
-                      placeholder="Atere sua senha..."
+                      placeholder="Altere sua senha..."
                       placeholderTextColor="#999"
                       secureTextEntry={true}
                       password={true}
@@ -149,7 +224,7 @@ export default function Profile({route,navigation}) {
                     />
                   </View>
                   <View style={styles.buttonView}>
-                    <TouchableOpacity onPress={() => {setPress(previousState => !previousState); handleModal}} style={styles.button}>
+                    <TouchableOpacity onPress={() => { setPress(previousState => !previousState); handleModal }} style={styles.button}>
                       <Text style={styles.buttonText}>Salvar</Text>
                       <Feather name="check" size={15} color="#FFC300"></Feather>
                     </TouchableOpacity>
@@ -168,17 +243,17 @@ export default function Profile({route,navigation}) {
         <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.openDrawer()}>
           <Feather name="menu" size={20} color="#FFC300"></Feather>
         </TouchableOpacity>
-        {user?
+        {user ?
           <>
             <TouchableOpacity onPress={handleModal} style={styles.detailsButton}>
               <Feather name="edit" size={20} color="#FFC300"></Feather>
             </TouchableOpacity>
           </>
-        :
+          :
           <>
             <TouchableOpacity>
             </TouchableOpacity>
-          </>  
+          </>
         }
         <TouchableOpacity style={styles.detailsButton} onPress={() =>
           Alert.alert(
@@ -198,25 +273,38 @@ export default function Profile({route,navigation}) {
           <Feather name="log-out" size={20} color="#FFC300"></Feather>
         </TouchableOpacity>
       </View>
-      <Image style={styles.avatar} source={{ uri: 
-        //'https://scontent.fstu3-1.fna.fbcdn.net/v/t1.0-9/p960x960/87283876_1614904885331971_5523389541076959232_o.jpg?_nc_cat=102&_nc_sid=85a577&_nc_ohc=FY3G_XQYr4YAX_jln8U&_nc_ht=scontent.fstu3-1.fna&_nc_tp=6&oh=6892c35abdfc7a8e7f4786b477890cfc&oe=5EDAE0E2' 
-        'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'
+      <Image style={styles.avatar} source={{
+        uri:
+          //'https://scontent.fstu3-1.fna.fbcdn.net/v/t1.0-9/p960x960/87283876_1614904885331971_5523389541076959232_o.jpg?_nc_cat=102&_nc_sid=85a577&_nc_ohc=FY3G_XQYr4YAX_jln8U&_nc_ht=scontent.fstu3-1.fna&_nc_tp=6&oh=6892c35abdfc7a8e7f4786b477890cfc&oe=5EDAE0E2' 
+          'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'
       }} />
-        <View style={styles.body}>
-          <View style={styles.perfilName}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.info}>{tags.toString()}</Text>
-          </View>
+      <View style={styles.body}>
+        <View style={styles.perfilName}>
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.info}>{tags.toString()}</Text>
         </View>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.body2}>
-            <View style={styles.bodyContent}>
-              <View style={styles.contentCard}>
-                <Text style={styles.contentTitle}>Dúvidas </Text>
-                <Feather name="help-circle" size={12} color="#365478" style={{ marginTop: 2 }}></Feather>
-              </View>
-              <Text style={styles.contentSubtitle}>Enviadas</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+
+        <View style={styles.body2}>
+          <View style={styles.bodyContent}>
+            <View style={styles.contentCard}>
+              <Text style={styles.contentTitle}>Dúvidas </Text>
+              <Feather name="help-circle" size={12} color="#365478" style={{ marginTop: 2 }}></Feather>
+            </View>
+            <Text style={styles.contentSubtitle}>Enviadas</Text>
+            <FlatList
+              data={posts}
+              style={styles.postsList}
+              keyExtractor={post => String(post._id)}
+              refreshing={refreshing}
+              onRefresh={reloadPosts}
+              // onTouchStart={reloadPosts}
+              onEndReached={loadPosts}
+              onEndReachedThreshold={0.2}
+              ListFooterComponent={renderFooter}
+              showsHorizontalScrollIndicator={false}//OBS:Trocar para false ao finalizar testes!!!!
+              renderItem={({ item: post }) => (
                 <Card>
                   <CardItem button bordered>
                     <Left>
@@ -228,89 +316,61 @@ export default function Profile({route,navigation}) {
                     </Left>
                   </CardItem>
                 </Card>
-                <Card>
-                  <CardItem button>
-                    <Left>
-                      <View style={styles.Card}>
-                        <Text style={styles.cardTitle}>Erro código</Text>
-                        <Text style={styles.cardTags}>Tags</Text>
-                        <Text style={styles.cardDate}>08/06/2020</Text>
-                      </View>
-                    </Left>
-                  </CardItem>
-                </Card>
-                <Card>
-                  <CardItem button>
-                    <Left>
-                      <View style={styles.Card}>
-                        <Text style={styles.cardTitle}>Erro código</Text>
-                        <Text style={styles.cardTags}>Tags</Text>
-                        <Text style={styles.cardDate}>08/06/2020</Text>
-                      </View>
-                    </Left>
-                  </CardItem>
-                </Card>
-                <Card>
-                  <CardItem button>
-                    <Left>
-                      <View style={styles.Card}>
-                        <Text style={styles.cardTitle}>Erro código</Text>
-                        <Text style={styles.cardTags}>Tags</Text>
-                        <Text style={styles.cardDate}>08/06/2020</Text>
-                      </View>
-                    </Left>
-                  </CardItem>
-                </Card>
-              </ScrollView>
-              <Text style={styles.contentSubtitle}>Favoritas</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-                <Card>
-                  <CardItem button>
-                    <Left>
-                      <View style={styles.Card}>
-                        <Text style={styles.cardTitle}>Erro código</Text>
-                        <Text style={styles.cardTags}>Tags</Text>
-                        <Text style={styles.cardDate}>08/06/2020</Text>
-                      </View>
-                    </Left>
-                  </CardItem>
-                </Card>
-              </ScrollView>
-              <View style={styles.contentCard}>
-                <Text style={styles.contentTitle2}>Conteúdos </Text>
-                <Feather name="book-open" size={12} color="#365478" style={{ marginTop: 10 }}></Feather>
-              </View>
-              <Text style={styles.contentSubtitle}>Enviados</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-                <Card>
-                  <CardItem button>
-                    <Left>
-                      <View style={styles.Card}>
-                        <Text style={styles.cardTitle}>Erro código</Text>
-                        <Text style={styles.cardTags}>Tags</Text>
-                        <Text style={styles.cardDate}>08/06/2020</Text>
-                      </View>
-                    </Left>
-                  </CardItem>
-                </Card>
-              </ScrollView>
-              <Text style={styles.contentSubtitle}>Favoritos</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-                <Card>
-                  <CardItem button>
-                    <Left>
-                      <View style={styles.Card}>
-                        <Text style={styles.cardTitle}>Erro código</Text>
-                        <Text style={styles.cardTags}>Tags</Text>
-                        <Text style={styles.cardDate}>08/06/2020</Text>
-                      </View>
-                    </Left>
-                  </CardItem>
-                </Card>
-              </ScrollView>
+              )}>
+
+            </FlatList>
+            {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
+
+            </ScrollView> */}
+            <Text style={styles.contentSubtitle}>Favoritas</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
+              <Card>
+                <CardItem button>
+                  <Left>
+                    <View style={styles.Card}>
+                      <Text style={styles.cardTitle}>Erro código</Text>
+                      <Text style={styles.cardTags}>Tags</Text>
+                      <Text style={styles.cardDate}>08/06/2020</Text>
+                    </View>
+                  </Left>
+                </CardItem>
+              </Card>
+            </ScrollView>
+            <View style={styles.contentCard}>
+              <Text style={styles.contentTitle2}>Conteúdos </Text>
+              <Feather name="book-open" size={12} color="#365478" style={{ marginTop: 10 }}></Feather>
             </View>
+            <Text style={styles.contentSubtitle}>Enviados</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
+              <Card>
+                <CardItem button>
+                  <Left>
+                    <View style={styles.Card}>
+                      <Text style={styles.cardTitle}>Erro código</Text>
+                      <Text style={styles.cardTags}>Tags</Text>
+                      <Text style={styles.cardDate}>08/06/2020</Text>
+                    </View>
+                  </Left>
+                </CardItem>
+              </Card>
+            </ScrollView>
+            <Text style={styles.contentSubtitle}>Favoritos</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
+              <Card>
+                <CardItem button>
+                  <Left>
+                    <View style={styles.Card}>
+                      <Text style={styles.cardTitle}>Erro código</Text>
+                      <Text style={styles.cardTags}>Tags</Text>
+                      <Text style={styles.cardDate}>08/06/2020</Text>
+                    </View>
+                  </Left>
+                </CardItem>
+              </Card>
+            </ScrollView>
           </View>
-        </ScrollView>
+        </View>
+      </ScrollView>
     </View>
   )
 }

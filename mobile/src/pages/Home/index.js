@@ -22,7 +22,8 @@ export default function Home() {
     const [refreshing, setRefreshing] = useState(false)
     const [search, setSearch] = useState('');
     const [type, setType] = useState(false)
-
+    const [modalVisible, setModalVisible] = useState(false);
+    
     function navigateToNewPost() {
         navigation.navigate('NewPost', {
             type
@@ -132,7 +133,6 @@ export default function Home() {
         loadPosts();
     })
 
-    const [modalVisible, setModalVisible] = useState(false);
     function handleModal() {
         setModalVisible(!modalVisible)
     }

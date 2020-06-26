@@ -59,13 +59,19 @@ export default function PostPage({ route, navigation }) {
         } else {
             const user_id = await AsyncStorage.getItem('user');
             try {
-                const comm = await api.post(`/posts/${post._id}`, {
-                    header: {
-                        user: user_id,
-                    },
-                    message: commentText
+                // Forma incorreta
+                // const comm = await api.post(`/posts/${post._id}`, {
+                //     headers: { user_id },
+                //     message: commentText
+                // })
+
+                const response = await api.post(`/posts/${post._id}`, {
+                     message: commentText ,
+                }, {
+                    headers: { user: user_id },
                 })
-                if (comm.status == 204) {
+
+                if (response.status == 204) {
                     showSucess("Comentário cadastrado com sucesso")
                     setCommentText('')
                     setPress(previousState => !previousState)
