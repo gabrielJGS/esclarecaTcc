@@ -7,7 +7,7 @@ export default StyleSheet.create({
         height:hp('16%'),
         flexDirection:'row',
         justifyContent:'space-between',
-        paddingVertical:15,
+        paddingVertical:10,
         paddingHorizontal:32,
         borderBottomWidth:5,
         borderBottomColor:'#D8D9DB',
@@ -28,7 +28,7 @@ export default StyleSheet.create({
       },
       body2:{
         paddingBottom:20,
-        alignItems:"center"
+        paddingHorizontal:22,
       },
       bodyContent: {
         marginTop:hp('1%')
@@ -66,7 +66,7 @@ export default StyleSheet.create({
         marginTop:17
       },
       container:{
-        flex:1
+        flex:1,
       },
       contentCard:{
         alignItems:'center',
@@ -193,6 +193,105 @@ export default StyleSheet.create({
     alignItems:'center', 
     marginTop:hp('4.8%'),
     justifyContent:'center'
-  }
+  },
+  footer:{
+    top:8,
+    paddingVertical:8,
+    marginHorizontal:30,
+    backgroundColor:'#365478',
+    paddingHorizontal:hp('8.5%'),
+    borderBottomRightRadius:hp('1.5%'),
+    borderBottomLeftRadius:hp('1.5%'),
+    borderTopLeftRadius:hp('4%'),
+    borderTopRightRadius:hp('4%'),
+    flexDirection:'row',
+    justifyContent:'space-between',
+    shadowColor: 'rgb(0, 0, 0)',
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  detailsBar:{
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  detailsButtonText:{
+    fontSize: hp('2.2%'),
+    fontWeight: 'bold'
+  },
+  postsList: {
+    marginTop: 5,
+    paddingHorizontal: 10,
+  },
+  post: {
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    marginBottom: 5,
+    shadowColor: 'rgb(0, 0, 0)',
+            shadowOffset: {
+              width: 3,
+              height: 3,
+            },
+            shadowOpacity: 0.8,
+            shadowRadius: 5,
+            elevation: 3,
+  },
+  postTitle: {
+    fontSize: 16,
+    color: '#365478',
+    fontWeight: 'bold',
+  },
+  postTag:{
+    fontSize: 12,
+    color: '#737380'
+  },
+  postDescricao: {
+    fontSize: 15,
+  },
+  postHeader:{
+    backgroundColor: '#FAFAFA',
+    borderRadius: 8,
+    borderBottomLeftRadius:20,
+    borderBottomRightRadius:20,
+    paddingRight:24,
+    paddingLeft:24,
+    paddingTop:10,
+    paddingBottom:8
+  },
 
+  postDesc:{
+    backgroundColor: 'white',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius:8,
+    paddingRight:24,
+    paddingLeft:24,
+    paddingTop:10,
+    paddingBottom:12,
+  },
+
+  postTitulo:{
+    flexDirection:'row',
+    alignItems:'center',
+    marginBottom:2
+  },
+  Nomepost:{
+    fontSize:10,
+    color:'#C8C8C8'
+  },
+  headerTags:{
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+  Ver:{
+    paddingRight:20,
+    flexDirection:'row', 
+    alignItems:'center',
+    justifyContent:'center'
+  },
 })

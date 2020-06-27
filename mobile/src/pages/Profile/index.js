@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native'
 
-import { Image, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback, FlatList } from "react-native";
+import { Image, ActivityIndicator, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback, FlatList } from "react-native";
 import api from '../../services/api'
-import { Card, CardItem, Left, Header } from 'native-base'
+import * as Animatable from 'react-native-animatable'
+import { FontAwesome } from '@expo/vector-icons'
 
 import styles from './styles'
 import Feather from 'react-native-vector-icons/Feather';
@@ -20,6 +20,7 @@ export default function Profile({ route, navigation }) {
   const [email, setEmail] = useState('');
   const [user, setUser] = useState(false);
   const [press, setPress] = useState(false);
+  const [type, setType] = useState(false);
 
   //sobre os posts
   const [posts, setPosts] = useState([])
@@ -58,6 +59,27 @@ export default function Profile({ route, navigation }) {
   function handleModal() {
     setModalVisible(!modalVisible)
   }
+
+  function navigateToDoubts() {
+    setType(false)
+    reloadPosts()
+  }
+  function navigateToContent() {
+      setType(true)
+      reloadPosts()
+  }
+  function navigateToPost(post) {
+    navigation.navigate('PostPage', {
+        post
+    })
+  }
+
+  useEffect(() => {
+    reload()
+    async function reload(){
+        await reloadPosts()
+    }
+  }, [type])
 
   async function loadPosts() {
     if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
@@ -126,8 +148,46 @@ export default function Profile({ route, navigation }) {
     );
   };
 
+  function handleDate(data) {
+    var day = new Date(data);
+    var today = new Date();
+    var d = new String(data);
+    let text = new String();
+
+    var horas = Math.abs(day - today) / 36e5;
+    var horasArrend = Math.round(horas)
+
+    if (horasArrend > 24) {
+        text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
+    }
+    else if (horasArrend < 1) {
+        text = "Há menos de 1 hora"
+    }
+    else {
+        text = "Há " + horasArrend + " horas atrás"
+    }
+
+    return text
+  }
+
+  function handleTitle(title) {
+      var titulo = new String(title);
+      var tam = new Number(titulo.length)
+      let text = new String();
+
+      if (tam > 20) {
+          text = titulo.substring(0, 20) + "..."
+      }
+      else {
+          text = titulo
+      }
+
+      return text
+    }
+
   return (
     <View style={styles.container}>
+
       <View style={styles.modalView}>
         <Modal
           animationType="fade"
@@ -239,6 +299,7 @@ export default function Profile({ route, navigation }) {
           </TouchableWithoutFeedback>
         </Modal>
       </View>
+
       <View style={styles.header}>
         <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.openDrawer()}>
           <Feather name="menu" size={20} color="#FFC300"></Feather>
@@ -273,104 +334,90 @@ export default function Profile({ route, navigation }) {
           <Feather name="log-out" size={20} color="#FFC300"></Feather>
         </TouchableOpacity>
       </View>
+
       <Image style={styles.avatar} source={{
         uri:
           //'https://scontent.fstu3-1.fna.fbcdn.net/v/t1.0-9/p960x960/87283876_1614904885331971_5523389541076959232_o.jpg?_nc_cat=102&_nc_sid=85a577&_nc_ohc=FY3G_XQYr4YAX_jln8U&_nc_ht=scontent.fstu3-1.fna&_nc_tp=6&oh=6892c35abdfc7a8e7f4786b477890cfc&oe=5EDAE0E2' 
           'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'
       }} />
+
       <View style={styles.body}>
         <View style={styles.perfilName}>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.info}>{tags.toString()}</Text>
         </View>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-
-        <View style={styles.body2}>
-          <View style={styles.bodyContent}>
-            <View style={styles.contentCard}>
-              <Text style={styles.contentTitle}>Dúvidas </Text>
-              <Feather name="help-circle" size={12} color="#365478" style={{ marginTop: 2 }}></Feather>
-            </View>
-            <Text style={styles.contentSubtitle}>Enviadas</Text>
-            <FlatList
-              data={posts}
-              style={styles.postsList}
-              keyExtractor={post => String(post._id)}
-              refreshing={refreshing}
-              onRefresh={reloadPosts}
-              // onTouchStart={reloadPosts}
-              onEndReached={loadPosts}
-              onEndReachedThreshold={0.2}
-              ListFooterComponent={renderFooter}
-              showsHorizontalScrollIndicator={false}//OBS:Trocar para false ao finalizar testes!!!!
-              renderItem={({ item: post }) => (
-                <Card>
-                  <CardItem button bordered>
-                    <Left>
-                      <View style={styles.Card}>
-                        <Text style={styles.cardTitle}>Erro código</Text>
-                        <Text style={styles.cardTags}>Tags</Text>
-                        <Text style={styles.cardDate}>08/06/2020</Text>
+      
+      <Animatable.View
+          style={styles.footer}
+          animation="fadeInUp"
+          duration={900}>
+          <TouchableOpacity style={styles.detailsBar} onPress={navigateToDoubts}>
+              <Text style={[styles.detailsButtonText, { color: type == false ? "#FFC300" : "white" }]}>Dúvidas</Text>
+              <Feather name="edit-3" size={16} color={type == false ? "#FFC300" : "white"}></Feather>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.detailsBar} onPress={navigateToContent}>
+              <Text style={[styles.detailsButtonText, { color: type == true ? "#FFC300" : "white" }]}>Conteúdos</Text>
+              <Feather name="book-open" size={16} color={type == true ? "#FFC300" : "white"}></Feather>
+          </TouchableOpacity>
+      </Animatable.View>
+      
+      <View style={styles.body2}>
+        <View style={styles.bodyContent}>
+          <FlatList
+            data={posts}
+            style={styles.postsList}
+            keyExtractor={post => String(post._id)}
+            refreshing={refreshing}
+            onRefresh={reloadPosts}
+            // onTouchStart={reloadPosts}
+            onEndReached={loadPosts}
+            onEndReachedThreshold={0.2}
+            ListFooterComponent={renderFooter}
+            showsHorizontalScrollIndicator={false}//OBS:Trocar para false ao finalizar testes!!!!
+            renderItem={({ item: post }) => (
+              <Animatable.View
+                style={styles.post}
+                animation="fadeInDown"
+                duration={1000}>
+                  <View style={styles.postHeader}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <View style={styles.postTitulo}>
+                              <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
+                          </View>
+                          <View style={{ alignItems: 'flex-end' }}>
+                              <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => {}}>
+                                  <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
+                              </TouchableOpacity>
+                          </View>
                       </View>
-                    </Left>
-                  </CardItem>
-                </Card>
-              )}>
-
-            </FlatList>
-            {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-
-            </ScrollView> */}
-            <Text style={styles.contentSubtitle}>Favoritas</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-              <Card>
-                <CardItem button>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-            </ScrollView>
-            <View style={styles.contentCard}>
-              <Text style={styles.contentTitle2}>Conteúdos </Text>
-              <Feather name="book-open" size={12} color="#365478" style={{ marginTop: 10 }}></Feather>
-            </View>
-            <Text style={styles.contentSubtitle}>Enviados</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-              <Card>
-                <CardItem button>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-            </ScrollView>
-            <Text style={styles.contentSubtitle}>Favoritos</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-              <Card>
-                <CardItem button>
-                  <Left>
-                    <View style={styles.Card}>
-                      <Text style={styles.cardTitle}>Erro código</Text>
-                      <Text style={styles.cardTags}>Tags</Text>
-                      <Text style={styles.cardDate}>08/06/2020</Text>
-                    </View>
-                  </Left>
-                </CardItem>
-              </Card>
-            </ScrollView>
-          </View>
+                      <View style={styles.headerTags}>
+                          <Text style={styles.postTag}>{post.tags.toString()}</Text>
+                          <TouchableOpacity style={styles.Ver} onPress={() => navigateToPost(post)}>
+                              <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
+                          </TouchableOpacity>
+                      </View>
+                  </View>
+                  <View style={{ paddingHorizontal: 25, paddingBottom: 8,top:4, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <TouchableOpacity onPress={() => handleLike(post._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                              <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: 'red', fontSize: 12 }} />
+                              <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.likes.length}</Text>
+                          </TouchableOpacity>
+                          <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
+                          <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
+                      </View>
+                      {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
+                          <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
+                      </View> : null}
+                </View>
+              </Animatable.View>
+            )}>
+          </FlatList>
         </View>
-      </ScrollView>
+      </View>
+
     </View>
   )
 }
