@@ -163,7 +163,7 @@ export default function PostPage({ route, navigation }) {
     async function handleLikeComment(commId) {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         try {
-            const response = await api.post(`/posts/${post.id}/${commId}/like`, {
+            const response = await api.post(`/posts/${post._id}/${commId}/like`, {
             }, {
                 headers: { user_id }
             })
