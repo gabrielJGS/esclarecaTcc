@@ -18,6 +18,7 @@ export default function Profile({ route, navigation }) {
   const [name, setName] = useState('');
   const [tags, setTags] = useState('');
   const [email, setEmail] = useState('');
+  const [activeUser,setActiveUser] = useState('');
   const [user, setUser] = useState(false);
   const [press, setPress] = useState(false);
   const [type, setType] = useState(false);
@@ -37,6 +38,7 @@ export default function Profile({ route, navigation }) {
       setEmail(response.data.email)
     }
     const usuarioAtual = await AsyncStorage.getItem('user');
+    setActiveUser(usuarioAtual);
     if (usuarioAtual === id) {
       setUser(true)
     }
@@ -80,6 +82,19 @@ export default function Profile({ route, navigation }) {
         await reloadPosts()
     }
   }, [type])
+
+  async function handleLike(postId) {
+    const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+    try {
+        const response = await api.post(`/posts/${postId}/like`, {
+        }, {
+            headers: { user_id }
+        })
+        await reloadPosts()
+    } catch (e) {
+        showError(e)
+    }
+}
 
   async function loadPosts() {
     if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
@@ -386,9 +401,7 @@ export default function Profile({ route, navigation }) {
                               <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
                           </View>
                           <View style={{ alignItems: 'flex-end' }}>
-                              <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => {}}>
-                                  <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
-                              </TouchableOpacity>
+                            <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
                           </View>
                       </View>
                       <View style={styles.headerTags}>
@@ -406,6 +419,15 @@ export default function Profile({ route, navigation }) {
                           </TouchableOpacity>
                           <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
                           <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
+                          {post.user[0]._id === activeUser ?
+                            <>
+                              <TouchableOpacity style={{paddingLeft:15}}>
+                                <Feather name="trash-2" size={12} color='#E73751'></Feather>
+                              </TouchableOpacity>
+                            </>
+                          :
+                            <></>
+                          }
                       </View>
                       {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                           <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
