@@ -4,6 +4,8 @@ import { Image, ActivityIndicator, Alert, View, AsyncStorage, Text, TextInput, T
 import api from '../../services/api'
 import * as Animatable from 'react-native-animatable'
 import { FontAwesome } from '@expo/vector-icons'
+import * as ImagePicker from 'expo-image-picker'
+import UserPermission from '../../UserPermissions';
 
 import styles from './styles'
 import Feather from 'react-native-vector-icons/Feather';
@@ -22,6 +24,7 @@ export default function Profile({ route, navigation }) {
   const [user, setUser] = useState(false);
   const [press, setPress] = useState(false);
   const [type, setType] = useState(false);
+  const [avatar, setAvatar] = useState(null);
 
   //sobre os posts
   const [posts, setPosts] = useState([])
@@ -200,6 +203,20 @@ export default function Profile({ route, navigation }) {
       return text
     }
 
+    async function handlePickUpdate(){
+      UserPermission.getCameraPermission()
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [3,4]
+      })
+
+      if(!result.cancelled){
+          setAvatar(result.uri);
+      }
+  }
+
   return (
     <View style={styles.container}>
 
@@ -349,12 +366,35 @@ export default function Profile({ route, navigation }) {
           <Feather name="log-out" size={20} color="#FFC300"></Feather>
         </TouchableOpacity>
       </View>
-
-      <Image style={styles.avatar} source={{
-        uri:
-          //'https://scontent.fstu3-1.fna.fbcdn.net/v/t1.0-9/p960x960/87283876_1614904885331971_5523389541076959232_o.jpg?_nc_cat=102&_nc_sid=85a577&_nc_ohc=FY3G_XQYr4YAX_jln8U&_nc_ht=scontent.fstu3-1.fna&_nc_tp=6&oh=6892c35abdfc7a8e7f4786b477890cfc&oe=5EDAE0E2' 
-          'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'
-      }} />
+      
+      <TouchableOpacity style={styles.circle} onPress={() =>
+          Alert.alert(
+            'Alterar',
+            'Deseja alterar a foto de Perfil?',
+            [
+              { text: 'Não', onPress: () => { return null } },
+              {
+                text: 'Sim', onPress: () => {
+                  handlePickUpdate();
+                }
+              },
+            ],
+            { cancelable: false }
+          )}
+        >
+        {avatar === null?
+          <>
+            <Image style={styles.avatar} source={{
+              uri:
+                'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'
+            }} />
+          </>
+        :
+          <>
+            <Image style={styles.avatar} source={{uri: avatar}} />
+          </>
+        }
+      </TouchableOpacity>
 
       <View style={styles.body}>
         <View style={styles.perfilName}>

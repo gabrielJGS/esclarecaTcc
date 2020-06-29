@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity,Switch,AsyncStorage,Alert,Linking } from 'react-native';
 import {Camera} from 'expo-camera';
-import { Feather, Ionicons,FontAwesome } from '@expo/vector-icons'
+import { Feather,FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import * as MailComposer from 'expo-mail-composer';
+import * as Animatable from 'react-native-animatable'
 
 import styles from './styles'
 
@@ -107,7 +108,7 @@ export default function Preferences (){
                 </View>
             </View>
             <View style={{flex:1, alignItems:'center', paddingTop:20}}>
-                <View>
+                <Animatable.View animation="fadeInLeft" duration={1000}>
                     <Text style={{fontSize:18, fontWeight:'bold'}}>FIQUE LIGADO EM NOSSAS REDES</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-between', paddingHorizontal:30, paddingVertical:20}}>
                         <TouchableOpacity onPress={handleComposeMail}>
@@ -131,7 +132,7 @@ export default function Preferences (){
                             <FontAwesome name="whatsapp" size={30} color="#25d366"/>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </Animatable.View>
                 <View style={{bottom: 0,position: 'absolute',width: '100%', alignItems:"center", backgroundColor:'#365478', paddingVertical:8}}>
                     <Text style={{color:'#D8D9DB'}}>Equipe Esclareça{'\u2122'}, {year}</Text>
                     <Text style={{color:'#D8D9DB', top:3}}>Copyright {'\u00A9'} {year} Brazil. All rights reserved</Text>

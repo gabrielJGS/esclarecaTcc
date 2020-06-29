@@ -10,24 +10,21 @@ export default StyleSheet.create({
     },
     header: {
         backgroundColor: 'white',
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         width: wp('100%'),
-        height: hp('10%'),
+        height: 100,
     },
     img: {
         width: wp('22%'),
         height: hp('8%'),
-        marginTop: hp('20%'),
+        marginTop: hp('16%'),
         marginLeft: hp('7%'),
     },
     form: {
         backgroundColor: 'white',
         flex: 3,
-        alignSelf: 'stretch',
-        paddingHorizontal: hp('6%'),
-        marginTop: hp('0%')
+        width:wp('75%')
     },
     label1: {
         fontWeight: 'bold',
@@ -75,7 +72,7 @@ export default StyleSheet.create({
         borderColor: '#289cff'
     },
     OvalShapeView: {
-        marginBottom: hp('14%'),
+        marginBottom: hp('2%'),
         width: wp('50%'),
         height: hp('33.4%'),
         borderRadius: 80,
@@ -86,16 +83,16 @@ export default StyleSheet.create({
     },
     images: {
         backgroundColor: '#B2BABB',
-        marginTop: 30,
+        marginTop: 37,
         width: hp('6%'),
         color: 'white',
-        marginLeft: 28
+        marginLeft: 40
     },
     circle: {
-        width: 100,
-        height: 100,
-        borderRadius: 100 / 2,
+        width: 120,
+        height: 120,
+        borderRadius: 120 / 2,
         backgroundColor: '#B2BABB',
-        marginTop: hp('0%')
+        marginTop:30,
     }
 });

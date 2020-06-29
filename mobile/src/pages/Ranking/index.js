@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity,Switch,AsyncStorage,Alert,Linking } from 'react-native';
+import { Text, View, TouchableOpacity,Alert} from 'react-native';
 import { Feather, Ionicons,SimpleLineIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
-import * as MailComposer from 'expo-mail-composer';
+import * as Animatable from 'react-native-animatable'
 
 import styles from './styles'
 
@@ -24,7 +24,7 @@ export default function Ranking(){
                 <Feather name="trending-up" size={18} color="#5CBA58"/>
                 <Text style={{fontWeight:'bold',fontSize:22, color:'#2E4053'}}> Maiores Participações</Text>
             </View>
-            <View style={{marginHorizontal:40,top:60,flex:1, paddingBottom:20}}>
+            <Animatable.View View style={{marginHorizontal:40,top:60,flex:1, paddingBottom:20}} animation="fadeInDown" duration={1000}>
                 <View style={{flexDirection:'row', alignItems:"center", justifyContent:'space-between', paddingBottom:15}}>
                     <View style={{flexDirection:'row', alignItems:"center", justifyContent:'space-between'}}>
                         <Feather name="award" size={17} color="#F5B7B1"/>
@@ -43,7 +43,7 @@ export default function Ranking(){
                         <Text style={{fontWeight:'bold',fontSize:19, color:'#F1948A'}}>1500 <Text style={{fontWeight:'bold',fontSize:19, color:'#566573'}}>Pontos</Text></Text>
                     </View>
                 </View>
-            </View>
+            </Animatable.View>
         </View>
     )
 }

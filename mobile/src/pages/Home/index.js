@@ -3,13 +3,9 @@ import { useNavigation } from '@react-navigation/native'
 import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 
-//import { Icon, Button } from 'native-base'
-
 import api from '../../services/api'
-
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
-//import { SearchBar } from 'react-native-elements'
 
 import { showError } from '../../common'
 
