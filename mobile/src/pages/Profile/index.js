@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-import { Image, ActivityIndicator, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback, FlatList } from "react-native";
+import { Image, Switch, ActivityIndicator, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback, FlatList } from "react-native";
 import api from '../../services/api'
 import * as Animatable from 'react-native-animatable'
 import { FontAwesome } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
 import UserPermission from '../../UserPermissions';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import styles from './styles'
 import Feather from 'react-native-vector-icons/Feather';
@@ -25,6 +26,9 @@ export default function Profile({ route, navigation }) {
   const [press, setPress] = useState(false);
   const [type, setType] = useState(false);
   const [avatar, setAvatar] = useState(null);
+
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   //sobre os posts
   const [posts, setPosts] = useState([])
@@ -53,7 +57,6 @@ export default function Profile({ route, navigation }) {
   useEffect(() => {
     loadUser(route.params.userId)
     loadPosts()
-    console.log(press)
   }, [route.params.userId, press])
 
   function logoutUser() {
@@ -407,14 +410,26 @@ export default function Profile({ route, navigation }) {
           style={styles.footer}
           animation="fadeInUp"
           duration={900}>
-          <TouchableOpacity style={styles.detailsBar} onPress={navigateToDoubts}>
-              <Text style={[styles.detailsButtonText, { color: type == false ? "#FFC300" : "white" }]}>Dúvidas</Text>
-              <Feather name="edit-3" size={16} color={type == false ? "#FFC300" : "white"}></Feather>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.detailsBar} onPress={navigateToContent}>
-              <Text style={[styles.detailsButtonText, { color: type == true ? "#FFC300" : "white" }]}>Conteúdos</Text>
-              <Feather name="book-open" size={16} color={type == true ? "#FFC300" : "white"}></Feather>
-          </TouchableOpacity>
+          <View style={{flexDirection:'row', alignItems: "center", justifyContent: 'flex-start', paddingHorizontal:30}}>
+            <Text style={{color:'white', fontWeight:'bold'}}>Enviadas</Text>
+            <Switch trackColor={{ false: "#7DCEA0", true: "#E73751" }}
+              thumbColor={isEnabled ? "#E73751" : "#7DCEA0"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+            <Text style={{color:'white', fontWeight:'bold'}}>Curtidas</Text>
+          </View>
+          <View style={{flexDirection:'row', justifyContent:'space-between', paddingHorizontal:hp('8.5%'), top:2}}>
+            <TouchableOpacity style={styles.detailsBar} onPress={navigateToDoubts}>
+                <Text style={[styles.detailsButtonText, { color: type == false ? "#FFC300" : "white" }]}>Dúvidas</Text>
+                <Feather name="edit-3" size={16} color={type == false ? "#FFC300" : "white"}></Feather>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detailsBar} onPress={navigateToContent}>
+                <Text style={[styles.detailsButtonText, { color: type == true ? "#FFC300" : "white" }]}>Conteúdos</Text>
+                <Feather name="book-open" size={16} color={type == true ? "#FFC300" : "white"}></Feather>
+            </TouchableOpacity>
+          </View>
       </Animatable.View>
       
       <View style={styles.body2}>
