@@ -8,50 +8,44 @@ import { FontAwesome } from '@expo/vector-icons'
 import styles from './styles'
 import Feather from 'react-native-vector-icons/Feather';
 import { AuthContext } from '../../context'
+import { showError } from '../../common'
 
 export default function Profile({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   //const navigation = useNavigation()
   const { singOut } = React.useContext(AuthContext);
-
+  //Editar perfil
   const [name, setName] = useState('');
-  const [tags, setTags] = useState('');
   const [email, setEmail] = useState('');
-  const [activeUser,setActiveUser] = useState('');
-  const [user, setUser] = useState(false);
+  const [tags, setTags] = useState('');
+  const [password, setPassword] = useState('');
+
+  //Usuário
+  const [userId, setUserId] = useState(route.params.userId);
+  const [loggedUser, setLoggedUser] = useState('');
+  const [isLoggedUser, setIsLoggedUser] = useState(false);
   const [press, setPress] = useState(false);
   const [type, setType] = useState(false);
 
-  //sobre os posts
+  //Posts do usuário
   const [posts, setPosts] = useState([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
 
-  async function loadUser(id) {
-    const response = await api.get(`/users/${id}`)
-    if (response.data) {
-      setName(response.data.name)
-      setTags(response.data.tags)
-      setEmail(response.data.email)
-    }
-    const usuarioAtual = await AsyncStorage.getItem('user');
-    setActiveUser(usuarioAtual);
-    if (usuarioAtual === id) {
-      setUser(true)
-    }
-    else {
-      setUser(false)
-    }
-  }
-
   useEffect(() => {
     loadUser(route.params.userId)
     loadPosts()
-    console.log(press)
-  }, [route.params.userId, press])
+  }, [route.params.userId])
+
+  useEffect(() => {
+    reload()
+    async function reload() {
+      await reloadPosts()
+    }
+  }, [type, userId])
 
   function logoutUser() {
     AsyncStorage.clear()
@@ -67,55 +61,83 @@ export default function Profile({ route, navigation }) {
     reloadPosts()
   }
   function navigateToContent() {
-      setType(true)
-      reloadPosts()
+    setType(true)
+    reloadPosts()
   }
   function navigateToPost(post) {
     navigation.navigate('PostPage', {
-        post
+      post
     })
   }
 
-  useEffect(() => {
-    reload()
-    async function reload(){
-        await reloadPosts()
+  async function loadUser(id) {
+    const response = await api.get(`/users/${id}`, {})
+    if (response.data) {
+      setName(response.data.name)
+      setEmail(response.data.email)
+      setTags(response.data.tags)
+      setUserId(response.data._id)
     }
-  }, [type])
+    const usuarioAtual = await AsyncStorage.getItem('user');
+    setLoggedUser(usuarioAtual);
+    if (usuarioAtual === id) {
+      setIsLoggedUser(true)
+    }
+    else {
+      setIsLoggedUser(false)
+    }
+    //Carrega os dados do usuário para caso queira alterar
+  }
+
+  async function updateUser() {
+    if (password.trim() == '') {
+      showError("Confirme ou digite sua nova senha!")
+      return
+    }
+    const response = await api.put(`/users/${userId}`, {
+      name,
+      email,
+      tags: tags.toString(','),
+      password
+    })
+   // loadUser()
+    setPress(previousState => !previousState)
+    handleModal()
+  }
 
   async function handleLike(postId) {
     const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
     try {
-        const response = await api.post(`/posts/${postId}/like`, {
-        }, {
-            headers: { user_id }
-        })
-        await reloadPosts()
+      const response = await api.post(`/posts/${postId}/like`, {
+      }, {
+        headers: { user_id }
+      })
+      await reloadPosts()
     } catch (e) {
-        showError(e)
+      showError(e)
     }
-}
+  }
 
   async function loadPosts() {
     if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
       return
     }
-    const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-    const getTotal = await api.head('/posts', { headers: { user_id, type } })
-    setTotal(getTotal.headers['x-total-count'])
+    //const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+    // const getTotal = await api.head('/posts', { headers: { user, type } })
+    // setTotal(getTotal.headers['x-total-count'])
     if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
       return
     }
 
     setLoading(true)//Altera para o loading iniciado
     try {
-      const response = await api.get('/posts', {
-        headers: { user_id, type },
+      const response = await api.get(`/users/${userId}/posts`, {
+        headers: { type },
         params: { page }
       })
-      //setPosts(response.data)
+
       setPosts([...posts, ...response.data])
-      //setTotal(response.headers['x-total-count'])
+      setTotal(response.headers['x-total-count'])
       if (response.data.length > 0) {
         setPage(page + 1)
       }
@@ -129,22 +151,16 @@ export default function Profile({ route, navigation }) {
     if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
       return
     }
-    const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-    // const getTotal = await api.head('/posts', { headers: { user_id, type } })
-    // setTotal(getTotal.headers['x-total-count'])
-    // if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-    //     return
-    // }
+    // const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+
     setRefreshing(true)//Altera para o loading iniciado
 
     try {
-      const response = await api.get('/posts', {
-        headers: { user_id, type },
+      const response = await api.get(`/users/${userId}/posts`, {
+        headers: { type },
         params: { page: 1 }
       })
-      //setPosts(response.data)
       setPosts(response.data)
-      //setTotal(response.headers['x-total-count'])
       if (response.data.length > 0) {
         setPage(2)
       }
@@ -173,32 +189,32 @@ export default function Profile({ route, navigation }) {
     var horasArrend = Math.round(horas)
 
     if (horasArrend > 24) {
-        text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
+      text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
     }
     else if (horasArrend < 1) {
-        text = "Há menos de 1 hora"
+      text = "Há menos de 1 hora"
     }
     else {
-        text = "Há " + horasArrend + " horas atrás"
+      text = "Há " + horasArrend + " horas atrás"
     }
 
     return text
   }
 
   function handleTitle(title) {
-      var titulo = new String(title);
-      var tam = new Number(titulo.length)
-      let text = new String();
+    var titulo = new String(title);
+    var tam = new Number(titulo.length)
+    let text = new String();
 
-      if (tam > 20) {
-          text = titulo.substring(0, 20) + "..."
-      }
-      else {
-          text = titulo
-      }
-
-      return text
+    if (tam > 20) {
+      text = titulo.substring(0, 20) + "..."
     }
+    else {
+      text = titulo
+    }
+
+    return text
+  }
 
   return (
     <View style={styles.container}>
@@ -255,7 +271,7 @@ export default function Profile({ route, navigation }) {
                       autoCapitalize="words"
                       autoCorrect={false}
                       value={name}
-                      //onChangeText={setTitle}
+                      onChangeText={setName}
                       numberOfLines={2}
                       returnKeyType="next"
                     />
@@ -267,7 +283,7 @@ export default function Profile({ route, navigation }) {
                       keyboardType="email-address"
                       autoCapitalize="none"
                       value={email}
-                      //onChangeText={setTitle}
+                      onChangeText={setEmail}
                       numberOfLines={2}
                       returnKeyType="next"
                     />
@@ -279,7 +295,7 @@ export default function Profile({ route, navigation }) {
                       autoCapitalize="words"
                       autoCorrect={false}
                       value={tags.toString()}
-                      //onChangeText={setTitle}
+                      onChangeText={setTags}
                       numberOfLines={2}
                       returnKeyType="next"
                     />
@@ -292,14 +308,14 @@ export default function Profile({ route, navigation }) {
                       password={true}
                       autoCapitalize="words"
                       autoCorrect={false}
-                      //value={senha}
-                      //onChangeText={setSenha}
+                      value={password}
+                      onChangeText={setPassword}
                       numberOfLines={2}
                       onSubmitEditing={handleModal}
                     />
                   </View>
                   <View style={styles.buttonView}>
-                    <TouchableOpacity onPress={() => { setPress(previousState => !previousState); handleModal }} style={styles.button}>
+                    <TouchableOpacity onPress={updateUser} style={styles.button}>
                       <Text style={styles.buttonText}>Salvar</Text>
                       <Feather name="check" size={15} color="#FFC300"></Feather>
                     </TouchableOpacity>
@@ -319,7 +335,7 @@ export default function Profile({ route, navigation }) {
         <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.openDrawer()}>
           <Feather name="menu" size={20} color="#FFC300"></Feather>
         </TouchableOpacity>
-        {user ?
+        {isLoggedUser ?
           <>
             <TouchableOpacity onPress={handleModal} style={styles.detailsButton}>
               <Feather name="edit" size={20} color="#FFC300"></Feather>
@@ -362,21 +378,21 @@ export default function Profile({ route, navigation }) {
           <Text style={styles.info}>{tags.toString()}</Text>
         </View>
       </View>
-      
+
       <Animatable.View
-          style={styles.footer}
-          animation="fadeInUp"
-          duration={900}>
-          <TouchableOpacity style={styles.detailsBar} onPress={navigateToDoubts}>
-              <Text style={[styles.detailsButtonText, { color: type == false ? "#FFC300" : "white" }]}>Dúvidas</Text>
-              <Feather name="edit-3" size={16} color={type == false ? "#FFC300" : "white"}></Feather>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.detailsBar} onPress={navigateToContent}>
-              <Text style={[styles.detailsButtonText, { color: type == true ? "#FFC300" : "white" }]}>Conteúdos</Text>
-              <Feather name="book-open" size={16} color={type == true ? "#FFC300" : "white"}></Feather>
-          </TouchableOpacity>
+        style={styles.footer}
+        animation="fadeInUp"
+        duration={900}>
+        <TouchableOpacity style={styles.detailsBar} onPress={navigateToDoubts}>
+          <Text style={[styles.detailsButtonText, { color: type == false ? "#FFC300" : "white" }]}>Dúvidas</Text>
+          <Feather name="edit-3" size={16} color={type == false ? "#FFC300" : "white"}></Feather>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.detailsBar} onPress={navigateToContent}>
+          <Text style={[styles.detailsButtonText, { color: type == true ? "#FFC300" : "white" }]}>Conteúdos</Text>
+          <Feather name="book-open" size={16} color={type == true ? "#FFC300" : "white"}></Feather>
+        </TouchableOpacity>
       </Animatable.View>
-      
+
       <View style={styles.body2}>
         <View style={styles.bodyContent}>
           <FlatList
@@ -395,44 +411,44 @@ export default function Profile({ route, navigation }) {
                 style={styles.post}
                 animation="fadeInDown"
                 duration={1000}>
-                  <View style={styles.postHeader}>
-                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <View style={styles.postTitulo}>
-                              <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
-                          </View>
-                          <View style={{ alignItems: 'flex-end' }}>
-                            <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
-                          </View>
-                      </View>
-                      <View style={styles.headerTags}>
-                          <Text style={styles.postTag}>{post.tags.toString()}</Text>
-                          <TouchableOpacity style={styles.Ver} onPress={() => navigateToPost(post)}>
-                              <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
-                          </TouchableOpacity>
-                      </View>
+                <View style={styles.postHeader}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={styles.postTitulo}>
+                      <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
+                    </View>
+                    <View style={{ alignItems: 'flex-end' }}>
+                      <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
+                    </View>
                   </View>
-                  <View style={{ paddingHorizontal: 25, paddingBottom: 8,top:4, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                          <TouchableOpacity onPress={() => handleLike(post._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                              <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: 'red', fontSize: 12 }} />
-                              <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.likes.length}</Text>
-                          </TouchableOpacity>
-                          <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
-                          <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
-                          {post.user[0]._id === activeUser ?
-                            <>
-                              <TouchableOpacity style={{paddingLeft:15}}>
-                                <Feather name="trash-2" size={12} color='#E73751'></Feather>
-                              </TouchableOpacity>
-                            </>
-                          :
-                            <></>
-                          }
-                      </View>
-                      {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                          <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
-                          <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
-                      </View> : null}
+                  <View style={styles.headerTags}>
+                    <Text style={styles.postTag}>{post.tags.toString()}</Text>
+                    <TouchableOpacity style={styles.Ver} onPress={() => navigateToPost(post)}>
+                      <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={{ paddingHorizontal: 25, paddingBottom: 8, top: 4, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => handleLike(post._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: 'red', fontSize: 12 }} />
+                      <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.likes.length}</Text>
+                    </TouchableOpacity>
+                    <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
+                    <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
+                    {post.user[0]._id === loggedUser ?
+                      <>
+                        <TouchableOpacity style={{ paddingLeft: 15 }}>
+                          <Feather name="trash-2" size={12} color='#E73751'></Feather>
+                        </TouchableOpacity>
+                      </>
+                      :
+                      <></>
+                    }
+                  </View>
+                  {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
+                    <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
+                  </View> : null}
                 </View>
               </Animatable.View>
             )}>

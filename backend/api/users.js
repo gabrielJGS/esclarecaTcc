@@ -28,7 +28,7 @@ module.exports = app => {
 
         const email = req.body.email.trim().toLowerCase()
         const tags = req.body.tags.trim().toLowerCase()
-
+        console.log(req.body)
         obterHash(req.body.password.trim().toLowerCase(), hash => {
             const password = hash
 

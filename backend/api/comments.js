@@ -50,7 +50,6 @@ module.exports = app => {
             return res.status(401).send('Post inválido');
         }
 
-        //const count = await Posts.find({ tags: { $in: user.tags } }).countDocuments()
         const comments = await Posts_Comments
             .aggregate([
                 { $match: { post: postOri._id } },
