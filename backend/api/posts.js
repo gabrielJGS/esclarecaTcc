@@ -35,26 +35,112 @@ module.exports = app => {
     }
     const getByUser = async (req, res) => {
         const { id } = req.params;
-        const { type } = req.headers
-        const typeSearch = type == 'false' ? false : true
-        const resPost = await Posts.find({ user: id, type: typeSearch })
-            .catch(err => res.status(400).json(err))
-        if (!resPost) {
-            return res.status(400).send('Nenhum post encontrado para o usuário')
+        const { type } = req.headers;
+        if (id == undefined) {
+            return res.status(401).send('Usuário inválido');
         }
-        return res.json(resPost);
+        const typeSearch = type == 'false' ? false : true
+        //Páginação
+        const qtdLoad = 5
+        const { page = 1 } = req.query
+
+        const user = await Users.findById(id)
+            .catch(err => res.status(400).json(err))
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
+        }
+
+        const count = await Posts.find({ user: user._id, type: typeSearch }).countDocuments()
+        res.header('X-Total-Count', count)
+        
+        const posts = await Posts
+            .aggregate([
+                { $match: { user: user._id, type: typeSearch } },
+                { $sort: { postedIn: -1 } },
+                {
+                    $lookup: {
+                        from: 'posts_comments',
+                        let: { postId: "$_id" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$$postId", "$post"] } } },
+                            { $count: "count" }
+                        ],
+                        as: 'commentsCount'
+                    }
+                },
+                {
+                    "$addFields": {
+                        "didILiked": {
+                            "$in": [mongoose.Types.ObjectId(user._id), "$likes"]
+                        },
+                        "commentsCount": { "$ifNull": [{ "$arrayElemAt": ["$commentsCount.count", 0] }, 0] }
+                    }
+                },
+                { $skip: (page - 1) * qtdLoad },
+                { $limit: qtdLoad },
+                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
+            ])
+            .catch(err => res.status(400).json(err))
+
+        return res.json(posts)
     }
 
     const getLikesByUser = async (req, res) => {
         const { id } = req.params;
-        const { type } = req.headers
+        const { type } = req.headers;
         const typeSearch = type == 'false' ? false : true
-        const resPost = await Posts.find({ likes: { $in: id }, type: typeSearch })
+
+        //Páginação
+        const qtdLoad = 5
+        const { page = 1 } = req.query
+
+        const user = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))
-        if (!resPost) {
-            return res.status(400).send('Nenhum post encontrado para o usuário')
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
         }
-        return res.json(resPost);
+
+        const posts = await Posts
+            .aggregate([
+                { $match: { likes: { $in: id }, type: typeSearch } },
+                { $sort: { postedIn: -1 } },
+                {
+                    $lookup: {
+                        from: 'posts_comments',
+                        let: { postId: "$_id" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$$postId", "$post"] } } },
+                            { $count: "count" }
+                        ],
+                        as: 'commentsCount'
+                    }
+                },
+                {
+                    "$addFields": {
+                        "didILiked": {
+                            "$in": [mongoose.Types.ObjectId(id), "$likes"]
+                        },
+                        "commentsCount": { "$ifNull": [{ "$arrayElemAt": ["$commentsCount.count", 0] }, 0] }
+                    }
+                },
+                { $skip: (page - 1) * qtdLoad },
+                { $limit: qtdLoad },
+                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
+            ])
+            .catch(err => res.status(400).json(err))
+
+        return res.json(posts)
+
+        // const { type } = req.headers
+        // const typeSearch = type == 'false' ? false : true
+        // const resPost = await Posts.find({ likes: { $in: id }, type: typeSearch })
+        //     .catch(err => res.status(400).json(err))
+        // if (!resPost) {
+        //     return res.status(400).send('Nenhum post encontrado para o usuário')
+        // }
+        // return res.json(resPost);
     }
 
     const searchPost = async (req, res) => {

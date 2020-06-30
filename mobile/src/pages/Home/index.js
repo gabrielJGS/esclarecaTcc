@@ -72,9 +72,7 @@ export default function Home() {
                 headers: { user_id, type },
                 params: { page }
             })
-            //setPosts(response.data)
             setPosts([...posts, ...response.data])
-            //setTotal(response.headers['x-total-count'])
             if (response.data.length > 0) {
                 setPage(page + 1)
             }
@@ -88,11 +86,6 @@ export default function Home() {
             return
         }
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-        // const getTotal = await api.head('/posts', { headers: { user_id, type } })
-        // setTotal(getTotal.headers['x-total-count'])
-        // if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-        //     return
-        // }
         setRefreshing(true)//Altera para o loading iniciado
 
         try {
@@ -100,9 +93,7 @@ export default function Home() {
                 headers: { user_id, type },
                 params: { page: 1 }
             })
-            //setPosts(response.data)
             setPosts(response.data)
-            //setTotal(response.headers['x-total-count'])
             if (response.data.length > 0) {
                 setPage(2)
             }
