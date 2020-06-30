@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
-import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar } from "react-native";
+import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar,ScrollView } from "react-native";
 import api from '../../services/api'
 
 import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo maior
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Feather } from '@expo/vector-icons'
+import * as ImagePicker from 'expo-image-picker'
+import UserPermission from '../../UserPermissions';
 
 import { showError, showSucess } from '../../common'
 
@@ -18,6 +21,8 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [tags, setTags] = useState('');
+    const [avatar, setAvatar] = useState(null);
+    const [visble, setVisible] = useState(false);
 
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
@@ -36,6 +41,22 @@ export default function Register() {
             showError(e)
         }
     }
+
+    async function handlePick(){
+        UserPermission.getCameraPermission()
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [3,4]
+        })
+
+        if(!result.cancelled){
+            setAvatar(result.uri);
+            setVisible(true);
+        }
+    }
+
     function handleCancel() {
         navigation.goBack()
     }
@@ -54,16 +75,25 @@ export default function Register() {
                     />
                 </View>
             </View>
-            <TouchableOpacity style={styles.circle}>
-                <Icon
-                    name="camera" size={40}
-                    style={styles.images}
-                />
+            <TouchableOpacity style={styles.circle} onPress={() => handlePick()}>
+                {visble?
+                    <>
+                        <Image source={{uri: avatar}} style={{width: 120,height: 120,borderRadius: 120 / 2,borderWidth:3,borderColor:"#FFF"}}/>
+                    </>
+                :
+                    <>
+                        <Feather
+                            name="camera" size={40}
+                            style={styles.images}
+                        />
+                    </>
+                }
             </TouchableOpacity>
+            <ScrollView>
             <Animatable.View
                 style={styles.form}
                 animation="fadeIn">
-                <Text style={styles.label1}>NAME *</Text>
+                <Text style={styles.label1}>NOME *</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Insira seu nome"
@@ -117,6 +147,7 @@ export default function Register() {
                     <Text style={[styles.buttonText, { color: '#365478' }]}>Voltar</Text>
                 </TouchableOpacity>
             </Animatable.View>
+            </ScrollView>
         </KeyboardAvoidingView>
     )
 }

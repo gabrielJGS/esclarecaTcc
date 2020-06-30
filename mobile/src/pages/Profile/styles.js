@@ -12,18 +12,19 @@ export default StyleSheet.create({
         borderBottomWidth:5,
         borderBottomColor:'#D8D9DB',
       },
-      avatar: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        borderWidth: 2,
-        borderColor: "white",
+      circle: {
+        width: 120,height: 120,borderRadius: 120 / 2,
         alignSelf:'center',
         position: 'absolute',
-        marginTop:hp('10%')
+        marginTop:hp('9%')
+      },
+      avatar: {
+        width: 120,height: 120,borderRadius: 120 / 2,borderWidth:3,borderColor:"#D8D9DB",
+        alignSelf:'center',
+        position: 'absolute',
       },
       body:{
-        marginTop:hp('1.5%'),
+        marginTop:hp('2%'),
         paddingBottom:5
       },
       body2:{
