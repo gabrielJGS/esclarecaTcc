@@ -21,10 +21,6 @@ export default function PostPage({ route, navigation }) {
     const [activeUser, setActiveUser] = useState('')
     const [press, setPress] = useState(false)
 
-    //switch
-    const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
     useEffect(() => {
         handleID()
         loadComments()
@@ -59,14 +55,8 @@ export default function PostPage({ route, navigation }) {
         } else {
             const user_id = await AsyncStorage.getItem('user');
             try {
-                // Forma incorreta
-                // const comm = await api.post(`/posts/${post._id}`, {
-                //     headers: { user_id },
-                //     message: commentText
-                // })
-
                 const response = await api.post(`/posts/${post._id}`, {
-                     message: commentText ,
+                    message: commentText,
                 }, {
                     headers: { user: user_id },
                 })
@@ -147,6 +137,17 @@ export default function PostPage({ route, navigation }) {
         }
         setRefreshing(false)
     }
+    async function handleDeletePost() {
+        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+        try {
+            const response = await api.delete(`/posts/${post._id}`, {
+                headers: { user_id }
+            })
+            navigateToHome()
+        } catch (e) {
+            showError(e)
+        }
+    }
 
     async function handleLikePost() {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
@@ -160,6 +161,7 @@ export default function PostPage({ route, navigation }) {
             showError(e)
         }
     }
+
     async function handleLikeComment(commId) {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         try {
@@ -172,6 +174,36 @@ export default function PostPage({ route, navigation }) {
             showError(e)
         }
         await reloadPage()
+    }
+
+    async function handleDeleteComment(commId) {
+        const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+        try {
+            const response = await api.delete(`/posts/${post._id}/${commId}`, {
+                headers: { user_id }
+            })
+
+        } catch (e) {
+            showError(e)
+        }
+        await reloadPage()
+    }
+
+    async function handleSolvePost(commId) {
+        if (userIsPostOwner) {
+            const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
+            try {
+                const response = await api.post(`/posts/${post._id}/${commId}/solve`, {}, {
+                    headers: { user_id }
+                })
+                if (response.status == 200) {
+                    showError("Publicação já solucionado por outro comentário")
+                }
+            } catch (e) {
+                showError(e)
+            }
+            await reloadPage()
+        }
     }
     renderFooter = () => {
         if (!loading) return null;
@@ -225,7 +257,7 @@ export default function PostPage({ route, navigation }) {
                             <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
                             <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
                         </TouchableOpacity>
-                        <Text style={{ marginTop: 10, fontSize: 15, color: 'white', paddingRight:10 }}>{post.desc}</Text>
+                        <Text style={{ marginTop: 10, fontSize: 15, color: 'white', paddingRight: 10 }}>{post.desc}</Text>
 
                         <View style={{ flexDirection: 'row', paddingTop: 20, alignItems: 'flex-end' }}>
                             <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>Anexos</Text>
@@ -246,18 +278,18 @@ export default function PostPage({ route, navigation }) {
                         </TouchableOpacity>
                         {userIsPostOwner ?
                             <>
-                                <TouchableOpacity onPress={() =>
-                                    Alert.alert(
-                                        'Excluir',
-                                        'Deseja excluir sua dúvida?',
-                                        [
-                                            { text: 'Não', onPress: () => { return null } },
-                                            {
-                                                text: 'Sim', onPress: () => { }
-                                            },
-                                        ],
-                                        { cancelable: false }
-                                    )}
+                                <TouchableOpacity onPress={handleDeletePost}
+                                    // Alert.alert(
+                                    //     'Excluir',
+                                    //     'Deseja excluir sua dúvida?',
+                                    //     [
+                                    //         { text: 'Não', onPress: () => { return null } },
+                                    //         {
+                                    //             text: 'Sim', onPress: () => { }
+                                    //         },
+                                    //     ],
+                                    //     { cancelable: false }
+                                    // )}
                                     style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 15 }}
                                 >
                                     <Feather name="trash-2" size={15} color='#E73751'></Feather>
@@ -285,7 +317,7 @@ export default function PostPage({ route, navigation }) {
                         }
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {post.close ?
+                        {post.solved ?
                             <>
                                 <Text style={{ color: '#7DCEA0', fontWeight: 'bold', paddingRight: 5 }}>Esclarecido</Text>
                                 <Feather name="check-circle" size={20} color='#7DCEA0'></Feather>
@@ -327,18 +359,18 @@ export default function PostPage({ route, navigation }) {
                                             <Text style={styles.Nomepost}>{handleDate(comment.postedIn)}</Text>
                                             {comment.user[0]._id === activeUser ?
                                                 <>
-                                                    <TouchableOpacity onPress={() =>
-                                                        Alert.alert(
-                                                            'Excluir',
-                                                            'Deseja excluir sua Resposta?',
-                                                            [
-                                                                { text: 'Não', onPress: () => { return null } },
-                                                                {
-                                                                    text: 'Sim', onPress: () => { }
-                                                                },
-                                                            ],
-                                                            { cancelable: false }
-                                                        )}
+                                                    <TouchableOpacity onPress={() => handleDeleteComment(comment._id)}
+                                                        // Alert.alert(
+                                                        //     'Excluir',
+                                                        //     'Deseja excluir sua Resposta?',
+                                                        //     [
+                                                        //         { text: 'Não', onPress: () => console.log("teste") },
+                                                        //         {
+                                                        //             text: 'Sim', onPress: console.log("teste")
+                                                        //         },
+                                                        //     ],
+                                                        //     { cancelable: false }
+                                                        // )}
                                                         style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
                                                     >
                                                         <Feather name="trash-2" size={15} color='#E73751'></Feather>
@@ -361,11 +393,11 @@ export default function PostPage({ route, navigation }) {
                                         </TouchableOpacity>
                                         <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{comment.likes.length}</Text>
                                     </View>
-                                    {userIsPostOwner ?
+                                    {userIsPostOwner || comment.solvedPost ?
                                         <>
-                                            <TouchableOpacity onPress={toggleSwitch} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingRight: 15 }}>
+                                            <TouchableOpacity onPress={() => handleSolvePost(comment._id)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingRight: 15 }}>
                                                 <Text style={{ color: '#7DCEA0', fontSize: 12, paddingRight: 2 }}>Esclareceu sua dúvida? </Text>
-                                                <Feather name={isEnabled == true ? "check-circle" : "circle"} size={15} color='#7DCEA0'></Feather>
+                                                <Feather name={comment.solvedPost == true ? "check-circle" : "circle"} size={15} color='#7DCEA0'></Feather>
                                             </TouchableOpacity>
                                         </>
                                         :

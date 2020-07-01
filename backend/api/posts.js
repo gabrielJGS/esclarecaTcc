@@ -52,7 +52,7 @@ module.exports = app => {
 
         const count = await Posts.find({ user: user._id, type: typeSearch }).countDocuments()
         res.header('X-Total-Count', count)
-        
+
         const posts = await Posts
             .aggregate([
                 { $match: { user: user._id, type: typeSearch } },
@@ -132,15 +132,6 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
 
         return res.json(posts)
-
-        // const { type } = req.headers
-        // const typeSearch = type == 'false' ? false : true
-        // const resPost = await Posts.find({ likes: { $in: id }, type: typeSearch })
-        //     .catch(err => res.status(400).json(err))
-        // if (!resPost) {
-        //     return res.status(400).send('Nenhum post encontrado para o usuário')
-        // }
-        // return res.json(resPost);
     }
 
     const searchPost = async (req, res) => {
@@ -248,16 +239,15 @@ module.exports = app => {
     const remove = async (req, res) => {
         const { user_id } = req.headers;
         const { post } = req.params;
-        const postToBeRemoved = await Posts.findById(req.params)
-            .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
-        if (!postToBeRemoved) { res.status(400).send("Post não encontrado com o id: " + req.params) }//Caso o id seja válido mas não exista vai cair aqui
-
+        const postToBeRemoved = await Posts.findById(post)
+            .catch(err => { return res.status(400).json(err) })//Caso o id seja inválido vai cair aqui
+        if (!postToBeRemoved) { return res.status(400).send("Post não encontrado com o id: " + post) }//Caso o id seja válido mas não exista vai cair aqui
         if (postToBeRemoved.user == user_id) {//Se é o dono post deleta
-            await Posts.deleteOne(post)
-                .catch(err => res.status(400).json(err))
-            res.status(204).send()
+            await Posts.deleteOne(postToBeRemoved)
+                .catch(err => { return res.status(400).json(err) })
+            return res.status(204).send()
         } else {//Se não, não tem permissão
-            res.status(401).send(`Usuário ${user_id} não autorizado a deletar o post.`)
+            return res.status(401).send(`Usuário ${user_id} não autorizado a deletar o post.`)
         }
 
     }

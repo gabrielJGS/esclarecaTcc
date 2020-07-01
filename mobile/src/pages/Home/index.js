@@ -19,7 +19,7 @@ export default function Home() {
     const [search, setSearch] = useState('');
     const [type, setType] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
-    
+
     function navigateToNewPost() {
         navigation.navigate('NewPost', {
             type
@@ -111,14 +111,14 @@ export default function Home() {
             </View>
         );
     };
-    
+
     useEffect(() => {
         loadPosts()
     }, [])
 
     useEffect(() => {
         reload()
-        async function reload(){
+        async function reload() {
             await reloadPosts()
         }
     }, [type])
@@ -254,11 +254,10 @@ export default function Home() {
                         keyExtractor={post => String(post._id)}
                         refreshing={refreshing}
                         onRefresh={reloadPosts}
-                        // onTouchStart={reloadPosts}
                         onEndReached={onLoadMore}
                         onEndReachedThreshold={0.2}
                         ListFooterComponent={renderFooter}
-                        showsVerticalScrollIndicator={false}//OBS:Trocar para false ao finalizar testes!!!!
+                        showsVerticalScrollIndicator={false}
                         renderItem={({ item: post }) => (
                             <Animatable.View
                                 style={styles.post}
@@ -296,7 +295,7 @@ export default function Home() {
                                         <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
                                         <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
                                     </View>
-                                    {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    {post.solved && post.solved === true ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
                                         <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
                                     </View> : null}
