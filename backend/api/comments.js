@@ -53,7 +53,7 @@ module.exports = app => {
         const comments = await Posts_Comments
             .aggregate([
                 { $match: { post: postOri._id } },
-                { $sort: { postedIn: -1 } },
+                { $sort: {solvedPost: -1, postedIn: -1 } },
                 {
                     "$addFields": {
                         "didILiked": {
@@ -88,6 +88,7 @@ module.exports = app => {
             user,
             postedIn: momentTz().tz("America/Sao_Paulo").format(),
             message,
+            solvedPost: false,
         })
             .catch(err => res.status(400).json(err))
         res.status(204).send()
@@ -97,16 +98,23 @@ module.exports = app => {
     const remove = async (req, res) => {
         const { post, comm } = req.params
         const { user_id } = req.headers
+
+        const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
+        }
+
         const commentToDelete = await Posts_Comments.findById(comm)
             .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
         if (!commentToDelete) { res.status(400).send("Comentário não encontrado com o id: " + comm) }//Caso o id seja válido mas não exista vai cair aqui
 
-        if (commentToDelete.post != post || commentToDelete.user == user_id) {//Se é o post certo e o dono do comentário deleta
+        if (commentToDelete.post._id == post || commentToDelete.user == user_id) {//Se é o post certo e o dono do comentário deleta
             await Posts_Comments.deleteOne(commentToDelete)
                 .catch(err => res.status(400).json(err))
             res.status(204).send()
         } else {//Se não, não tem permissão
-            res.status(401).send(`Usuário ${user_id} não autorizado a deletar o post.`)
+            res.status(401).send(`Usuário ${user_id} não autorizado a deletar o comentário.`)
         }
 
     }
@@ -146,40 +154,45 @@ module.exports = app => {
 
     const solvePost = async (req, res) => {
         const { user_id } = req.headers;
-        const { comment } = req.params;
+        const { comm } = req.params;
 
+        //Validação de usuário
         const user = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
-        const commentToUpdate = await Posts_Comments.findById(comment)
+
+        //Busca do comentário
+        const commentToUpdate = await Posts_Comments.findById(comm)
             .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
         if (!commentToUpdate) {
             res.status(400).send("Comentário não encontrado com o id: " + req.params)
         } else {//Caso encontre o comentário, entra para as modificações
-            if (commentToUpdate.solvedPost == true) {
-                res.status(204).send()//Caso já esteja resolvido, envia uma requisição vazia
-            }
-            commentToUpdate.solvedPost = true
-            commentToUpdate.save()
-                .catch(err => res.status(400).json(err))
+            //Validação de post
             const postToUpdate = await Posts.findById(commentToUpdate.post)
                 .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
             if (!postToUpdate) {//Caso o id seja válido mas não exista vai cair aqui
-                res.status(400).send("Post não encontrado com o id: " + req.params)
+                return res.status(400).send("Post não encontrado com o id: " + req.params)
             } else {
                 if (postToUpdate.solved == true) {
-                    res.status(204).send()//Caso já esteja resolvido, envia uma requisição vazia
-                }
-                else {
-                    postToUpdate.solved = true
-                    await postToUpdate.save()
-                        .catch(err => res.status(400).json(err))
-
-                    res.status(201).send()
+                    return res.status(200).send("Post já solucionado por outro comentário")//Caso já esteja resolvido, envia uma requisição vazia
                 }
             }
+
+            if (commentToUpdate.solvedPost == true) {
+                return res.status(204).send()//Caso já esteja resolvido, envia uma requisição vazia
+            } else {
+                //Soluciona o comentário
+                commentToUpdate.solvedPost = true
+                commentToUpdate.save()
+                    .catch(err => res.status(400).json(err))
+                //Soluciona o post
+                postToUpdate.solved = true
+                await postToUpdate.save()
+                    .catch(err => res.status(400).json(err))
+            }
+            return res.status(201).send()
         }
     }
 
