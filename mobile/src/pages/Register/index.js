@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
-import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar,ScrollView } from "react-native";
+import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, TextInput, TouchableOpacity, StatusBar,ScrollView } from "react-native";
 import api from '../../services/api'
 
 import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo maior
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { Feather } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
 import UserPermission from '../../UserPermissions';
+import { AuthContext } from '../../context'
 
 import { showError, showSucess } from '../../common'
 
 export default function Register() {
     const navigation = useNavigation()
+    const { singIn } = React.useContext(AuthContext);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -32,7 +33,23 @@ export default function Register() {
             });
             if (response.status == 204) {
                 showSucess("Usuário cadastrado com sucesso")
-                navigation.goBack()
+                //navigation.goBack()
+                try {
+                    const response = await api.post('/signin', {
+                        email, password: password
+                    });
+                    const user = response.data;
+                    try {
+                        await AsyncStorage.setItem('user', user.id.toString());
+                        await AsyncStorage.setItem('userName', user.name.toString());
+                        await AsyncStorage.setItem('userTags', user.tags.toString());
+                        singIn();
+                    } catch (x) {
+                        showError(x)
+                    }
+                } catch (e) {
+                    alert("Error:\n" + e)
+                }
             } else {
                 showError("Erro")
             }

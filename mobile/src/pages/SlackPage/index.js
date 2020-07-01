@@ -104,7 +104,7 @@ export default function SlackPage(){
                         autoCapitalize="none"
                         autoCorrect={false}
                         multiline
-                        numberOfLines={10}
+                        numberOfLines={2}
                         style={styles.InputT}
                     />
                     <TouchableOpacity onPress={() => {}}>

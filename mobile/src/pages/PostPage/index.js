@@ -422,8 +422,8 @@ export default function PostPage({ route, navigation }) {
                         keyboardType="default"
                         autoCapitalize="none"
                         autoCorrect={false}
-                        multiline
-                        numberOfLines={10}
+                        multiline = {true}
+                        numberOfLines={2}
                         style={styles.InputT}
                     />
                     <TouchableOpacity onPress={handlePostComment}>

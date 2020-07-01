@@ -11,9 +11,6 @@ Next:
  //$project − Used to select some specific fields from a collection.
 >Logo em formato vetorial
 
-Reid:
->Footer no comment crescer
-
 
 Done:
 //>Data no post e comentário(ordenar gets por data tbm)
@@ -36,6 +33,9 @@ Done:
 //>Nomes de usuário ser um botão para o perfil
 //>Tela de perfil
 //>Foto de perfil usuário
+//Reid:
+>Footer no comment crescer
+>Login automático ao se registrar
 
 Some day:
 >Debugar condições que possa ocorrer erros

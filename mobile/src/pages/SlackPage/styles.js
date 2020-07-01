@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: hp('10%'),
+    //height: hp('10%'),
     backgroundColor: '#365478',
     alignItems: 'center',
     paddingHorizontal: 20,
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
+
   InputT: {
     color: '#365478',
     width: hp('40%'),
