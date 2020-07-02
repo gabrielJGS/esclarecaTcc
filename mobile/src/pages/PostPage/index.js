@@ -317,16 +317,19 @@ export default function PostPage({ route, navigation }) {
                         }
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {post.solved ?
-                            <>
-                                <Text style={{ color: '#7DCEA0', fontWeight: 'bold', paddingRight: 5 }}>Esclarecido</Text>
-                                <Feather name="check-circle" size={20} color='#7DCEA0'></Feather>
-                            </>
-                            :
-                            <>
-                                <Text style={{ color: '#E73751', fontWeight: 'bold', paddingRight: 5 }}>Esclarecido</Text>
-                                <Feather name="x-circle" size={20} color='#E73751'></Feather>
-                            </>
+                        {
+                            post.solved ?
+                                <>
+                                    <Text style={{ color: '#7DCEA0', fontWeight: 'bold', paddingRight: 5 }}>Esclarecido</Text>
+                                    <Feather name="check-circle" size={20} color='#7DCEA0'></Feather>
+                                </>
+                                :
+                                post.type === false ?
+                                    <>
+                                        <Text style={{ color: '#E73751', fontWeight: 'bold', paddingRight: 5 }}>Esclarecido</Text>
+                                        <Feather name="x-circle" size={20} color='#E73751'></Feather>
+                                    </>
+                                    : <Text />
                         }
                     </View>
                 </View>
@@ -357,7 +360,7 @@ export default function PostPage({ route, navigation }) {
                                         </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={styles.Nomepost}>{handleDate(comment.postedIn)}</Text>
-                                            {comment.user[0]._id === activeUser ?
+                                            {comment.user[0]._id === activeUser || userIsPostOwner ?
                                                 <>
                                                     <TouchableOpacity onPress={() => handleDeleteComment(comment._id)}
                                                         // Alert.alert(
@@ -393,7 +396,7 @@ export default function PostPage({ route, navigation }) {
                                         </TouchableOpacity>
                                         <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{comment.likes.length}</Text>
                                     </View>
-                                    {userIsPostOwner || comment.solvedPost ?
+                                    {post.type === false && (userIsPostOwner || comment.solvedPost) ?
                                         <>
                                             <TouchableOpacity onPress={() => handleSolvePost(comment._id)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingRight: 15 }}>
                                                 <Text style={{ color: '#7DCEA0', fontSize: 12, paddingRight: 2 }}>Esclareceu sua dúvida? </Text>
@@ -422,7 +425,7 @@ export default function PostPage({ route, navigation }) {
                         keyboardType="default"
                         autoCapitalize="none"
                         autoCorrect={false}
-                        multiline = {true}
+                        multiline={true}
                         numberOfLines={2}
                         style={styles.InputT}
                     />

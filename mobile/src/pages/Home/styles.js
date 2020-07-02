@@ -185,9 +185,7 @@ export default StyleSheet.create({
     right:33,
     top:55,
     position: 'absolute',
-    height: 120,
     backgroundColor: '#fff',
-    width: 95,
     borderRadius:5,
     shadowColor: "#000",
     shadowOffset: {
@@ -223,9 +221,7 @@ export default StyleSheet.create({
     alignItems:'center'
   },
   filterText:{
-    color:'black', 
     fontSize:14, 
-    color:'#365478', 
     fontWeight:'bold'
   },
   filterExit:{

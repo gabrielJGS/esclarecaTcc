@@ -146,23 +146,25 @@ module.exports = app => {
             return res.status(400).send('Nenhum post encontrado com o texto informado')
         }
         return res.json(resPost);
+
+
     }
     const getTotalPosts = async (req, res) => {
-        const { user_id, type } = req.headers;
+        const { user_id, type, search_text } = req.headers;
         const typeSearch = type == 'false' ? false : true
         const user = await Users.findById(user_id)
             .catch(err => res.status(400).send(err))
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
-        const count = await Posts.find({ tags: { $in: user.tags }, type: typeSearch }).countDocuments()
+        const count = await Posts.find({ tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch }).countDocuments()
         res.header('X-Total-Count', count)
         return res.json(count)
         // return res.json(count)
     }
 
     const index = async (req, res) => {
-        const { user_id, type } = req.headers;
+        const { user_id, type, search_text } = req.headers;
         const typeSearch = type == 'false' ? false : true
 
         //Páginação
@@ -174,10 +176,9 @@ module.exports = app => {
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
-
         const posts = await Posts
             .aggregate([
-                { $match: { tags: { $in: user.tags }, type: typeSearch } },
+                { $match: { tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch } },
                 { $sort: { postedIn: -1 } },
                 {
                     $lookup: {

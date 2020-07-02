@@ -1,6 +1,5 @@
 This sprint:
 >Foto de perfil(backend)
->Usar parametros para retornar para a tela de login, logando o usuário ao retornar de um registro bem sucedido
 >Pesquisar(tela e rota)
 
 Next:
@@ -33,9 +32,11 @@ Done:
 //>Nomes de usuário ser um botão para o perfil
 //>Tela de perfil
 //>Foto de perfil usuário
+//>Footer no comment crescer
+//>Login automático ao se registrar
+
 //Reid:
->Footer no comment crescer
->Login automático ao se registrar
+
 
 Some day:
 >Debugar condições que possa ocorrer erros

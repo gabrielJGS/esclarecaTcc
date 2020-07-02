@@ -11,14 +11,19 @@ import { showError } from '../../common'
 
 export default function Home() {
     const navigation = useNavigation()
+
+    const [type, setType] = useState(false)
     const [posts, setPosts] = useState([])
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
-    const [search, setSearch] = useState('');
-    const [type, setType] = useState(false)
-    const [modalVisible, setModalVisible] = useState(false);
+
+    //Pesquisa
+    const [modalVisible, setModalVisible] = useState(false);//Janela de seleção
+    const [searchFavorite, setSearchFavorite] = useState(false);
+    const [searchSolved, setSearchSolved] = useState('');
+    const [searchText, setSearchText] = useState('');
 
     function navigateToNewPost() {
         navigation.navigate('NewPost', {
@@ -43,6 +48,22 @@ export default function Home() {
             userId
         })
     }
+
+    useEffect(() => {
+        reload()
+        async function reload() {
+            await reloadPosts()
+        }
+    }, [type])
+
+    const onLoadMore = useCallback(() => {
+        loadPosts();
+    })
+
+    function showModal() {
+        setModalVisible(!modalVisible)
+    }
+
     async function handleLike(postId) {
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         try {
@@ -60,7 +81,7 @@ export default function Home() {
             return
         }
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-        const getTotal = await api.head('/posts', { headers: { user_id, type } })
+        const getTotal = await api.head('/posts', { headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite } })
         setTotal(getTotal.headers['x-total-count'])
         if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
             return
@@ -68,8 +89,9 @@ export default function Home() {
 
         setLoading(true)//Altera para o loading iniciado
         try {
+            console.log(searchText)
             const response = await api.get('/posts', {
-                headers: { user_id, type },
+                headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite },
                 params: { page }
             })
             setPosts([...posts, ...response.data])
@@ -81,6 +103,7 @@ export default function Home() {
         }
         setLoading(false)//Conclui o load
     }
+
     async function reloadPosts() {
         if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
@@ -90,7 +113,7 @@ export default function Home() {
 
         try {
             const response = await api.get('/posts', {
-                headers: { user_id, type },
+                headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite },
                 params: { page: 1 }
             })
             setPosts(response.data)
@@ -111,25 +134,6 @@ export default function Home() {
             </View>
         );
     };
-
-    useEffect(() => {
-        loadPosts()
-    }, [])
-
-    useEffect(() => {
-        reload()
-        async function reload() {
-            await reloadPosts()
-        }
-    }, [type])
-
-    const onLoadMore = useCallback(() => {
-        loadPosts();
-    })
-
-    function handleModal() {
-        setModalVisible(!modalVisible)
-    }
 
     function handleDate(data) {
         var day = new Date(data);
@@ -177,9 +181,9 @@ export default function Home() {
                     animationType="fade"
                     transparent={true}
                     visible={modalVisible}
-                    onRequestClose={handleModal}
+                    onRequestClose={showModal}
                 >
-                    <TouchableWithoutFeedback onPress={handleModal}>
+                    <TouchableWithoutFeedback onPress={showModal}>
                         <View style={styles.modalContent}>
                             <View style={styles.modalBody}>
                                 <View style={styles.modalFilter}>
@@ -187,25 +191,19 @@ export default function Home() {
                                 </View>
                                 <View style={styles.filterView}>
                                     <View style={styles.filterSub}>
-                                        <TouchableOpacity style={styles.filterButton}>
-                                            <Text style={styles.filterText}>Data</Text>
-                                            <Feather name="calendar" size={12} color="#FFC300"></Feather>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.filterSub}>
-                                        <TouchableOpacity style={styles.filterButton}>
-                                            <Text style={styles.filterText}>Favoritos</Text>
+                                        <TouchableOpacity style={styles.filterButton} onPress={() => setSearchFavorite(!searchFavorite)}>
+                                            <Text style={[styles.filterText, { color: searchFavorite ? '#FFC300' : '#365478' }]}>Favoritos</Text>
                                             <Feather name="heart" size={12} color="#FFC300"></Feather>
                                         </TouchableOpacity>
                                     </View>
                                     <View style={styles.filterSub}>
-                                        <TouchableOpacity style={styles.filterButton}>
-                                            <Text style={styles.filterText}>Esclarecidos</Text>
+                                        <TouchableOpacity style={styles.filterButton} onPress={() => setSearchSolved(!searchSolved)}>
+                                            <Text style={[styles.filterText, { color: searchSolved ? '#FFC300' : '#365478' }]}>Esclarecidos </Text>
                                             <Feather name="check-circle" size={12} color="#FFC300"></Feather>
                                         </TouchableOpacity>
                                     </View>
                                     <View style={styles.filterExit}>
-                                        <TouchableOpacity style={styles.filterButton}>
+                                        <TouchableOpacity style={styles.filterButton} onPress={() => { setSearchSolved(false); setSearchFavorite(false) }}>
                                             <Text style={styles.filterText}>Sem filtro </Text>
                                             <Feather name="x-circle" size={12} color="#E73751"></Feather>
                                         </TouchableOpacity>
@@ -223,7 +221,7 @@ export default function Home() {
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <Text style={{ fontWeight: 'bold', color: "white", fontSize: 25 }}>{type == false ? 'Dúvidas' : 'Conteúdos'}</Text>
-                <TouchableOpacity style={styles.detailsButton} onPress={handleModal}>
+                <TouchableOpacity style={styles.detailsButton} onPress={showModal}>
                     <Feather name="filter" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
             </View>
@@ -235,12 +233,13 @@ export default function Home() {
                     placeholderTextColor="#999"
                     autoCapitalize="words"
                     autoCorrect={false}
-                    //value={title}
-                    //onChangeText={setTitle}
+                    value={searchText}
+                    onChangeText={setSearchText}
+                    multiline={true}
                     numberOfLines={2}
                     returnKeyType="done"
                 />
-                <TouchableOpacity>
+                <TouchableOpacity onPress={reloadPosts}>
                     <Feather name="search" size={18} color="#FFC300" style={{ marginTop: 2 }} />
                 </TouchableOpacity>
             </View>
@@ -259,49 +258,52 @@ export default function Home() {
                         ListFooterComponent={renderFooter}
                         showsVerticalScrollIndicator={false}
                         renderItem={({ item: post }) => (
-                            <Animatable.View
-                                style={styles.post}
-                                animation="fadeInDown"
-                                duration={1000}>
-                                <View style={styles.postHeader}>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <View style={styles.postTitulo}>
-                                            <Feather name="camera" size={30} color='#D8D9DB'></Feather>
-                                            <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
+                            (searchSolved === false || (searchSolved === true && post.solved === true)) && (searchFavorite === false || (searchFavorite === true && post.didILiked === true)) ?
+                                <Animatable.View
+                                    style={styles.post}
+                                    animation="fadeInDown"
+                                    duration={1000}>
+                                    <View style={styles.postHeader}>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <View style={styles.postTitulo}>
+                                                <Feather name="camera" size={30} color='#D8D9DB'></Feather>
+                                                <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
+                                            </View>
+                                            <View style={{ alignItems: 'flex-end' }}>
+                                                <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => navigateToProfile(post.user[0]._id)}>
+                                                    <Text style={styles.Nomepost}>{post.user[0].name}</Text>
+                                                    <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
-                                        <View style={{ alignItems: 'flex-end' }}>
-                                            <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => navigateToProfile(post.user[0]._id)}>
-                                                <Text style={styles.Nomepost}>{post.user[0].name}</Text>
-                                                <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
+                                        <View style={styles.headerTags}>
+                                            <Text style={styles.postTag}>{post.tags.toString()}</Text>
+                                            <TouchableOpacity style={styles.Ver} onPress={() => navigateToPost(post)}>
+                                                <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
                                             </TouchableOpacity>
                                         </View>
                                     </View>
-                                    <View style={styles.headerTags}>
-                                        <Text style={styles.postTag}>{post.tags.toString()}</Text>
-                                        <TouchableOpacity style={styles.Ver} onPress={() => navigateToPost(post)}>
-                                            <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
-                                        </TouchableOpacity>
+                                    <View style={styles.postDesc}>
+                                        <Text style={styles.postDescricao}>{post.desc}</Text>
                                     </View>
-                                </View>
-                                <View style={styles.postDesc}>
-                                    <Text style={styles.postDescricao}>{post.desc}</Text>
-                                </View>
-                                <View style={{ paddingHorizontal: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <TouchableOpacity onPress={() => handleLike(post._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: 'red', fontSize: 12 }} />
-                                            <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.likes.length}</Text>
-                                        </TouchableOpacity>
-                                        <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
-                                        <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
-                                    </View>
-                                    {post.solved && post.solved === true ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
-                                        <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
-                                    </View> : null}
+                                    <View style={{ paddingHorizontal: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <TouchableOpacity onPress={() => handleLike(post._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: 'red', fontSize: 12 }} />
+                                                <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.likes.length}</Text>
+                                            </TouchableOpacity>
+                                            <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
+                                            <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
+                                        </View>
+                                        {post.solved && post.solved === true ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
+                                            <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
+                                        </View> : null}
 
-                                </View>
-                            </Animatable.View>
+                                    </View>
+                                </Animatable.View>
+                                : <View></View>
+
                         )}>
                     </FlatList>
                 </View>
@@ -327,6 +329,6 @@ export default function Home() {
                     <Feather name="plus" size={25} color="white"></Feather>
                 </Animatable.View>
             </TouchableOpacity>
-        </View>
+        </View >
     );
 }
