@@ -27,6 +27,7 @@ const UserSchema = new mongoose.Schema({
     email: String,
     password: String,
     tags: [String],
+    profilePic: { data: Buffer, contentType: String }
 
     //userPhoto: { Schema.Types.Mixed }
 });

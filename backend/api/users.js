@@ -1,5 +1,9 @@
 const bcrypt = require('bcrypt-nodejs')
 const Users = require('../models/Users');
+//
+const GridFsStorage = require("multer-gridfs-storage");
+const Grid = require("gridfs-stream");
+const multer = require("multer");
 
 module.exports = app => {
     const obterHash = (password, callback) => {
@@ -46,6 +50,46 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
 
     }
+    const photo = (req, res) => {
+        const { id } = req.params;
+        const photo = req.body.photo
+
+        // user = Users.findByIdAndUpdate(id, { profilePic: photo })
+        //     .then(_ => res.status(204).send())
+        //     .catch(err => res.status(400).json(err))
+
+        // Create storage engine
+        let gfs;
+
+        conn.once("open", () => {
+            gfs = Grid(conn.db, mongoose.mongo);
+            gfs.collection("uploads");
+            console.log("Connection Successful");
+        });
+
+        multer({ storage });
+
+    }
+    const upload = multer({ storage });
+
+    const storage = new GridFsStorage({
+        url: mongoURI,
+        file: (req, file) => {
+            return new Promise((resolve, reject) => {
+                crypto.randomBytes(16, (err, buf) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    const filename = file.originalname;
+                    const fileInfo = {
+                        filename: filename,
+                        bucketName: "uploads"
+                    };
+                    resolve(fileInfo);
+                });
+            });
+        }
+    });
 
     const profile = async (req, res) => {
         const { id } = req.params;
@@ -53,5 +97,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
         res.json(user)
     }
-    return { save, update, patch, profile }
+    return { save, update, patch, photo, profile, upload }
 };
