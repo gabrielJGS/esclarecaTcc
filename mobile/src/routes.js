@@ -82,6 +82,7 @@ function CustomDrawerContent(props) {
     const [userTags, setTags] = useState('')
     const [userId, setId] = useState('')
     const [press,setPress]=useState(false)
+    const [avatar, setAvatar] = useState(null);
     //const navigation = useNavigation()
 
     const { singOut } = React.useContext(AuthContext);
@@ -99,6 +100,7 @@ function CustomDrawerContent(props) {
               setName(response.data.name)
               setTags(response.data.tags)
               setId(response.data._id)
+              setAvatar(response.data.url)
             }
           }
       }
@@ -121,9 +123,9 @@ function CustomDrawerContent(props) {
                                 <Avatar
                                     rounded
                                     source={{
-                                        uri:
-                                            //'https://scontent.fstu3-1.fna.fbcdn.net/v/t1.0-9/p960x960/87283876_1614904885331971_5523389541076959232_o.jpg?_nc_cat=102&_nc_sid=85a577&_nc_ohc=FY3G_XQYr4YAX_jln8U&_nc_ht=scontent.fstu3-1.fna&_nc_tp=6&oh=6892c35abdfc7a8e7f4786b477890cfc&oe=5EDAE0E2',
-                                            'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png',
+                                        uri: avatar
+                                        ? avatar
+                                        : 'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png',
                                     }}
                                     size={50}
                                 />

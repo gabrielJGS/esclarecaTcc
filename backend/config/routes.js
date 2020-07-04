@@ -1,6 +1,9 @@
+const multer = require('multer');
+const multerConfig = require('../config/multer');
+
 module.exports = app => {
     //Login/Cadastro
-    app.post('/signup', app.api.users.save)
+    app.post('/signup', multer(multerConfig).single('file'), app.api.users.save)
     app.post('/signin', app.api.auth.signin)
 
     //Perfil

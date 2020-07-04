@@ -11,13 +11,14 @@ module.exports = app => {
     const save = async (req, res) => {
         const email = req.body.email.trim().toLowerCase()
         const tags = req.body.tags.trim().toLowerCase()
+        const {key, location: url = ""} = req.file;
 
         const userExist = await Users.findOne({ email })
         if (userExist) {
             res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`)
         } else {
             obterHash(req.body.password.trim().toLowerCase(), hash => {
-                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()) })
+                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()), key, url })
                     .then(_ => res.status(204).send())
                     .catch(err => res.status(400).json(err))
             })

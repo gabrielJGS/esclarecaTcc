@@ -32,6 +32,9 @@ module.exports = app => {
                     email: user.email,
                     tags: user.tags,
                     token: jwt.encode(payload, authSecret),
+                    key: user.key,
+                    url: user.url,
+                    createdAt: user.createdAt
                 })
             })
         } else {

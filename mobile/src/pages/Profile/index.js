@@ -85,6 +85,7 @@ export default function Profile({ route, navigation }) {
       setEmail(response.data.email)
       setTags(response.data.tags)
       setUserId(response.data._id)
+      setAvatar(response.data.url)
     }
     const usuarioAtual = await AsyncStorage.getItem('user');
     setLoggedUser(usuarioAtual);
