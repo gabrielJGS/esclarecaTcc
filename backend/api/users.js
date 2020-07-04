@@ -7,11 +7,16 @@ module.exports = app => {
             bcrypt.hash(password, salt, null, (err, hash) => callback(hash))
         })
     }
-
     const save = async (req, res) => {
         const email = req.body.email.trim().toLowerCase()
         const tags = req.body.tags.trim().toLowerCase()
-        const {key, location: url = ""} = req.file;
+        
+        let{key="",location: url = ""}=""
+        
+        if(req.file){
+            key = req.file.key;
+            url = req.file.url;
+        }
 
         const userExist = await Users.findOne({ email })
         if (userExist) {
@@ -47,12 +52,24 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
 
     }
-
     const profile = async (req, res) => {
         const { id } = req.params;
         const user = await Users.findById(id)
             .catch(err => res.status(400).json(err))
         res.json(user)
+    }
+    const photoupdate = async (req, res) => {
+        const { id } = req.params;
+        let{key="",location: url = ""}=""
+        
+        if(req.file){
+            key = req.file.key;
+            url = req.file.url;
+        }
+
+        user = Users.findByIdAndUpdate(id, {key, url})
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err))
     }
     return { save, update, patch, profile }
 };

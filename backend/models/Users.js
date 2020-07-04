@@ -38,7 +38,9 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.pre("save", function(){
     if(!this.url){
-        this.url = `http:192.168.29.66:3333/files/${this.key}`;//coloca AQUI seu localhost
+        if(this.key){
+            this.url = `http:192.168.29.66:3333/files/${this.key}`;//coloca AQUI seu localhost
+        }
     }
 })
 
