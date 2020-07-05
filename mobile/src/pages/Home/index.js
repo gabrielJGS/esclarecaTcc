@@ -56,6 +56,11 @@ export default function Home() {
         }
     }, [type])
 
+    useEffect(() => {
+        setSearchSolved(false); setSearchFavorite(false)
+        loadPosts()
+    }, [])
+
     const onLoadMore = useCallback(() => {
         loadPosts();
     })

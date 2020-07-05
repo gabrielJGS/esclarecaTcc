@@ -22,15 +22,27 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [tags, setTags] = useState('');
-    const [avatar, setAvatar] = useState(null);
+    const [file, setFile] = useState(null);
     const [visble, setVisible] = useState(false);
 
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
+        let localUri = file.uri;
+        let filename = localUri.split('/').pop();
+        let match = /\.(\w+)$/.exec(filename);
+        let type = match ? `image/${match[1]}` : `image`;
         try {
-            const response = await api.post('/signup', {
-                email, name, password, tags
-            });
+            const data = new FormData();
+            data.append('file', {uri: localUri, name: filename, type})
+            data.append("name", name);
+            data.append("email", email);
+            data.append("password", password);
+            data.append("tags", tags);
+
+            const response = await api.post('/signup', data)
+            //const response = await api.post('/signup', {
+            //    email, name, password, tags, file
+           // });
             if (response.status == 204) {
                 showSucess("Usuário cadastrado com sucesso")
                 //navigation.goBack()
@@ -67,9 +79,9 @@ export default function Register() {
             allowsEditing: true,
             aspect: [3,4]
         })
-
+        
         if(!result.cancelled){
-            setAvatar(result.uri);
+            setFile(result);
             setVisible(true);
         }
     }
@@ -95,7 +107,7 @@ export default function Register() {
             <TouchableOpacity style={styles.circle} onPress={() => handlePick()}>
                 {visble?
                     <>
-                        <Image source={{uri: avatar}} style={{width: 120,height: 120,borderRadius: 120 / 2,borderWidth:3,borderColor:"#FFF"}}/>
+                        <Image source={{uri: file.uri}} style={{width: 120,height: 120,borderRadius: 120 / 2,borderWidth:3,borderColor:"#FFF"}}/>
                     </>
                 :
                     <>

@@ -88,6 +88,7 @@ export default function Profile({ route, navigation }) {
       setEmail(response.data.email)
       setTags(response.data.tags)
       setUserId(response.data._id)
+      setAvatar(response.data.url)
     }
     const usuarioAtual = await AsyncStorage.getItem('user');
     setLoggedUser(usuarioAtual);
@@ -519,15 +520,6 @@ export default function Profile({ route, navigation }) {
                     </TouchableOpacity>
                     <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
                     <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
-                    {/* {post.user[0]._id === loggedUser ? //Comentei para padronizar
-                      <>
-                        <TouchableOpacity style={{ paddingLeft: 15 }}>
-                          <Feather name="trash-2" size={12} color='#E73751'></Feather>
-                        </TouchableOpacity>
-                      </>
-                      :
-                      <></>
-                    } */}
                   </View>
                   {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>

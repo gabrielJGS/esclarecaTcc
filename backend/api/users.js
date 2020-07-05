@@ -11,17 +11,23 @@ module.exports = app => {
             bcrypt.hash(password, salt, null, (err, hash) => callback(hash))
         })
     }
-
     const save = async (req, res) => {
         const email = req.body.email.trim().toLowerCase()
         const tags = req.body.tags.trim().toLowerCase()
+
+        let { key = "", location: url = "" } = ""
+
+        if (req.file) {
+            key = req.file.key;
+            url = req.file.url;
+        }
 
         const userExist = await Users.findOne({ email })
         if (userExist) {
             res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`)
         } else {
             obterHash(req.body.password.trim().toLowerCase(), hash => {
-                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()) })
+                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()), key, url })
                     .then(_ => res.status(204).send())
                     .catch(err => res.status(400).json(err))
             })
@@ -50,52 +56,24 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
 
     }
-    const photo = (req, res) => {
-        const { id } = req.params;
-        const photo = req.body.photo
-
-        // user = Users.findByIdAndUpdate(id, { profilePic: photo })
-        //     .then(_ => res.status(204).send())
-        //     .catch(err => res.status(400).json(err))
-
-        // Create storage engine
-        let gfs;
-
-        conn.once("open", () => {
-            gfs = Grid(conn.db, mongoose.mongo);
-            gfs.collection("uploads");
-            console.log("Connection Successful");
-        });
-
-        multer({ storage });
-
-    }
-    const upload = multer({ storage });
-
-    const storage = new GridFsStorage({
-        url: mongoURI,
-        file: (req, file) => {
-            return new Promise((resolve, reject) => {
-                crypto.randomBytes(16, (err, buf) => {
-                    if (err) {
-                        return reject(err);
-                    }
-                    const filename = file.originalname;
-                    const fileInfo = {
-                        filename: filename,
-                        bucketName: "uploads"
-                    };
-                    resolve(fileInfo);
-                });
-            });
-        }
-    });
-
     const profile = async (req, res) => {
         const { id } = req.params;
         const user = await Users.findById(id)
             .catch(err => res.status(400).json(err))
         res.json(user)
     }
-    return { save, update, patch, photo, profile, upload }
+    const photoupdate = async (req, res) => {
+        const { id } = req.params;
+        let { key = "", location: url = "" } = ""
+
+        if (req.file) {
+            key = req.file.key;
+            url = req.file.url;
+        }
+
+        user = Users.findByIdAndUpdate(id, { key, url })
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err))
+    }
+    return { save, update, patch, profile }
 };
