@@ -146,8 +146,6 @@ module.exports = app => {
             return res.status(400).send('Nenhum post encontrado com o texto informado')
         }
         return res.json(resPost);
-
-
     }
     const getTotalPosts = async (req, res) => {
         const { user_id, type, search_text } = req.headers;

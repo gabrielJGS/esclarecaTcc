@@ -28,12 +28,15 @@ export default function Profile({ route, navigation }) {
   const [userId, setUserId] = useState(route.params.userId);
   const [loggedUser, setLoggedUser] = useState('');
   const [isLoggedUser, setIsLoggedUser] = useState(false);
-  const [press, setPress] = useState(false);
+  // const [press, setPress] = useState(false);
   const [type, setType] = useState(false);
-  const [avatar, setAvatar] = useState(null);
 
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+  //Imagem
+  const [avatar, setAvatar] = useState(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
 
   //sobre os posts
   //Posts do usuário
@@ -177,6 +180,34 @@ export default function Profile({ route, navigation }) {
       showError(e)
     }
     setRefreshing(false)
+  }
+
+  async function handlePickPhoto() {
+    if (isLoggedUser) {
+      UserPermission.getCameraPermission()
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [3, 4]
+      })
+
+      if (!result.cancelled) {
+        setAvatar(result.uri);
+        setIsUploadingImage(true)
+      }
+    }
+  }
+
+  async function handleSubmitPhoto() {
+    const response = await api.post(`/users/${userId}/photo`, {
+
+    }, {
+      headers: { user_id: userId },
+      params: { page }
+    })
+
+    setIsUploadingImage(false)
   }
 
   renderFooter = () => {
@@ -360,7 +391,7 @@ export default function Profile({ route, navigation }) {
                   </View>
                   <View style={styles.buttonView}>
                     <TouchableOpacity onPress={updateUser} style={styles.button}>
-                      <Text style={styles.buttonText}>Salvar</Text>
+                      <Text style={styles.buttonText}></Text>
                       <Feather name="check" size={15} color="#FFC300"></Feather>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleModal} style={styles.button}>
@@ -444,32 +475,42 @@ export default function Profile({ route, navigation }) {
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.info}>{tags.toString()}</Text>
         </View>
+        {
+          isUploadingImage ?
+            <TouchableOpacity onPress={handleSubmitPhoto} style={[styles.button, { width: 150, alignSelf: 'center', margin: 3 }]}>
+              <Text style={styles.buttonText}>Enviar imagem</Text>
+              <Feather name="check" size={15} color="#FFC300"></Feather>
+            </TouchableOpacity>
+            : null
+
+        }
       </View>
 
       <Animatable.View
-          style={styles.footer}
-          animation="fadeInUp"
-          duration={900}>
-          <View style={{flexDirection:'row', alignItems: "center", justifyContent: 'flex-start', paddingHorizontal:30}}>
-            <Text style={{color:'white', fontWeight:'bold'}}>Enviadas</Text>
-            <Switch trackColor={{ false: "#7DCEA0", true: "#E73751" }}
-              thumbColor={isEnabled ? "#E73751" : "#7DCEA0"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-            />
-            <Text style={{color:'white', fontWeight:'bold'}}>Curtidas</Text>
-          </View>
-          <View style={{flexDirection:'row', justifyContent:'space-between', paddingHorizontal:hp('8.5%'), top:2}}>
-            <TouchableOpacity style={styles.detailsBar} onPress={navigateToDoubts}>
-                <Text style={[styles.detailsButtonText, { color: type == false ? "#FFC300" : "white" }]}>Dúvidas</Text>
-                <Feather name="edit-3" size={16} color={type == false ? "#FFC300" : "white"}></Feather>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.detailsBar} onPress={navigateToContent}>
-                <Text style={[styles.detailsButtonText, { color: type == true ? "#FFC300" : "white" }]}>Conteúdos</Text>
-                <Feather name="book-open" size={16} color={type == true ? "#FFC300" : "white"}></Feather>
-            </TouchableOpacity>
-          </View>
+        style={styles.footer}
+        animation="fadeInUp"
+        duration={900}>
+        <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingHorizontal: 30 }}>
+          <Text style={{ color: '#FFC300', fontWeight: 'bold' }}>Enviadas</Text>
+          <Switch trackColor={{ false: "#FFC300", true: "#fff" }}
+            thumbColor={isEnabled ? "#fff" : "#FFC300"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+          {/* 365478 */}
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>Curtidas</Text>
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: hp('8.5%'), top: 2 }}>
+          <TouchableOpacity style={styles.detailsBar} onPress={navigateToDoubts}>
+            <Text style={[styles.detailsButtonText, { color: type == false ? "#FFC300" : "white" }]}>Dúvidas</Text>
+            <Feather name="edit-3" size={16} color={type == false ? "#FFC300" : "white"}></Feather>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.detailsBar} onPress={navigateToContent}>
+            <Text style={[styles.detailsButtonText, { color: type == true ? "#FFC300" : "white" }]}>Conteúdos</Text>
+            <Feather name="book-open" size={16} color={type == true ? "#FFC300" : "white"}></Feather>
+          </TouchableOpacity>
+        </View>
       </Animatable.View>
 
       <View style={styles.body2}>

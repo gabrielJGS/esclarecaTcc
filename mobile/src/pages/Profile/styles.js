@@ -13,17 +13,26 @@ export default StyleSheet.create({
         borderBottomColor:'#D8D9DB',
       },
       circle: {
-        width: 120,height: 120,borderRadius: 120 / 2,
+        width: 120,height: 120,
+        borderRadius: 120 / 2,
+        borderColor: '#D8D9DB',
+        borderWidth: 2,
+        backgroundColor: '#C8C9CC',
         alignSelf:'center',
         position: 'absolute',
         marginTop:hp('9%')
       },
       avatar: {
-        width: 120,height: 120,borderRadius: 120 / 2,borderWidth:3,borderColor:"#D8D9DB",
+        width: 120,
+        height: 120,
+        borderRadius: 120 / 2,
+        borderWidth:3,
+        borderColor:"#D8D9DB",
         alignSelf:'center',
         position: 'absolute',
       },
       body:{
+        paddingTop: 25,
         marginTop:hp('2%'),
         paddingBottom:5
       },

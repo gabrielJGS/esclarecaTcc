@@ -1,5 +1,9 @@
 const bcrypt = require('bcrypt-nodejs')
 const Users = require('../models/Users');
+//
+const GridFsStorage = require("multer-gridfs-storage");
+const Grid = require("gridfs-stream");
+const multer = require("multer");
 
 module.exports = app => {
     const obterHash = (password, callback) => {
@@ -10,10 +14,10 @@ module.exports = app => {
     const save = async (req, res) => {
         const email = req.body.email.trim().toLowerCase()
         const tags = req.body.tags.trim().toLowerCase()
-        
-        let{key="",location: url = ""}=""
-        
-        if(req.file){
+
+        let { key = "", location: url = "" } = ""
+
+        if (req.file) {
             key = req.file.key;
             url = req.file.url;
         }
