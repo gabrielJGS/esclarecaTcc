@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, ActivityIndicator, Modal, TouchableWithoutFeedback, Image } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 
 import api from '../../services/api'
@@ -271,7 +271,15 @@ export default function Home() {
                                     <View style={styles.postHeader}>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <View style={styles.postTitulo}>
-                                                <Feather name="camera" size={30} color='#D8D9DB'></Feather>
+                                                {post.user[0].url ?
+                                                 <>
+                                                    <Image style={styles.avatar} source={{uri:post.user[0].url}} />
+                                                 </>
+                                                :
+                                                 <>
+                                                    <Image style={styles.avatar} source={{uri:'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'}} />
+                                                 </>
+                                                }
                                                 <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
                                             </View>
                                             <View style={{ alignItems: 'flex-end' }}>

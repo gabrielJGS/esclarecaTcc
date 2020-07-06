@@ -9,7 +9,7 @@ module.exports = app => {
     //Perfil
     app.route('/users/:id')
         .get(app.api.users.profile)
-        .put(app.api.users.update)
+        .put(multer(multerConfig).single('file'),app.api.users.update)
         .patch(app.api.users.patch)
         
     app.get('/users/:id/posts', app.api.posts.getByUser)//Posts do usuário

@@ -138,7 +138,7 @@ export default StyleSheet.create({
     borderBottomLeftRadius:20,
     borderBottomRightRadius:20,
     paddingRight:24,
-    paddingLeft:24,
+    paddingLeft:20,
     paddingTop:10,
     paddingBottom:8
   },
@@ -162,7 +162,8 @@ export default StyleSheet.create({
   headerTags:{
     flexDirection:'row',
     alignItems:'center',
-    justifyContent:'space-between'
+    justifyContent:'space-between',
+    paddingLeft:4,
   },
 
   Ver:{
@@ -238,5 +239,7 @@ export default StyleSheet.create({
     height: hp('4%'),
     borderRadius: 2,
     },
-
+    avatar: {
+      width: 40,height: 40,borderRadius: 40 / 2,borderWidth:1,borderColor:"#D8D9DB",
+    },
 })

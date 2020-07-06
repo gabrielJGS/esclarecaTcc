@@ -11,7 +11,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import styles from './styles'
 import Feather from 'react-native-vector-icons/Feather';
 import { AuthContext } from '../../context'
-import { showError } from '../../common'
+import { showError, showSucess } from '../../common'
 
 export default function Profile({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -224,17 +224,39 @@ export default function Profile({ route, navigation }) {
 
     return text
   }
-  async function handlePickUpdate() {
+  async function handlePickUpdate(){
     UserPermission.getCameraPermission()
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [3, 4]
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [3,4]
     })
+    
+    if(!result.cancelled){
+        setAvatar(result);
+        handleSubmitphoto()
+    }
+}
 
-    if (!result.cancelled) {
-      setAvatar(result.uri);
+  async function handleSubmitphoto() {
+    let localUri = avatar.uri;
+    let filename = localUri.split('/').pop();
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+    try {
+      const data = new FormData();
+      data.append('file', {uri: localUri, name: filename, type})
+      const response = await api.put(`/users/${userId}`, data)
+      if (response.status == 204) {
+        showSucess("Foto alterada com sucesso")
+        await loadUser(userId)
+      } else {
+          showError("Erro")
+      }
+    }
+    catch (e) {
+      showError(e)
     }
   }
 

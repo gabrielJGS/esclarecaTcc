@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, Switch, ActivityIndicator, Alert } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, Switch, ActivityIndicator, Alert, Image } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 
 import api from '../../services/api'
@@ -250,9 +250,17 @@ export default function PostPage({ route, navigation }) {
                 </View>
                 <View style={styles.DuvidaCorpo}>
                     <TouchableOpacity onPress={() => navigateToProfile(post.user[0]._id)}>
-                        <Feather name="camera" size={30} color='white'></Feather>
+                        {post.user[0].url ?
+                            <>
+                            <Image style={styles.avatar} source={{uri:post.user[0].url}} />
+                            </>
+                        :
+                            <>
+                            <Image style={styles.avatar} source={{uri:'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'}} />
+                            </>
+                        }
                     </TouchableOpacity>
-                    <View style={{ paddingLeft: 30 }}>
+                    <View style={{ paddingLeft: 10 }}>
                         <TouchableOpacity onPress={navigateToProfile}>
                             <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
                             <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
@@ -354,8 +362,16 @@ export default function PostPage({ route, navigation }) {
                                 duration={1000}>
                                 <View style={styles.postHeader}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.postTitulo} onPress={() => navigateToProfile(comment.user._id)}>
-                                            <Feather name="camera" size={30} color='#D8D9DB'></Feather>
+                                        <TouchableOpacity style={styles.postTitulo} onPress={() => navigateToProfile(comment.user[0]._id)}>
+                                            {comment.user[0].url ?
+                                                <>
+                                                <Image style={styles.avatar2} source={{uri:comment.user[0].url}} />
+                                                </>
+                                            :
+                                                <>
+                                                <Image style={styles.avatar2} source={{uri:'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'}} />
+                                                </>
+                                            }
                                             <Text style={styles.postTitle}>{comment.user[0].name}</Text>
                                         </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
