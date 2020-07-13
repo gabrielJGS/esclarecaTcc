@@ -1,0 +1,10 @@
+module.exports = {
+    authSecret: '1234agaesahary',
+    hostIp: '192.168.42.217',
+    storageOption: 's3',
+    s3Config: {
+        accessKeyId: 'AKIAXK2FYMLRM3ZBWYLO',
+        secretAccessKey: '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',
+        bucket:'esclareca-image-upload',
+    }
+}

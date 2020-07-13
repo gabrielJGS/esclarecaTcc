@@ -271,15 +271,7 @@ export default function Home() {
                                     <View style={styles.postHeader}>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <View style={styles.postTitulo}>
-                                                {post.user[0].url ?
-                                                 <>
-                                                    <Image style={styles.avatar} source={{uri:post.user[0].url}} />
-                                                 </>
-                                                :
-                                                 <>
-                                                    <Image style={styles.avatar} source={{uri:'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'}} />
-                                                 </>
-                                                }
+                                                <Image style={styles.avatar} source={{ uri: post.user[0].url ? `${post.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                                 <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
                                             </View>
                                             <View style={{ alignItems: 'flex-end' }}>

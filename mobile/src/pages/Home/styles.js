@@ -96,11 +96,10 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   Search:{
-    marginTop:23,
+    marginTop:15,
     flexDirection:'row',
     justifyContent:'space-between',
     alignItems:'center',
-    height:7,
     paddingHorizontal:32,
   },
   Barheight:{

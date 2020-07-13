@@ -246,19 +246,10 @@ export default function PostPage({ route, navigation }) {
                         <Feather name="arrow-left" size={20} color="#FFC300"></Feather>
                     </TouchableOpacity>
                     <Text style={styles.DuvidaTitle}>{post.title}</Text>
-                    <Text></Text>
                 </View>
                 <View style={styles.DuvidaCorpo}>
                     <TouchableOpacity onPress={() => navigateToProfile(post.user[0]._id)}>
-                        {post.user[0].url ?
-                            <>
-                            <Image style={styles.avatar} source={{uri:post.user[0].url}} />
-                            </>
-                        :
-                            <>
-                            <Image style={styles.avatar} source={{uri:'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'}} />
-                            </>
-                        }
+                        <Image style={styles.avatar} source={{ uri: post.user[0].url ? `${post.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                     </TouchableOpacity>
                     <View style={{ paddingLeft: 10 }}>
                         <TouchableOpacity onPress={navigateToProfile}>
@@ -363,15 +354,7 @@ export default function PostPage({ route, navigation }) {
                                 <View style={styles.postHeader}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <TouchableOpacity style={styles.postTitulo} onPress={() => navigateToProfile(comment.user[0]._id)}>
-                                            {comment.user[0].url ?
-                                                <>
-                                                <Image style={styles.avatar2} source={{uri:comment.user[0].url}} />
-                                                </>
-                                            :
-                                                <>
-                                                <Image style={styles.avatar2} source={{uri:'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'}} />
-                                                </>
-                                            }
+                                            <Image style={styles.avatar} source={{ uri: comment.user[0].url ? `${comment.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                             <Text style={styles.postTitle}>{comment.user[0].name}</Text>
                                         </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
