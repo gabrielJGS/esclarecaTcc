@@ -35,7 +35,7 @@ export default function Profile({ route, navigation }) {
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   //Imagem
-  const [avatar, setAvatar] = useState(null);
+  const [avatar, setAvatar] = useState('https://www.colegiodepadua.com.br/img/user.png');
   const [isUploadingImage, setIsUploadingImage] = useState(false)
 
   //sobre os posts
@@ -88,7 +88,11 @@ export default function Profile({ route, navigation }) {
       setEmail(response.data.email)
       setTags(response.data.tags)
       setUserId(response.data._id)
-      setAvatar(response.data.url)
+      if (response.data.url && response.data.url != '') {
+        setAvatar(response.data.url)
+      } else {
+        setAvatar('https://www.colegiodepadua.com.br/img/user.png')
+      }
     }
     const usuarioAtual = await AsyncStorage.getItem('user');
     setLoggedUser(usuarioAtual);
@@ -112,8 +116,8 @@ export default function Profile({ route, navigation }) {
       tags: tags.toString(','),
       password
     })
-    // loadUser()
-    setPress(previousState => !previousState)
+    setPassword("")
+    //setPress(previousState => !previousState)
     handleModal()
   }
 
@@ -134,9 +138,7 @@ export default function Profile({ route, navigation }) {
     if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
       return
     }
-    //const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-    // const getTotal = await api.head('/posts', { headers: { user, type } })
-    // setTotal(getTotal.headers['x-total-count'])
+
     if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
       return
     }
@@ -163,7 +165,6 @@ export default function Profile({ route, navigation }) {
     if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
       return
     }
-    // const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
 
     setRefreshing(true)//Altera para o loading iniciado
 
@@ -180,34 +181,6 @@ export default function Profile({ route, navigation }) {
       showError(e)
     }
     setRefreshing(false)
-  }
-
-  async function handlePickPhoto() {
-    if (isLoggedUser) {
-      UserPermission.getCameraPermission()
-
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [3, 4]
-      })
-
-      if (!result.cancelled) {
-        setAvatar(result.uri);
-        setIsUploadingImage(true)
-      }
-    }
-  }
-
-  async function handleSubmitPhoto() {
-    const response = await api.post(`/users/${userId}/photo`, {
-
-    }, {
-      headers: { user_id: userId },
-      params: { page }
-    })
-
-    setIsUploadingImage(false)
   }
 
   renderFooter = () => {
@@ -255,35 +228,37 @@ export default function Profile({ route, navigation }) {
 
     return text
   }
-  async function handlePickUpdate(){
+
+  async function handlePickUpdate() {
     UserPermission.getCameraPermission()
 
     let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [3,4]
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [3, 4]
     })
-    
-    if(!result.cancelled){
-        setAvatar(result);
-        handleSubmitphoto()
-    }
-}
 
-  async function handleSubmitphoto() {
+    if (!result.cancelled) {
+      setAvatar(result)
+      setIsUploadingImage(true)
+    }
+  }
+
+  async function handleSubmitPhoto() {
     let localUri = avatar.uri;
     let filename = localUri.split('/').pop();
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
     try {
       const data = new FormData();
-      data.append('file', {uri: localUri, name: filename, type})
-      const response = await api.put(`/users/${userId}`, data)
-      if (response.status == 204) {
+      data.append('file', { uri: localUri, name: filename, type })
+      const response = await api.post(`/users/${userId}/photo`, data)
+      if (response.status == 201) {
         showSucess("Foto alterada com sucesso")
+        setIsUploadingImage(false)
         await loadUser(userId)
       } else {
-          showError("Erro")
+        showError(response)
       }
     }
     catch (e) {
@@ -391,7 +366,7 @@ export default function Profile({ route, navigation }) {
                   </View>
                   <View style={styles.buttonView}>
                     <TouchableOpacity onPress={updateUser} style={styles.button}>
-                      <Text style={styles.buttonText}></Text>
+                      <Text style={styles.buttonText}>Salvar</Text>
                       <Feather name="check" size={15} color="#FFC300"></Feather>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleModal} style={styles.button}>
@@ -442,41 +417,31 @@ export default function Profile({ route, navigation }) {
       </View>
 
       <TouchableOpacity style={styles.circle} onPress={() =>
-        Alert.alert(
-          'Alterar',
-          'Deseja alterar a foto de Perfil?',
-          [
-            { text: 'Não', onPress: () => { return null } },
-            {
-              text: 'Sim', onPress: () => {
-                handlePickUpdate();
-              }
-            },
-          ],
-          { cancelable: false }
-        )}
+        isLoggedUser ?
+          Alert.alert(
+            'Alterar',
+            'Deseja alterar a foto de Perfil?',
+            [
+              { text: 'Não', onPress: () => { return null } },
+              {
+                text: 'Sim', onPress: () => {
+                  handlePickUpdate();
+                }
+              },
+            ],
+            { cancelable: false }
+          )
+          : null}
       >
-        {avatar === null ?
-          <>
-            <Image style={styles.avatar} source={{
-              uri:
-                'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png'
-            }} />
-          </>
-          :
-          <>
-            <Image style={styles.avatar} source={{ uri: avatar }} />
-          </>
-        }
+        <Image style={styles.avatar} source={{ uri: isUploadingImage ? avatar.uri : `${avatar}?${new Date().getTime()}` }} />
       </TouchableOpacity>
-
       <View style={styles.body}>
         <View style={styles.perfilName}>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.info}>{tags.toString()}</Text>
         </View>
         {
-          isUploadingImage ?
+          isUploadingImage && isLoggedUser ?
             <TouchableOpacity onPress={handleSubmitPhoto} style={[styles.button, { width: 150, alignSelf: 'center', margin: 3 }]}>
               <Text style={styles.buttonText}>Enviar imagem</Text>
               <Feather name="check" size={15} color="#FFC300"></Feather>
@@ -485,7 +450,6 @@ export default function Profile({ route, navigation }) {
 
         }
       </View>
-
       <Animatable.View
         style={styles.footer}
         animation="fadeInUp"
@@ -498,7 +462,6 @@ export default function Profile({ route, navigation }) {
             onValueChange={toggleSwitch}
             value={isEnabled}
           />
-          {/* 365478 */}
           <Text style={{ color: 'white', fontWeight: 'bold' }}>Curtidas</Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: hp('8.5%'), top: 2 }}>
@@ -521,11 +484,10 @@ export default function Profile({ route, navigation }) {
             keyExtractor={post => String(post._id)}
             refreshing={refreshing}
             onRefresh={reloadPosts}
-            // onTouchStart={reloadPosts}
             onEndReached={loadPosts}
             onEndReachedThreshold={0.2}
             ListFooterComponent={renderFooter}
-            showsHorizontalScrollIndicator={false}//OBS:Trocar para false ao finalizar testes!!!!
+            showsHorizontalScrollIndicator={false}
             renderItem={({ item: post }) => (
               <Animatable.View
                 style={styles.post}

@@ -1,13 +1,15 @@
 This sprint:
->Foto de perfil(backend)
->Pesquisar(tela e rota)
+
 
 Next:
+>Organizar o codigo de inserção de Foto
+>Rota para pesquisar posts curtidos pelo usuário
 >Conferir tratamento/validações nas requisições
 >Conferir status code certos https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 >Rota/tela de esqueceu a senha(inserir referencia a ela no login/registro)
 >Remover certos campos dos populates: https://stackoverflow.com/questions/37562129/how-to-select-specific-field-in-nested-populate-in-mogoose
  //$project − Used to select some specific fields from a collection.
+>Inserir anexos
 >Logo em formato vetorial
 
 
@@ -34,6 +36,10 @@ Done:
 //>Foto de perfil usuário
 //>Footer no comment crescer
 //>Login automático ao se registrar
+//>Foto de perfil(backend)
+//>Pesquisar(tela e rota)
+//>Inserir foto de perfil
+//>Rota de alterar foto de perfil
 
 //Reid:
 

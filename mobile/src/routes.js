@@ -59,7 +59,7 @@ const PostStack = () => (
 // )
 
 const SlackStack = () => (
-    <Main3Stack.Navigator screenOptions={{headerShown: false}}>
+    <Main3Stack.Navigator screenOptions={{ headerShown: false }}>
         <Main3Stack.Screen name="HomeSlack" component={HomeSlack}></Main3Stack.Screen>
         <Main3Stack.Screen name="SlackPage" component={SlackPage}></Main3Stack.Screen>
     </Main3Stack.Navigator>
@@ -81,7 +81,7 @@ function CustomDrawerContent(props) {
     const [userName, setName] = useState('')
     const [userTags, setTags] = useState('')
     const [userId, setId] = useState('')
-    const [press,setPress]=useState(false)
+    const [press, setPress] = useState(false)
     const [avatar, setAvatar] = useState(null);
     //const navigation = useNavigation()
 
@@ -94,16 +94,16 @@ function CustomDrawerContent(props) {
 
     async function loadUser() {
         const user = await AsyncStorage.getItem('user')
-          if (user) {
+        if (user) {
             const response = await api.get(`/users/${user}`)
             if (response.data) {
-              setName(response.data.name)
-              setTags(response.data.tags)
-              setId(response.data._id)
-              setAvatar(response.data.url)
+                setName(response.data.name)
+                setTags(response.data.tags)
+                setId(response.data._id)
+                setAvatar(response.data.url)
             }
-          }
-      }
+        }
+    }
 
     useEffect(() => {
         loadUser();
@@ -114,24 +114,25 @@ function CustomDrawerContent(props) {
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                     <View style={styles.User}>
-                        <TouchableOpacity onPress={() => { 
+                        <TouchableOpacity onPress={() => {
                             setPress(previousState => !previousState)
-                            props.navigation.navigate('Profile',{userId}) 
-                            }}
+                            props.navigation.navigate('Profile', { userId })
+                        }}
                         >
-                            <View style={{ flexDirection: 'row', marginTop: 15, alignItems:'center' }}>
+                            <View style={{ flexDirection: 'row', marginTop: 15, alignItems: 'center' }}>
                                 <Avatar
                                     rounded
                                     source={{
                                         uri: avatar
-                                        ? avatar
-                                        : 'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png',
+                                            ? `${avatar}?${new Date().getTime()}`
+                                            : 'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png',
+
                                     }}
                                     size={50}
                                 />
                                 <View style={{ marginLeft: 15, flexDirection: 'column', marginTop: 0 }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{userName?userName:'Meu perfil'}</Text>
-                                    <Text style={{ fontSize: 13, color: '#365478' }}>{userTags?userTags.toString():''}</Text>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{userName ? userName : 'Meu perfil'}</Text>
+                                    <Text style={{ fontSize: 13, color: '#365478' }}>{userTags ? userTags.toString() : ''}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>

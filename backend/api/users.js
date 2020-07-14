@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt-nodejs')
 const Users = require('../models/Users');
-//
+const { hostIp } = require('../.env')
 //const GridFsStorage = require("multer-gridfs-storage");
 //const Grid = require("gridfs-stream");
-const multer = require("multer");
+//const multer = require("multer");
 
 module.exports = app => {
     const obterHash = (password, callback) => {
@@ -35,19 +35,18 @@ module.exports = app => {
     }
     const update = (req, res) => {
         const { id } = req.params;
-        let{key="",location: url = ""}=""
-        
-        if(req.file){
+        let { key = "", location: url = "" } = ""
+        if (req.file) {
             key = req.file.key;
             url = req.file.location;
-            if(url == null){
-                url = `http:192.168.29.66:3333/files/${key}`;
+            if (url == null) {
+                url = `http:${hostIp}:3333/files/${key}`;
             }
-            user = Users.findByIdAndUpdate(id, {key, url})
-            .then(_ => res.status(204).send())
-            .catch(err => res.status(400).json(err))
+            user = Users.findByIdAndUpdate(id, { key, url })
+                .then(_ => res.status(204).send())
+                .catch(err => res.status(400).json(err))
         }
-        else{
+        else {
             const email = req.body.email.trim().toLowerCase()
             const tags = req.body.tags.trim().toLowerCase()
             console.log(req.body)
@@ -58,6 +57,25 @@ module.exports = app => {
                     .then(_ => res.status(204).send())
                     .catch(err => res.status(400).json(err))
             })
+        }
+    }
+    const upload = (req, res) => {
+        const { id } = req.params;
+        let { key = "", location: url = "" } = ""
+
+        if (req.file) {
+            key = req.file.key;
+            url = req.file.location;
+            if (url == null) {
+                url = `http:${hostIp}:3333/files/${key}`;
+            }
+
+            user = Users.findByIdAndUpdate(id, { key, url })
+                .then(_ => res.status(201).send())
+                .catch(err => res.status(400).json(err))
+        }
+        else {
+            return res.status(204).send("Nenhum arquivo enviado")
         }
     }
     const patch = (req, res) => {
@@ -75,5 +93,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
         res.json(user)
     }
-    return { save, update, patch, profile }
+    return { save, update, patch, profile, upload }
 };

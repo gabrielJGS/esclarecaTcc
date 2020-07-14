@@ -19,6 +19,7 @@
 
 // const UsersClass = mongoose.model('Users', Users);
 // module.exports = UsersClass;
+const { hostIp } = require('../.env')
 
 const mongoose = require('mongoose');
 
@@ -39,7 +40,7 @@ const UserSchema = new mongoose.Schema({
 UserSchema.pre("save", function(){
     if(!this.url){
         if(this.key){
-            this.url = `http:192.168.29.66:3333/files/${this.key}`;//coloca AQUI seu localhost
+            this.url = `http:${hostIp}:3333/files/${this.key}`;//coloca AQUI seu localhost
         }
     }
 })
