@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt-nodejs')
 const Users = require('../models/Users');
 //
-const GridFsStorage = require("multer-gridfs-storage");
-const Grid = require("gridfs-stream");
+//const GridFsStorage = require("multer-gridfs-storage");
+//const Grid = require("gridfs-stream");
 const multer = require("multer");
 
 module.exports = app => {
@@ -19,9 +19,9 @@ module.exports = app => {
 
         if (req.file) {
             key = req.file.key;
-            url = req.file.url;
+            url = req.file.location;
         }
-
+        
         const userExist = await Users.findOne({ email })
         if (userExist) {
             res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`)
@@ -39,7 +39,7 @@ module.exports = app => {
         
         if(req.file){
             key = req.file.key;
-            url = req.file.url;
+            url = req.file.location;
             if(url == null){
                 url = `http:192.168.29.66:3333/files/${key}`;
             }

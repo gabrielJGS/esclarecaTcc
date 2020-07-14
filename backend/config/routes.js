@@ -13,9 +13,9 @@ module.exports = app => {
         .patch(app.api.users.patch)
 
     // app.post('/users/:id/photo', app.api.users.photo)//Posts do usuário
-    app.post('/users/:id/photo', app.api.users.upload.single("img"), (req, res, err) => {
-        res.send(req.files);
-    });
+    //app.post('/users/:id/photo', app.api.users.upload.single("img"), (req, res, err) => {
+        //res.send(req.files);
+   // });
 
     app.get('/users/:id/posts', app.api.posts.getByUser)//Posts do usuário
     app.get('/users/:id/posts/liked', app.api.posts.getByUser)//Posts curtidos pelo usuário
