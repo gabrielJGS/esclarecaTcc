@@ -161,7 +161,8 @@ export default StyleSheet.create({
   DuvidaTitle: {
     fontWeight: 'bold',
     color: "white",
-    fontSize: 25
+    fontSize: 22,
+    paddingHorizontal:15,
   },
   DuvidaCorpo: {
     flexDirection: 'row',
