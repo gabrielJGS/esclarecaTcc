@@ -14,6 +14,8 @@ module.exports = app => {
 
     //Enviar a foto de perfil
     app.post('/users/:id/photo', multer(multerConfig).single('file'), app.api.users.upload)
+    //ranking
+    app.get('/users/ranking', app.api.users.list)
 
     app.get('/users/:id/posts', app.api.posts.getByUser)//Posts do usuário
     app.get('/users/:id/posts/liked', app.api.posts.getByUser)//Posts curtidos pelo usuário

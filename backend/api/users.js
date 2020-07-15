@@ -93,5 +93,12 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
         res.json(user)
     }
-    return { save, update, patch, profile, upload }
+    const list = async (req, res) => {
+        const top = await Users.find()
+            .sort({ranking: -1})
+            .limit(10)
+            .catch(err => res.status(400).json(err))
+        res.json(top)
+    }
+    return { save, update, patch, profile, upload, list }
 };
