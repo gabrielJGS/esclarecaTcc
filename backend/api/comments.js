@@ -91,6 +91,13 @@ module.exports = app => {
             solvedPost: false,
         })
             .catch(err => res.status(400).json(err))
+            if (userExiste.ranking === NaN || userExiste.ranking === undefined){
+                value = 3
+            }
+            else{
+                value = userExiste.ranking + 3
+            }
+            const result = await Users.findByIdAndUpdate(user, { ranking: value })
         res.status(204).send()
 
     }
@@ -112,6 +119,15 @@ module.exports = app => {
         if (commentToDelete.post._id == post || commentToDelete.user == user_id) {//Se é o post certo e o dono do comentário deleta
             await Posts_Comments.deleteOne(commentToDelete)
                 .catch(err => res.status(400).json(err))
+
+            if (user.ranking === NaN || user.ranking === undefined){
+                value = 0
+            }
+            else{
+                value = user.ranking - 3
+            }
+            const result = await Users.findByIdAndUpdate(user, { ranking: value })
+
             res.status(204).send()
         } else {//Se não, não tem permissão
             res.status(401).send(`Usuário ${user_id} não autorizado a deletar o comentário.`)

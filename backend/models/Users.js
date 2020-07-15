@@ -33,7 +33,8 @@ const UserSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-    }
+    },
+    ranking: Number
     //userPhoto: { Schema.Types.Mixed }
 });
 

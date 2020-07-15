@@ -231,6 +231,13 @@ module.exports = app => {
             user: user_id,
         })
             .catch(err => res.status(400).json(err))
+            if (user.ranking === NaN || user.ranking === undefined){
+                value = 5
+            }
+            else{
+                value = user.ranking + 5
+            }
+            const result = await Users.findByIdAndUpdate(user_id, { ranking: value })
         res.status(204).send()
 
     }
@@ -238,11 +245,19 @@ module.exports = app => {
     const remove = async (req, res) => {
         const { user_id } = req.headers;
         const { post } = req.params;
+        const user = await Users.findById(user_id)
         const postToBeRemoved = await Posts.findById(post)
             .catch(err => { return res.status(400).json(err) })//Caso o id seja inválido vai cair aqui
         if (!postToBeRemoved) { return res.status(400).send("Post não encontrado com o id: " + post) }//Caso o id seja válido mas não exista vai cair aqui
         if (postToBeRemoved.user == user_id) {//Se é o dono post deleta
             await Posts.deleteOne(postToBeRemoved)
+            if (user.ranking === NaN || user.ranking === undefined){
+                value = 0
+            }
+            else{
+                value = user.ranking - 5
+            }
+            const result = await Users.findByIdAndUpdate(user_id, { ranking: value })
                 .catch(err => { return res.status(400).json(err) })
             return res.status(204).send()
         } else {//Se não, não tem permissão
