@@ -21,13 +21,13 @@ module.exports = app => {
             key = req.file.key;
             url = req.file.location;
         }
-        
+
         const userExist = await Users.findOne({ email })
         if (userExist) {
             res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`)
         } else {
             obterHash(req.body.password.trim().toLowerCase(), hash => {
-                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()), key, url })
+                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()), key, url, ranking: 0 })
                     .then(_ => res.status(204).send())
                     .catch(err => res.status(400).json(err))
             })
@@ -95,7 +95,7 @@ module.exports = app => {
     }
     const list = async (req, res) => {
         const top = await Users.find()
-            .sort({ranking: -1})
+            .sort({ ranking: -1 })
             .limit(10)
             .catch(err => res.status(400).json(err))
         res.json(top)

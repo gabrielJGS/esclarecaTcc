@@ -24,25 +24,16 @@ export default function Register() {
     const [tags, setTags] = useState('');
     //const [file, setFile] = useState(null);
     const [avatar, setAvatar] = useState('https://www.colegiodepadua.com.br/img/user.png');
-    const [isUploadingImage, setIsUploadingImage] = useState(false)
+    //const [isUploadingImage, setIsUploadingImage] = useState(false)
     //const [visible, setVisible] = useState(false);
 
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
-        let localUri = avatar.uri;
-        let filename = localUri.split('/').pop();
-        let match = /\.(\w+)$/.exec(filename);
-        let type = match ? `image/${match[1]}` : `image`;
         try {
-            const data = new FormData();
-            data.append('file', { uri: localUri, name: filename, type })
-            data.append("name", name);
-            data.append("email", email);
-            data.append("password", password);
-            data.append("tags", tags);
+            const response = await api.post('/signup', {
+                name, email, password, tags
+            })
 
-            const response = await api.post('/signup', data)
-           
             if (response.status == 204) {
                 showSucess("Usuário cadastrado com sucesso")
                 //navigation.goBack()
@@ -55,6 +46,14 @@ export default function Register() {
                         await AsyncStorage.setItem('user', user.id.toString());
                         await AsyncStorage.setItem('userName', user.name.toString());
                         await AsyncStorage.setItem('userTags', user.tags.toString());
+                        if (avatar != 'https://www.colegiodepadua.com.br/img/user.png') {
+                            try {
+                                handleSubmitPhoto(user.id)
+                            }
+                            catch (k) {
+                                showError(x)
+                            }
+                        }
                         singIn();
                     } catch (x) {
                         showError(x)
@@ -82,11 +81,11 @@ export default function Register() {
 
         if (!result.cancelled) {
             setAvatar(result)
-            setIsUploadingImage(true)
+            //setIsUploadingImage(true)
         }
     }
 
-    async function handleSubmitPhoto() {
+    async function handleSubmitPhoto(idUser) {
         let localUri = avatar.uri;
         let filename = localUri.split('/').pop();
         let match = /\.(\w+)$/.exec(filename);
@@ -94,11 +93,11 @@ export default function Register() {
         try {
             const data = new FormData();
             data.append('file', { uri: localUri, name: filename, type })
-            const response = await api.post(`/users/${userId}/photo`, data)
+            const response = await api.post(`/users/${idUser}/photo`, data)
             if (response.status == 201) {
-                showSucess("Foto alterada com sucesso")
-                setIsUploadingImage(false)
-                await loadUser(userId)
+                //showSucess("Foto alterada com sucesso")
+                //setIsUploadingImage(false)
+                //await loadUser(userId)
             } else {
                 showError(response)
             }
@@ -128,7 +127,7 @@ export default function Register() {
             </View>
             <TouchableOpacity style={styles.circle} onPress={() => handlePickUpdate()}>
                 <Image style={{ width: 120, height: 120, borderRadius: 120 / 2, borderWidth: 3, borderColor: "#FFF" }}
-                    source={{ uri: isUploadingImage ? avatar.uri : `${avatar}?${new Date().getTime()}` }} />
+                    source={{ uri: avatar == 'https://www.colegiodepadua.com.br/img/user.png' ? avatar : avatar.uri }} />
                 {/* <Feather
                             name="camera" size={40}
                             style={styles.images}
