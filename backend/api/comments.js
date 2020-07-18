@@ -207,6 +207,14 @@ module.exports = app => {
                 postToUpdate.solved = true
                 await postToUpdate.save()
                     .catch(err => res.status(400).json(err))
+
+                if (user.ranking === NaN || user.ranking === undefined){
+                    value = 10
+                }
+                else{
+                    value = user.ranking + 10
+                }
+                const result = await Users.findByIdAndUpdate(user, { ranking: value })
             }
             return res.status(201).send()
         }
