@@ -6,7 +6,26 @@ const Slacks = require('../models/Slacks');
 
 module.exports = app => {
     const index = async(req, res) => {
-        
+        const { user_id } = req.headers;
+        //Páginação
+        const qtdLoad = 5
+        const { page = 1 } = req.query
+
+        const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
+        }
+        const slacks = await Slacks
+            .aggregate([
+                { $sort: { postedIn: -1 } },
+                { $skip: (page - 1) * qtdLoad },
+                { $limit: qtdLoad },
+                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+            ])
+            .catch(err => res.status(400).json(err))
+
+        return res.json(slacks)
     }
     const save = async(req, res) => {
         let { title } = req.body;
@@ -38,7 +57,7 @@ module.exports = app => {
     const remove = async(req, res) => {
         const { user_id } = req.headers;
         const { slack } = req.params;
-
+        console.log(slack)
         const user = await Users.findById(user_id)
 
         const slackRemove = await Slacks.findById(slack)
@@ -61,7 +80,28 @@ module.exports = app => {
         }
     }
     const searchSlack = async(req, res) => {
-        
+        const { user_id, search_text } = req.headers;
+
+        //Páginação
+        const qtdLoad = 5
+        const { page = 1 } = req.query
+
+        const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
+        }
+        const slacks = await Slacks
+            .aggregate([
+                { $match: { title: { $in: search_text } } },
+                { $sort: { postedIn: -1 } },
+                { $skip: (page - 1) * qtdLoad },
+                { $limit: qtdLoad },
+                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+            ])
+            .catch(err => res.status(400).json(err))
+
+        return res.json(slacks)
     }
 
     return { index, save, remove, searchSlack }
