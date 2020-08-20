@@ -26,36 +26,6 @@ export default StyleSheet.create({
   headerTextBold: {
     fontWeight: 'bold'
   },
-  postsList: {
-    marginTop: 5,
-    paddingHorizontal: 8,
-  },
-  post: {
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    marginBottom: 10,
-    shadowColor: 'rgb(0, 0, 0)',
-            shadowOffset: {
-              width: 3,
-              height: 3,
-            },
-            shadowOpacity: 0.8,
-            shadowRadius: 5,
-            elevation: 3,
-  },
-  postTitle: {
-    fontSize: 16,
-    color: '#365478',
-    fontWeight: 'bold',
-    paddingLeft:10
-  },
-  postTag:{
-    fontSize: 12,
-    color: '#737380'
-  },
-  postDescricao: {
-    fontSize: 15,
-  },
   detailsButton:{
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -96,7 +66,10 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   Search:{
+    backgroundColor: 'white',
+    borderRadius: 5,
     marginTop:15,
+    marginHorizontal:15,
     flexDirection:'row',
     justifyContent:'space-between',
     alignItems:'center',
@@ -104,12 +77,6 @@ export default StyleSheet.create({
   },
   Barheight:{
     height: hp('5%')
-  },
-  Body:{
-    flex:1
-  },
-  BodyFlat:{
-    flex:0.9
   },
   addButton: {
     position: 'absolute',
@@ -131,39 +98,6 @@ export default StyleSheet.create({
             elevation: 3,
   },
 
-  postHeader:{
-    backgroundColor: '#FAFAFA',
-    borderRadius: 8,
-    borderBottomLeftRadius:20,
-    borderBottomRightRadius:20,
-    paddingRight:24,
-    paddingLeft:20,
-    paddingTop:10,
-    paddingBottom:8
-  },
-
-  postDesc:{
-    backgroundColor: 'white',
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius:8,
-    paddingRight:24,
-    paddingLeft:24,
-    paddingTop:10,
-    paddingBottom:12,
-  },
-
-  postTitulo:{
-    flexDirection:'row',
-    alignItems:'center',
-    marginBottom:2
-  },
-
-  headerTags:{
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between',
-    paddingLeft:4,
-  },
 
   Ver:{
     paddingRight:20,
@@ -171,10 +105,7 @@ export default StyleSheet.create({
     alignItems:'center',
     justifyContent:'center'
   },
-  Nomepost:{
-    fontSize:10,
-    color:'#C8C8C8'
-  },
+
 
   modalContent:{
     width: '100%',
@@ -237,8 +168,5 @@ export default StyleSheet.create({
     color: '#444',
     height: hp('4%'),
     borderRadius: 2,
-    },
-    avatar: {
-      width: 40,height: 40,borderRadius: 40 / 2,borderWidth:1,borderColor:"#D8D9DB",
-    },
+    }
 })

@@ -45,7 +45,7 @@ export default function Login() {
                     showError(x)
                 }
             } catch (e) {
-                alert("Error:\n" + e)
+                showError(e)
             }
         }
         else {

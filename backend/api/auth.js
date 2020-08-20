@@ -38,7 +38,7 @@ module.exports = app => {
                 })
             })
         } else {
-            res.status(400).send('Email não encontrado')
+            res.status(400).json('Email não encontrado')
         }
     }
     return { signin }
