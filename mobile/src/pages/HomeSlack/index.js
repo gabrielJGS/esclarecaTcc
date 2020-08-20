@@ -5,7 +5,10 @@ import { useNavigation } from '@react-navigation/native'
 import * as Animatable from 'react-native-animatable'
 import Dialog from "react-native-dialog";
 
+import api from '../../services/api'
 import styles from './styles'
+
+import { showError } from '../../common'
 
 export default function HomeSlack(){
     const navigation = useNavigation();
