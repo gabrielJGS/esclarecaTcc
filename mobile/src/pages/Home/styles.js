@@ -69,11 +69,12 @@ export default StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     marginTop:15,
-    marginHorizontal:15,
+    marginHorizontal:10,
     flexDirection:'row',
     justifyContent:'space-between',
     alignItems:'center',
-    paddingHorizontal:32,
+    paddingLeft:20,
+    paddingRight:10,
   },
   Barheight:{
     height: hp('5%')
@@ -106,7 +107,6 @@ export default StyleSheet.create({
     justifyContent:'center'
   },
 
-
   modalContent:{
     width: '100%',
     height: '100%',
@@ -115,6 +115,22 @@ export default StyleSheet.create({
   modalBody:{
     right:33,
     top:55,
+    position: 'absolute',
+    backgroundColor: '#fff',
+    borderRadius:5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
+  },
+  modalPesquisaBody:{
+    right:20,
+    top:126,
+    width:92,
     position: 'absolute',
     backgroundColor: '#fff',
     borderRadius:5,
@@ -168,5 +184,6 @@ export default StyleSheet.create({
     color: '#444',
     height: hp('4%'),
     borderRadius: 2,
+    maxHeight: 200,
     }
 })

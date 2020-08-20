@@ -394,7 +394,22 @@ export default function Profile({ route, navigation }) {
           </>
           :
           <>
-            <TouchableOpacity>
+            <TouchableOpacity style={styles.detailsButton} onPress={() =>
+          Alert.alert(
+            'Bloquear',
+            'Deseja realmente bloquear o usuário?',
+            [
+              { text: 'Não', onPress: () => { return null } },
+              {
+                text: 'Sim', onPress: () => {
+                  () => {};
+                }
+              },
+            ],
+            { cancelable: false }
+          )}
+        >
+              <Feather name="slash" size={25} color="#E73751"></Feather>
             </TouchableOpacity>
           </>
         }

@@ -19,11 +19,17 @@ export default function Home() {
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
 
-    //Pesquisa
+    //filtro
     const [modalVisible, setModalVisible] = useState(false);//Janela de seleção
     const [searchFavorite, setSearchFavorite] = useState(false);
     const [searchSolved, setSearchSolved] = useState('');
     const [searchText, setSearchText] = useState('');
+
+    //Pesquisa
+    const [modalPesquisaVisible, setModalPesquisaVisible] = useState(false);//Janela de seleção
+    const [searchTag, setSearchTag] = useState(true);
+    const [searchDesc, setSearchDesc] = useState(false);
+    const [searchUser, setSearchUser] = useState(false);
 
     function navigateToNewPost() {
         navigation.navigate('NewPost', {
@@ -38,7 +44,6 @@ export default function Home() {
         setType(true)
         reloadPosts()
     }
-
 
     useEffect(() => {
         reload()
@@ -58,6 +63,10 @@ export default function Home() {
 
     function showModal() {
         setModalVisible(!modalVisible)
+    }
+
+    function showModalPesquisa(){
+        setModalPesquisaVisible(!modalPesquisaVisible)
     }
 
     async function loadPosts() {
@@ -153,6 +162,48 @@ export default function Home() {
                 </Modal>
             </View>
 
+            <View>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalPesquisaVisible}
+                    onRequestClose={showModalPesquisa}
+                >
+                    <TouchableWithoutFeedback onPress={showModalPesquisa}>
+                        <View style={styles.modalContent}>
+                            <View style={styles.modalPesquisaBody}>
+                                <View style={styles.modalFilter}>
+                                    <Text style={styles.filterTitle}>Pesquisar Por:</Text>
+                                </View>
+                                <View style={styles.filterView}>
+                                    <View style={styles.filterSub}>
+                                        <TouchableOpacity style={styles.filterButton} onPress={() => setSearchTag(!searchTag)}>
+                                            <Text style={[styles.filterText, { color: searchTag ? '#7DCEA0' : '#365478' }]}>Tags</Text>
+                                            <Feather name="hash" size={12} color="#7DCEA0"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.filterSub}>
+                                        <TouchableOpacity style={styles.filterButton} onPress={() => setSearchDesc(!searchDesc)}>
+                                            <View>
+                                                <Text style={[styles.filterText, { color: searchDesc ? '#7DCEA0' : '#365478' }]}>Descrição</Text>
+                                                <Text style={[styles.filterText, { color: searchDesc ? '#7DCEA0' : '#365478', marginTop:-3 }]}>e Título</Text>
+                                            </View>
+                                            <Feather name="file-text" size={12} color="#7DCEA0"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.filterSub}>
+                                        <TouchableOpacity style={styles.filterButton} onPress={() => setSearchUser(!searchUser)}>
+                                            <Text style={[styles.filterText, { color: searchUser ? '#7DCEA0' : '#365478' }]}>Usuário</Text>
+                                            <Feather name="users" size={12} color="#7DCEA0"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            </View>
+
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
                 <TouchableOpacity style={styles.detailsButton} onPress={() => navigation.openDrawer()}>
@@ -177,9 +228,14 @@ export default function Home() {
                     numberOfLines={2}
                     returnKeyType="done"
                 />
-                <TouchableOpacity onPress={reloadPosts}>
-                    <Feather name="search" size={18} color="#FFC300" style={{ marginTop: 2 }} />
-                </TouchableOpacity>
+                <View style={{flexDirection:'row', justifyContent:'space-between',}}>
+                    <TouchableOpacity onPress={reloadPosts}>
+                        <Feather name="search" size={18} color="#FFC300" style={{ marginTop: 2, marginRight:20 }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={showModalPesquisa}>
+                        <Feather name="more-vertical" size={18} color="#FFC300" style={{ marginTop: 2 }} />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <Posts posts={posts} reloadPosts={reloadPosts} refreshing={refreshing} onEndReached={onLoadMore}
