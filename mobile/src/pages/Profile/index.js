@@ -11,6 +11,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import styles from './styles'
 import Feather from 'react-native-vector-icons/Feather';
 import { AuthContext } from '../../context'
+import Posts from '../../Components/Posts'
 import { showError, showSucess } from '../../common'
 
 export default function Profile({ route, navigation }) {
@@ -476,58 +477,9 @@ export default function Profile({ route, navigation }) {
         </View>
       </Animatable.View>
 
-      <View style={styles.body2}>
-        <View style={styles.bodyContent}>
-          <FlatList
-            data={posts}
-            style={styles.postsList}
-            keyExtractor={post => String(post._id)}
-            refreshing={refreshing}
-            onRefresh={reloadPosts}
-            onEndReached={loadPosts}
-            onEndReachedThreshold={0.2}
-            ListFooterComponent={renderFooter}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item: post }) => (
-              <Animatable.View
-                style={styles.post}
-                animation="fadeInDown"
-                duration={1000}>
-                <View style={styles.postHeader}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <View style={styles.postTitulo}>
-                      <Text style={styles.postTitle}>{handleTitle(post.title)}</Text>
-                    </View>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.headerTags}>
-                    <Text style={styles.postTag}>{post.tags.toString()}</Text>
-                    <TouchableOpacity style={styles.Ver} onPress={() => navigateToPost(post)}>
-                      <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={{ paddingHorizontal: 25, paddingBottom: 8, top: 4, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => handleLike(post._id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                      <FontAwesome name={post.didILiked == true ? "heart" : "heart-o"} style={{ color: 'red', fontSize: 12 }} />
-                      <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.likes.length}</Text>
-                    </TouchableOpacity>
-                    <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 15 }} />
-                    <Text style={{ marginLeft: 3, fontSize: 12, color: 'gray' }}>{post.commentsCount}</Text>
-                  </View>
-                  {post.closed ? <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
-                    <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
-                  </View> : null}
-                </View>
-              </Animatable.View>
-            )}>
-          </FlatList>
-        </View>
-      </View>
+      <Posts posts={posts} reloadPosts={reloadPosts} refreshing={refreshing} onEndReached={loadPosts}
+                searchSolved={false} searchFavorite={false} loading={loading} navigation={navigation}
+            />
 
     </View>
   )
