@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 
 const SlacksSchema = new mongoose.Schema({
-    title: String,
-    postedIn: Date,
+    nome: String,
+    tag: [String],
+    senha: String,
+    createdIn: Date,
+
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'

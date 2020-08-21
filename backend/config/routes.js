@@ -57,20 +57,11 @@ module.exports = app => {
     app.route('/posts/:post/:comm/solve')
         // .all(app.config.passport.authenticate())
         .post(app.api.comments.solvePost)
-
+    //Slacks
     app.route('/slacks')
-        //.all(app.config.passport.authenticate())
         .get(app.api.slacks.index)
         .post(app.api.slacks.save)
-        
-    app.post('/slacks/search', app.api.slacks.searchSlack)//slack do usuário
-    
-    //mensagens
-    app.route('/slacks/:slack')
-        .delete(app.api.slacks.remove)//Deletar slack
-        .get(app.api.messages.index)
-        .post(app.api.messages.save)
-    
-    app.route('/slacks/:slack/:comm')
-        .delete(app.api.messages.remove)//Deletar comentário
+
+    app.delete('/slacks/:slack', app.api.slacks.remove)
+    app.post('/slacks/search', app.api.slacks.searchSlack)
 }
