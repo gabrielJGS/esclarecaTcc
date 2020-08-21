@@ -1977,6 +1977,11 @@ badgin@^1.1.2:
   resolved "https://registry.yarnpkg.com/badgin/-/badgin-1.1.4.tgz#5a8e2b81e812d3c4af7bacc2e62b36a9a5e40de5"
   integrity sha512-BQ1m7TA7IehXb3/9b3cNH6TwIKcdqqJa/E4Z4fO40tSs6HPZWopPvx9QgHeUEd6Aays1BxQXjBpO+yrSYuRSOw==
 
+badgin@^1.1.5:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/badgin/-/badgin-1.1.8.tgz#6e4c930554945d31752e5de2d8a316036dccda5e"
+  integrity sha512-EGbhb5OwZreHS0vd8tFLzdWBqvz3dFREf1sYK5EtivtTDUkYCLSEKz1KvXJ4MBHAyKGDymx8wYPCQwrftQBifw==
+
 balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
@@ -2940,6 +2945,18 @@ expand-brackets@^2.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+expo-ads-admob@~8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/expo-ads-admob/-/expo-ads-admob-8.1.0.tgz#95290122b90a938a0fa6d9639eeb922c3055077b"
+  integrity sha512-QeKIEaa9UueusO2+YS9Snikn+H/if9zfBLnbOINypG1cx0QX7j8tP3gybmzt4Ra7H3lN1Hbe2Zq06tpaP2ySSw==
+  dependencies:
+    prop-types "^15.6.2"
+
+expo-application@~2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/expo-application/-/expo-application-2.1.1.tgz#7cd61ccc53d7a0c85c8aac64b5ea59b20a1cb803"
+  integrity sha512-iq24Zgd4EmbFakHL2saVdA2zexhRX80RSbAtrWrp3BaVDd7yFNAtcwjW4r1Oyhm00YEREWp70sTaXrWs6jKHQA==
+
 expo-asset@~8.1.5:
   version "8.1.5"
   resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-8.1.5.tgz#6d0e3504cd719e9b888d32978d419d6522eed799"
@@ -2958,6 +2975,14 @@ expo-camera@~8.2.0:
   dependencies:
     lodash "^4.6.0"
     prop-types "^15.6.0"
+
+expo-constants@<10.0.0:
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-9.1.1.tgz#bca141ee3d4550e308798128f66c6d9c6a206ca1"
+  integrity sha512-zCa/wRARODHd6BSwxjBhidmao0AqQnKmLkl0tsVIoZlRyPDHsEaxNR/m+7wqGC7qiC+UpG1qRnvLOLwCGt2ihg==
+  dependencies:
+    fbjs "1.0.0"
+    uuid "^3.3.2"
 
 expo-constants@~9.0.0:
   version "9.0.0"
@@ -3029,6 +3054,16 @@ expo-mail-composer@~8.1.0:
   integrity sha512-CMkDa5YX9YZj/ZLHp0f1WAMBrCZjGqsloOH9JzhnCwMVy0BR+lLYoYWiwx2zk2JTpUgADXjdQKK4edDFclGwtg==
   dependencies:
     query-string "^6.2.0"
+
+expo-notifications@~0.1.1:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/expo-notifications/-/expo-notifications-0.1.7.tgz#a0a62376f4271f7cd1403c22749af0bb0d338ad1"
+  integrity sha512-yWGoCWQjQMVSMIsbhwR9pq/voAMTCgof+A7swV5uQM0X0WcfkqJMsB6Y5XMksdpkm+vEhvxRFyw0NXDso6pcjg==
+  dependencies:
+    badgin "^1.1.5"
+    expo-application "~2.1.1"
+    expo-constants "<10.0.0"
+    uuid "^3.4.0"
 
 expo-permissions@~8.1.0:
   version "8.1.0"
@@ -3202,12 +3237,13 @@ fbjs-scripts@^1.1.0:
     semver "^5.1.0"
     through2 "^2.0.0"
 
-fbjs@^0.8.4, fbjs@^0.8.9:
-  version "0.8.17"
-  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
-  integrity sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
+fbjs@1.0.0, fbjs@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-1.0.0.tgz#52c215e0883a3c86af2a7a776ed51525ae8e0a5a"
+  integrity sha512-MUgcMEJaFhCaF1QtWGnmq9ZDRAzECTCRAF7O6UZIlAlkTs1SasiX9aP0Iw7wfD2mJ7wDTNfg2w7u5fSCwJk1OA==
   dependencies:
-    core-js "^1.0.0"
+    core-js "^2.4.1"
+    fbjs-css-vars "^1.0.0"
     isomorphic-fetch "^2.1.1"
     loose-envify "^1.0.0"
     object-assign "^4.1.0"
@@ -3215,13 +3251,12 @@ fbjs@^0.8.4, fbjs@^0.8.9:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
 
-fbjs@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-1.0.0.tgz#52c215e0883a3c86af2a7a776ed51525ae8e0a5a"
-  integrity sha512-MUgcMEJaFhCaF1QtWGnmq9ZDRAzECTCRAF7O6UZIlAlkTs1SasiX9aP0Iw7wfD2mJ7wDTNfg2w7u5fSCwJk1OA==
+fbjs@^0.8.4, fbjs@^0.8.9:
+  version "0.8.17"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
+  integrity sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
   dependencies:
-    core-js "^2.4.1"
-    fbjs-css-vars "^1.0.0"
+    core-js "^1.0.0"
     isomorphic-fetch "^2.1.1"
     loose-envify "^1.0.0"
     object-assign "^4.1.0"
