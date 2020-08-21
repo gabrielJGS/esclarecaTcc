@@ -1,158 +1,333 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity,ScrollView,AsyncStorage,Alert,Modal,TouchableWithoutFeedback,TextInput,Switch } from 'react-native';
-import { Feather, Ionicons,SimpleLineIcons } from '@expo/vector-icons'
+import { Text, View, TouchableOpacity, ScrollView, Alert, Modal, TouchableWithoutFeedback, TextInput, Switch, AsyncStorage, FlatList } from 'react-native';
+import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import * as Animatable from 'react-native-animatable'
 import Dialog from "react-native-dialog";
-
+import { showError, showSucess } from '../../common'
 import styles from './styles'
+import api from '../../services/api'
 
-export default function HomeSlack(){
+export default function HomeSlack() {
     const navigation = useNavigation();
+
+    const [searchText, setSearchText] = useState('')
     const [modalVisible, setModalVisible] = useState(false);
     const [dialogVisible, setDialogVisible] = useState(false);
-    const [isEnabled, setIsEnabled] = useState(false);
+    const [privadoModal, setPrivadoModal] = useState(false);
+
     const [senha, setSenha] = useState('');
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+    const [nomeModal, setNomeModal] = useState('');
+    const [tagModal, setTagModal] = useState('');
+    const [senhaModal, setSenhaModal] = useState('');
+
+    const [slacks, setSlacks] = useState([])
+    const [total, setTotal] = useState(0)
+    const [page, setPage] = useState(1)
+    const [loading, setLoading] = useState(false)
+    const [refreshing, setRefreshing] = useState(false)
+
+    const handlePrivadoModal = () => setPrivadoModal(previousState => !previousState);
 
     function handleModal() {
         setModalVisible(!modalVisible)
     }
 
-    async function handleDialog(){
+    async function handleDialog() {
         setDialogVisible(previousState => !previousState)
         setSenha('');
     }
 
-    function navigateToSlackPage() {
-        if(senha === "123"){
-            setDialogVisible(previousState => !previousState)
-            navigation.navigate('SlackPage')
+    useEffect(() => {
+        reloadSlacks()
+    }, [])
+
+    async function loadSlacks() {
+        if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+            return
         }
-        else{
-            setSenha('');
-            Alert.alert(
-                'Erro',
-                'Senha Incorreta. Digite Novamente',
-                [
-                  { text: 'OK', onPress: () => { return null } },
-                ],
-                { cancelable: false }
-              )
+
+        if (total > 0 && slacks.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+            return
+        }
+
+        const user_id = await AsyncStorage.getItem('user');
+        try {
+            const response = await api.get(`/slacks`, {
+                headers: { user_id, search_text: searchText },
+                params: { page }
+            })
+
+            setSlacks([...slacks, response.data])
+
+            if (response.data.length > 0) {
+                setPage(page + 1)
+            }
+            setTotal(response.headers['x-total-count'])
+            setLoading(false)//Conclui o load
+        }
+        catch (e) {
+            showError(e)
         }
     }
 
-    return(
-        <View style={styles.container}>
+    async function reloadSlacks() {
+        if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
+            return
+        }
 
+        const user_id = await AsyncStorage.getItem('user');
+        try {
+            const response = await api.get(`/slacks`, {
+                headers: { user_id, search_text: searchText },
+                params: { page }
+            })
+            setSlacks(response.data)
+
+            if (response.data.length > 0) {
+                setPage(1)
+            }
+            setTotal(response.headers['x-total-count'])
+            setRefreshing(false)//Conclui o load
+        }
+        catch (e) {
+            showError(e)
+        }
+    }
+
+    async function handleCreateSlack() {
+        const user_id = await AsyncStorage.getItem('user');
+        if (nomeModal.trim() == '' || tagModal.trim() == '') {
+            showError('Os campos nome e tag são obrigatórios')
+        }
+        try {
+            const post = await api.post(`/slacks`, {
+                nome: nomeModal, tag: tagModal, senha: privadoModal ? senhaModal : ''//Garantir que seja enviado sem senha caso o switch esteja desativado mas tenha texto preenchido
+            }, {
+                headers: { user_id }
+            })
+            if (post.status == 204) {
+                showSucess('Slack criado com sucesso')
+                setNomeModal('')
+                setTagModal('')
+                setPrivadoModal(false)
+                setSenhaModal('')
+                handleModal()
+            } else {
+                showError("Ocorreu um erro: " + post)
+            }
+        }
+        catch (e) {
+            showError(e)
+        }
+    }
+    async function handleDeleteSlack(slackParam) {
+        const user_id = await AsyncStorage.getItem('user');
+        try {
+            const response = await api.delete(`/slacks/${slackParam._id}`, {
+                headers: { user_id }
+            })
+            if (response.status == 204) {
+                showSucess('Slack apagado com sucesso')
+                await reloadSlacks()
+            } else {
+                showError("Ocorreu um erro: " + response)
+            }
+        } catch (e) {
+            showError("Ocorreu um erro: " + e)
+        }
+    }
+
+    function handleProtectedSlack(slackParam) {
+        if (slackParam.senha != '') {
+            if (senha === slackParam.senha) {
+                setDialogVisible(previousState => !previousState)
+                navigateToSlack(slackParam)
+            }
+            else {
+                setSenha('');
+                Alert.alert(
+                    'Erro',
+                    'Senha Incorreta. Digite Novamente',
+                    [
+                        { text: 'OK', onPress: () => { return null } },
+                    ],
+                    { cancelable: false }
+                )
+            }
+        }
+        else {
+            navigateToSlack(slackParam)
+        }
+    }
+    async function navigateToSlack(slackParam) {
+        //Setar parametro aqui
+        navigation.navigate('SlackPage')
+    }
+
+    renderFooter = () => {
+        if (!loading || !refreshing) return null;
+        return (
+            <View style={styles.loading}>
+                <ActivityIndicator />
+            </View>
+        );
+    };
+    function handleDate(data) {
+
+        var day = new Date(data);
+        var today = new Date();
+        var d = new String(data);
+        let text = new String();
+
+        var horas = Math.abs(day - today) / 36e5;
+        var horasArrend = Math.round(horas)
+
+        if (horasArrend > 24) {
+            text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
+        }
+        else if (horasArrend < 1) {
+            text = "Há menos de 1 hora"
+        }
+        else {
+            text = "Há " + horasArrend + " horas atrás"
+        }
+
+        return text
+    }
+
+    handlePrivateSlack = () => {
+        if (!loading || !refreshing) return null;
+        return (
+            <View style={styles.loading}>
+                <ActivityIndicator />
+            </View>
+        );
+    };
+
+    return (
+        <View style={styles.container}>
             <Dialog.Container visible={dialogVisible}>
                 <Dialog.Title>Slack Privada</Dialog.Title>
                 <Dialog.Description>
                     Digite a senha para continuar
                 </Dialog.Description>
-                <Dialog.Input 
-                    style={{borderBottomWidth:1, borderBottomColor:'#D8D9DB'}}
+                <Dialog.Input
+                    style={{ borderBottomWidth: 1, borderBottomColor: '#D8D9DB' }}
                     secureTextEntry={true}
                     password={true}
                     value={senha}
                     onChangeText={setSenha}
                 />
-                <Dialog.Button label="Entrar" onPress={navigateToSlackPage}/>
-                <Dialog.Button label="Cancelar" onPress={handleDialog}/>
+                <Dialog.Button label="Entrar" onPress={handleDialog} />
+                <Dialog.Button label="Cancelar" onPress={handleDialog} />
             </Dialog.Container>
 
             <View style={styles.modalView}>
                 <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={handleModal}
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={handleModal}
                 >
-                <TouchableWithoutFeedback onPress={handleModal}>
-                    <View style={styles.modalContent}>
-                    <View style={styles.modalBody}>
-                        <ScrollView>
-                        <View style={styles.indicator} />
-
-                        <View style={styles.modalPerfil}>
-                            <Text style={styles.perfilTitle}>Criar Slack  </Text>
-                            <Feather name="plus-circle" size={17} color="#365478"></Feather>
-                        </View>
-                        <View style={styles.viewInput}>
-                            <Text style={styles.modalSubtitle}>Nome</Text>
-                            <TextInput
-                            style={styles.input}
-                            placeholder="Indique o nome da slack..."
-                            placeholderTextColor="#999"
-                            autoCapitalize="words"
-                            autoCorrect={false}
-                            //value={title}
-                            //onChangeText={setTitle}
-                            numberOfLines={2}
-                            returnKeyType="done"
-                            />
-                            <View style={{flexDirection:'row',alignItems:'center', justifyContent:'space-between'}}>
-                                <View>
-                                    <Text style={styles.modalSubtitle}>É privado?</Text>
-                                    <Switch
-                                        trackColor={{ false: "#D8D9DB", true: "#7DCEA0" }}
-                                        thumbColor={isEnabled ? "#7DCEA0" : "#f4f3f4"}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={toggleSwitch}
-                                        value={isEnabled}
-                                    />
-                                </View>
-                                <View style={{flexDirection:'row',alignItems:'center', justifyContent:'space-between'}}>
-                                    {isEnabled ?
-                                        <>
-                                            <Text style={styles.modalSubtitle}>Senha</Text>
-                                            <TextInput
+                    <TouchableWithoutFeedback onPress={handleModal}>
+                        <View style={styles.modalContent}>
+                            <View style={styles.modalBody}>
+                                <ScrollView>
+                                    <View style={styles.indicator} />
+                                    <View style={styles.modalPerfil}>
+                                        <Text style={styles.perfilTitle}>Criar Slack  </Text>
+                                        <Feather name="plus-circle" size={17} color="#365478"></Feather>
+                                    </View>
+                                    <View style={styles.viewInput}>
+                                        <Text style={styles.modalSubtitle}>Nome</Text>
+                                        <TextInput
                                             style={styles.input}
-                                            placeholder="Indique a senha para acesso..."
+                                            placeholder="Indique o nome da slack..."
                                             placeholderTextColor="#999"
                                             autoCapitalize="words"
                                             autoCorrect={false}
-                                            //value={title}
-                                            //onChangeText={setTitle}
+                                            value={nomeModal}
+                                            onChangeText={setNomeModal}
                                             numberOfLines={2}
                                             returnKeyType="done"
-                                            />
-                                        </>
-                                    :
-                                        <>
-                                        </>
-                                    }
-                                </View>
+                                        />
+                                    </View>
+                                    <View style={styles.viewInput}>
+                                        <Text style={styles.modalSubtitle}>Tag</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholder="Indique o tag da slack..."
+                                            placeholderTextColor="#999"
+                                            autoCapitalize="words"
+                                            autoCorrect={false}
+                                            value={tagModal}
+                                            onChangeText={setTagModal}
+                                            numberOfLines={2}
+                                            returnKeyType="done"
+                                        />
+                                    </View>
+                                    <View style={styles.viewInput}>
+                                        <Text style={styles.modalSubtitle}>É privado?</Text>
+                                        <Switch
+                                            trackColor={{ false: "#D8D9DB", true: "#7DCEA0" }}
+                                            thumbColor={privadoModal ? "#7DCEA0" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={handlePrivadoModal}
+                                            value={privadoModal}
+                                        />
+                                    </View>
+                                    <View style={styles.viewInput}>
+                                        {privadoModal ?
+                                            <>
+                                                <Text style={styles.modalSubtitle}>Senha</Text>
+                                                <TextInput
+                                                    style={styles.input}
+                                                    placeholder="Indique a senha para acesso..."
+                                                    placeholderTextColor="#999"
+                                                    secureTextEntry={true}
+                                                    password={true}
+                                                    autoCorrect={false}
+                                                    value={senhaModal}
+                                                    onChangeText={setSenhaModal}
+                                                    numberOfLines={2}
+                                                    returnKeyType="done"
+                                                />
+                                            </>
+                                            :
+                                            <>
+                                            </>
+                                        }
+                                    </View>
+                                    <View style={styles.buttonView}>
+                                        <TouchableOpacity onPress={handleCreateSlack} style={styles.button}>
+                                            <Text style={styles.buttonText}>Salvar</Text>
+                                            <Feather name="check" size={15} color="#FFC300"></Feather>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={handleModal} style={styles.button}>
+                                            <Text style={styles.buttonText}>Cancelar</Text>
+                                            <Feather name="x-circle" size={15} color="#FFC300"></Feather>
+                                        </TouchableOpacity>
+                                    </View>
+                                </ScrollView>
                             </View>
                         </View>
-                        <View style={styles.buttonView}>
-                            <TouchableOpacity onPress={handleModal} style={styles.button}>
-                            <Text style={styles.buttonText}>Salvar</Text>
-                            <Feather name="check" size={15} color="#FFC300"></Feather>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={handleModal} style={styles.button}>
-                            <Text style={styles.buttonText}>Cancelar</Text>
-                            <Feather name="x-circle" size={15} color="#FFC300"></Feather>
-                            </TouchableOpacity>
-                        </View>
-                        </ScrollView>
-                    </View>
-                    </View>
-                </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>
                 </Modal>
             </View>
 
             <View style={styles.header}>
-                <TouchableOpacity onPress ={() => navigation.openDrawer()}>
+                <TouchableOpacity onPress={() => navigation.openDrawer()}>
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
-                <View style={{flexDirection:'row', alignItems:'center',justifyContent:'center'}}>
-                    <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight:5 }}>Slack</Text>
-                    <Feather name="slack" size={18} color="#FFC300" style={{marginTop:2}} />
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight: 5 }}>Slack</Text>
+                    <Feather name="slack" size={18} color="#FFC300" style={{ marginTop: 2 }} />
                 </View>
             </View>
 
-            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:32, paddingVertical:10}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 32, paddingVertical: 10 }}>
                 <TextInput
                     style={styles.input}
                     placeholder="Indique o nome da slack..."
@@ -164,104 +339,67 @@ export default function HomeSlack(){
                     numberOfLines={2}
                     returnKeyType="done"
                 />
-                <TouchableOpacity>
-                    <Feather name="search" size={18} color="#FFC300" style={{marginTop:2}} />
+                <TouchableOpacity onPress={() => loadSlacks()}>
+                    <Feather name="search" size={18} color="#FFC300" style={{ marginTop: 2 }} />
                 </TouchableOpacity>
             </View>
 
-            <Animatable.View
-                style={styles.post}
-                animation="fadeInDown"
-                duration={1000}
-            >
-                <View style={styles.postHeader}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <View style={styles.postTitulo}>
-                            <Text style={styles.postTitle}>SLACK 1</Text>
-                            <Feather name="lock" size={12} color="#7DCEA0" style={{marginLeft:5}} />
-                        </View>
-                    </View>
-                    <View style={styles.headerTags}>
-                        <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-                            <Text style={styles.Nomepost}>NOME</Text>
-                            <Text style={styles.Nomepost}>Data</Text>
-                            {true  ?
-                                <>
+            <FlatList
+                data={slacks}
+                // style={styles.post}
+                keyExtractor={slack => String(slack._id)}
+                refreshing={refreshing}
+                onRefresh={reloadSlacks}
+                onEndReached={loadSlacks}
+                onEndReachedThreshold={0.2}
+                ListFooterComponent={renderFooter}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item: slack }) => (
+                    <Animatable.View
+                        style={styles.post}
+                        animation="fadeInDown"
+                        duration={1000}
+                    >
+                        <View style={styles.postHeader}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <View style={styles.postTitulo}>
+                                <Feather name={slack.senha != '' ? "lock" : 'unlock'} size={14} color={slack.senha != '' ? "#5AAAA5" : "#7DCEA0"} style={{ marginRight: 5 }} />
+                                    <Text style={styles.postTitle}>{slack.nome}</Text>
+                                    <Text style={styles.Nomepost}>{handleDate(slack.createdIn)}</Text>
+                                    {/* Colocar a data no canto direito da tela */}
+                                </View>
+                            </View>
+                            <View style={styles.headerTags}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={styles.Nomepost}>{slack.user[0].name}</Text>
+                                    <Text style={styles.Nomepost}>{slack.tag[0]}</Text>
                                     <TouchableOpacity onPress={() =>
-                                    Alert.alert(
-                                        'Excluir',
-                                        'Deseja excluir sua slack?',
-                                        [
-                                        { text: 'Não', onPress: () => { return null } },
-                                        {
-                                            text: 'Sim', onPress: () => {}
-                                        },
-                                        ],
-                                        { cancelable: false }
-                                    )}
-                                    style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center' }}
+                                        handleDeleteSlack(slack)}
+                                        //         },
+                                        // Alert.alert(
+                                        //     'Excluir',
+                                        //     'Deseja excluir sua slack?',
+                                        //     [
+                                        //         { text: 'Não', onPress: () => { return null } },
+                                        //         {
+                                        //             text: 'Sim', onPress: () => { () => 
+                                        //     ],
+                                        //     { cancelable: false }
+                                        // )}
+                                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
                                     >
                                         <Feather name="trash-2" size={15} color='#E73751'></Feather>
                                     </TouchableOpacity>
-                                </>
-                            :
-                                <>
-                                </>
-                            }
+                                </View>
+                                <TouchableOpacity style={styles.Ver} onPress={() => navigateToSlack()}>
+                                    <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                        <TouchableOpacity style={styles.Ver} onPress={handleDialog}>
-                            <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Animatable.View>
+                    </Animatable.View>
+                )}>
+            </FlatList>
 
-            <Animatable.View
-                style={styles.post}
-                animation="fadeInDown"
-                duration={1000}
-            >
-                <View style={styles.postHeader}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <View style={styles.postTitulo}>
-                            <Text style={styles.postTitle}>SLACK 2</Text>
-                            <Feather name="unlock" size={12} color="#7DCEA0" style={{marginLeft:5}} />
-                        </View>
-                    </View>
-                    <View style={styles.headerTags}>
-                        <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-                            <Text style={styles.Nomepost}>NOME</Text>
-                            <Text style={styles.Nomepost}>Data</Text>
-                            {true  ?
-                                <>
-                                    <TouchableOpacity onPress={() =>
-                                    Alert.alert(
-                                        'Excluir',
-                                        'Deseja excluir sua slack?',
-                                        [
-                                        { text: 'Não', onPress: () => { return null } },
-                                        {
-                                            text: 'Sim', onPress: () => {}
-                                        },
-                                        ],
-                                        { cancelable: false }
-                                    )}
-                                    style={{ flexDirection: 'row', alignItems:'center', justifyContent:'center' }}
-                                    >
-                                        <Feather name="trash-2" size={15} color='#E73751'></Feather>
-                                    </TouchableOpacity>
-                                </>
-                            :
-                                <>
-                                </>
-                            }
-                        </View>
-                        <TouchableOpacity style={styles.Ver} onPress={() => navigation.navigate('SlackPage')}>
-                            <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Animatable.View>
 
             <TouchableOpacity style={styles.addButton} onPress={handleModal}>
                 <Animatable.View
@@ -269,6 +407,6 @@ export default function HomeSlack(){
                     <Feather name="plus" size={25} color="white"></Feather>
                 </Animatable.View>
             </TouchableOpacity>
-        </View>
+        </View >
     )
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput,  Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, Modal, TouchableWithoutFeedback } from 'react-native';
 import { Feather } from '@expo/vector-icons'
 import Posts from '../../Components/Posts'
 import api from '../../services/api'
@@ -40,15 +40,16 @@ export default function Home() {
     }
 
 
-    useEffect(() => {
-        reload()
-        async function reload() {
-            await reloadPosts()
-        }
-    }, [type])
+    // useEffect(() => {
+    //     reload()
+    //     async function reload() {
+    //         await reloadPosts()
+    //     }
+    // }, [type])
 
     useEffect(() => {
-        setSearchSolved(false); setSearchFavorite(false)
+        setSearchSolved(false);
+        setSearchFavorite(false)
         loadPosts()
     }, [])
 
@@ -73,11 +74,11 @@ export default function Home() {
 
         setLoading(true)//Altera para o loading iniciado
         try {
-            console.log(searchText)
             const response = await api.get('/posts', {
                 headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite },
                 params: { page }
             })
+            console.log(response.data)
             setPosts([...posts, ...response.data])
             if (response.data.length > 0) {
                 setPage(page + 1)
@@ -109,7 +110,7 @@ export default function Home() {
         }
         setRefreshing(false)
     }
-
+    
     return (
         //reidner 26/04
         <View style={styles.container}>
