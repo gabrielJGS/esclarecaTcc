@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, Switch, ActivityIndicator, Alert, Image } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, AsyncStorage, StatusBar, TextInput, ScrollView, ActivityIndicator, Alert, Image } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 
 import api from '../../services/api'
@@ -256,9 +256,10 @@ export default function PostPage({ route, navigation }) {
                             <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
                             <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
                         </TouchableOpacity>
-                        <Text style={{ marginTop: 10, fontSize: 15, color: 'white', paddingRight: 20 }}>{post.desc}</Text>
-
-                        <View style={{ flexDirection: 'row', paddingTop: 20, alignItems: 'flex-end' }}>
+                        <ScrollView>
+                        <Text style={{fontSize: 15, color: 'white', paddingRight: 40, maxHeight:115 }}>{post.desc}</Text>
+                        </ScrollView>
+                        <View style={{ flexDirection: 'row', paddingTop: 10, alignItems: 'flex-end' }}>
                             <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>Anexos</Text>
                             <View style={{ paddingLeft: 10 }}>
                                 <Feather name="file" size={20} color='#FFC300'></Feather>
