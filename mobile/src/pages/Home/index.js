@@ -88,7 +88,7 @@ export default function Home() {
                 headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite },
                 params: { page }
             })
-            console.log(response.data)
+            
             setPosts([...posts, ...response.data])
             if (response.data.length > 0) {
                 setPage(page + 1)

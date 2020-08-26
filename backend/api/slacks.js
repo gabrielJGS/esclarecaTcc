@@ -13,6 +13,9 @@ module.exports = app => {
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
+        const count = await Slacks.find({ tag: { $in: search_text != "" ? search_text.split(',') : user.tags } }).countDocuments()
+        res.header('X-Total-Count', count)
+
         const slacks = await Slacks
             .aggregate([
                 { $match: { tag: { $in: search_text != "" ? search_text.split(',') : user.tags } } },
@@ -37,12 +40,10 @@ module.exports = app => {
                 { $limit: qtdLoad },
                 { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } }
             ])
-            .catch(err => console.log(err))
-        console.log(slacks)
+            .catch(err => res.status(400).json(err))
         return res.json(slacks)
     }
     const save = async (req, res) => {
-        console.log(req.body)
         let { nome, tag } = req.body;
         const { senha } = req.body;
         const { user_id } = req.headers;
@@ -74,7 +75,7 @@ module.exports = app => {
     const remove = async (req, res) => {
         const { user_id } = req.headers;
         const { slack } = req.params;
-        console.log(slack)
+
         const user = await Users.findById(user_id)
 
         const slackRemove = await Slacks.findById(slack)

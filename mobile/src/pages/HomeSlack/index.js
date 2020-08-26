@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, TouchableOpacity, ScrollView, Alert, Modal, TouchableWithoutFeedback, TextInput, Switch, AsyncStorage, FlatList } from 'react-native';
 import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
@@ -22,6 +22,7 @@ export default function HomeSlack() {
     const [tagModal, setTagModal] = useState('');
     const [senhaModal, setSenhaModal] = useState('');
 
+    const [slackToLog, setSlackToLog] = useState()
     const [slacks, setSlacks] = useState([])
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
@@ -58,19 +59,26 @@ export default function HomeSlack() {
                 headers: { user_id, search_text: searchText },
                 params: { page }
             })
-
             setSlacks([...slacks, response.data])
 
             if (response.data.length > 0) {
                 setPage(page + 1)
             }
             setTotal(response.headers['x-total-count'])
+
+            console.log(response.data)
+
             setLoading(false)//Conclui o load
+
         }
         catch (e) {
             showError(e)
         }
     }
+
+    const onLoadMore = useCallback(() => {
+        loadSlacks();
+    })
 
     async function reloadSlacks() {
         if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
@@ -139,11 +147,13 @@ export default function HomeSlack() {
         }
     }
 
-    function handleProtectedSlack(slackParam) {
-        if (slackParam.senha != '') {
-            if (senha === slackParam.senha) {
+    function handleProtectedSlack() {
+        if (slackToLog.senha != '') {
+            if (senha === slackToLog.senha) {
+                setSenha('')
                 setDialogVisible(previousState => !previousState)
-                navigateToSlack(slackParam)
+                //Setar parametro aqui
+                navigation.navigate('SlackPage')
             }
             else {
                 setSenha('');
@@ -157,13 +167,16 @@ export default function HomeSlack() {
                 )
             }
         }
-        else {
-            navigateToSlack(slackParam)
-        }
     }
     async function navigateToSlack(slackParam) {
-        //Setar parametro aqui
-        navigation.navigate('SlackPage')
+        console.log(slackParam)
+        if (slackParam.senha != '') {
+            setSlackToLog(slackParam)
+            setDialogVisible(previousState => !previousState)
+        } else {
+            //Setar parametro aqui
+            navigation.navigate('SlackPage')
+        }
     }
 
     renderFooter = () => {
@@ -197,17 +210,9 @@ export default function HomeSlack() {
         return text
     }
 
-    handlePrivateSlack = () => {
-        if (!loading || !refreshing) return null;
-        return (
-            <View style={styles.loading}>
-                <ActivityIndicator />
-            </View>
-        );
-    };
-
     return (
         <View style={styles.container}>
+            {/* Modal de digitar senha */}
             <Dialog.Container visible={dialogVisible}>
                 <Dialog.Title>Slack Privada</Dialog.Title>
                 <Dialog.Description>
@@ -220,10 +225,11 @@ export default function HomeSlack() {
                     value={senha}
                     onChangeText={setSenha}
                 />
-                <Dialog.Button label="Entrar" onPress={handleDialog} />
+                <Dialog.Button label="Entrar" onPress={handleProtectedSlack} />
                 <Dialog.Button label="Cancelar" onPress={handleDialog} />
             </Dialog.Container>
-
+            {/* Fim Modal de digita senha */}
+            {/* Modal de novo Slack */}
             <View style={styles.modalView}>
                 <Modal
                     animationType="fade"
@@ -316,7 +322,8 @@ export default function HomeSlack() {
                     </TouchableWithoutFeedback>
                 </Modal>
             </View>
-
+            {/* Fim Modal de novo Slack */}
+            {/* Cabeçalho */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.openDrawer()}>
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
@@ -330,27 +337,28 @@ export default function HomeSlack() {
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 32, paddingVertical: 10 }}>
                 <TextInput
                     style={styles.input}
-                    placeholder="Indique o nome da slack..."
+                    placeholder="Indique tag da slack..."
                     placeholderTextColor="#999"
                     autoCapitalize="words"
                     autoCorrect={false}
-                    //value={title}
-                    //onChangeText={setTitle}
+                    value={searchText}
+                    onChangeText={setSearchText}
                     numberOfLines={2}
                     returnKeyType="done"
                 />
-                <TouchableOpacity onPress={() => loadSlacks()}>
+                <TouchableOpacity onPress={() => reloadSlacks()}>
                     <Feather name="search" size={18} color="#FFC300" style={{ marginTop: 2 }} />
                 </TouchableOpacity>
             </View>
-
+            {/* Fim cabeçalho */}
+            {/* Lista dos slacks */}
             <FlatList
                 data={slacks}
                 // style={styles.post}
                 keyExtractor={slack => String(slack._id)}
                 refreshing={refreshing}
                 onRefresh={reloadSlacks}
-                onEndReached={loadSlacks}
+                onEndReached={onLoadMore}
                 onEndReachedThreshold={0.2}
                 ListFooterComponent={renderFooter}
                 showsVerticalScrollIndicator={false}
@@ -363,7 +371,7 @@ export default function HomeSlack() {
                         <View style={styles.postHeader}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <View style={styles.postTitulo}>
-                                <Feather name={slack.senha != '' ? "lock" : 'unlock'} size={14} color={slack.senha != '' ? "#5AAAA5" : "#7DCEA0"} style={{ marginRight: 5 }} />
+                                    <Feather name={slack.senha != '' ? "lock" : 'unlock'} size={14} color={slack.senha != '' ? "#5AAAA5" : "#7DCEA0"} style={{ marginRight: 5 }} />
                                     <Text style={styles.postTitle}>{slack.nome}</Text>
                                     <Text style={styles.Nomepost}>{handleDate(slack.createdIn)}</Text>
                                     {/* Colocar a data no canto direito da tela */}
@@ -371,7 +379,7 @@ export default function HomeSlack() {
                             </View>
                             <View style={styles.headerTags}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={styles.Nomepost}>{slack.user[0].name}</Text>
+                                    <Text style={styles.Nomepost}>{slack.user ? slack.user[0].name : ''}</Text>
                                     <Text style={styles.Nomepost}>{slack.tag[0]}</Text>
                                     <TouchableOpacity onPress={() =>
                                         handleDeleteSlack(slack)}
@@ -391,7 +399,7 @@ export default function HomeSlack() {
                                         <Feather name="trash-2" size={15} color='#E73751'></Feather>
                                     </TouchableOpacity>
                                 </View>
-                                <TouchableOpacity style={styles.Ver} onPress={() => navigateToSlack()}>
+                                <TouchableOpacity style={styles.Ver} onPress={() => navigateToSlack(slack)}>
                                     <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
                                 </TouchableOpacity>
                             </View>
@@ -400,7 +408,7 @@ export default function HomeSlack() {
                 )}>
             </FlatList>
 
-
+            {/* Botão de adicionar Slack */}
             <TouchableOpacity style={styles.addButton} onPress={handleModal}>
                 <Animatable.View
                     animation="fadeIn">
