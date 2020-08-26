@@ -19,7 +19,8 @@ export default StyleSheet.create({
 
   headerPost: {
     backgroundColor: '#365478',
-    borderBottomRightRadius: 10
+    borderBottomRightRadius: 10,
+    maxHeight:"50%"
   },
 
 
@@ -155,7 +156,8 @@ export default StyleSheet.create({
   },
   Nomepost: {
     fontSize: 10,
-    color: '#C8C8C8'
+    color: '#C8C8C8',
+    marginBottom:5
   },
 
   DuvidaTitle: {
@@ -167,7 +169,8 @@ export default StyleSheet.create({
   DuvidaCorpo: {
     flexDirection: 'row',
     paddingHorizontal: 32,
-    paddingBottom: 10
+    paddingBottom: 10,
+    maxHeight:"60%"
   },
   CorpoTitle: {
     color: 'white',
