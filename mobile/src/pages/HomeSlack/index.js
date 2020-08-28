@@ -41,7 +41,7 @@ export default function HomeSlack() {
     }
 
     useEffect(() => {
-        reloadSlacks()
+        loadSlacks()
     }, [])
 
     async function loadSlacks() {
@@ -59,17 +59,16 @@ export default function HomeSlack() {
                 headers: { user_id, search_text: searchText },
                 params: { page }
             })
-            setSlacks([...slacks, response.data])
 
-            if (response.data.length > 0) {
+            if (response.status == 200) {
+                setSlacks([...slacks, ...response.data])
                 setPage(page + 1)
+                setTotal(response.headers['x-total-count'])
+            } else {
+                showError(response.data)
             }
-            setTotal(response.headers['x-total-count'])
-
-            console.log(response.data)
 
             setLoading(false)//Conclui o load
-
         }
         catch (e) {
             showError(e)
@@ -89,12 +88,12 @@ export default function HomeSlack() {
         try {
             const response = await api.get(`/slacks`, {
                 headers: { user_id, search_text: searchText },
-                params: { page }
+                params: { page: 1 }
             })
             setSlacks(response.data)
 
             if (response.data.length > 0) {
-                setPage(1)
+                setPage(2)
             }
             setTotal(response.headers['x-total-count'])
             setRefreshing(false)//Conclui o load
@@ -110,12 +109,12 @@ export default function HomeSlack() {
             showError('Os campos nome e tag são obrigatórios')
         }
         try {
-            const post = await api.post(`/slacks`, {
+            const response = await api.post(`/slacks`, {
                 nome: nomeModal, tag: tagModal, senha: privadoModal ? senhaModal : ''//Garantir que seja enviado sem senha caso o switch esteja desativado mas tenha texto preenchido
             }, {
                 headers: { user_id }
             })
-            if (post.status == 204) {
+            if (response.status == 204) {
                 showSucess('Slack criado com sucesso')
                 setNomeModal('')
                 setTagModal('')
@@ -123,7 +122,7 @@ export default function HomeSlack() {
                 setSenhaModal('')
                 handleModal()
             } else {
-                showError("Ocorreu um erro: " + post)
+                showError("Ocorreu um erro: " + response)
             }
         }
         catch (e) {
@@ -152,8 +151,7 @@ export default function HomeSlack() {
             if (senha === slackToLog.senha) {
                 setSenha('')
                 setDialogVisible(previousState => !previousState)
-                //Setar parametro aqui
-                navigation.navigate('SlackPage')
+                navigation.navigate('SlackPage', { slack: slackToLog })
             }
             else {
                 setSenha('');
@@ -169,13 +167,11 @@ export default function HomeSlack() {
         }
     }
     async function navigateToSlack(slackParam) {
-        console.log(slackParam)
         if (slackParam.senha != '') {
             setSlackToLog(slackParam)
             setDialogVisible(previousState => !previousState)
         } else {
-            //Setar parametro aqui
-            navigation.navigate('SlackPage')
+            navigation.navigate('SlackPage', { slack: slackParam })
         }
     }
 
@@ -380,7 +376,7 @@ export default function HomeSlack() {
                             <View style={styles.headerTags}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                                     <Text style={styles.Nomepost}>{slack.user ? slack.user[0].name : ''}</Text>
-                                    <Text style={styles.Nomepost}>{slack.tag[0]}</Text>
+                                    <Text style={styles.Nomepost}>{slack.tag ? slack.tag[0] : ''}</Text>
                                     <TouchableOpacity onPress={() =>
                                         handleDeleteSlack(slack)}
                                         //         },

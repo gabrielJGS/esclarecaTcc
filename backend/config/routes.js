@@ -61,7 +61,11 @@ module.exports = app => {
     app.route('/slacks')
         .get(app.api.slacks.index)
         .post(app.api.slacks.save)
-
     app.delete('/slacks/:slack', app.api.slacks.remove)
-    app.post('/slacks/search', app.api.slacks.searchSlack)
+
+    //Slacks Messages
+    app.route('/slacks/:slack')
+        .get(app.api.slacks_messages.index)
+        .post(app.api.slacks_messages.save)
+    app.delete('/slacks/:slack/:slack_msg', app.api.slacks_messages.remove)
 }

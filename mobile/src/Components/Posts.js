@@ -165,7 +165,7 @@ export default function Posts(props) {
                     ListFooterComponent={renderFooter}
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item: post }) => (
-                        (props.searchSolved === false || (props.searchSolved === true && post.solved === true)) &&
+                        (props.searchSolved === false || (props.searchSolved === true && post.solved === true))  &&
                             (props.searchFavorite === false || (props.searchFavorite === true && post.didILiked === true)) ?
                             <Animatable.View
                                 style={styles.post}

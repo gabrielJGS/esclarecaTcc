@@ -1,22 +1,22 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    paddingVertical:12,
-    paddingHorizontal:32,
-    backgroundColor:'#365478',
-    borderBottomWidth:1,
-    borderBottomColor:'#D8D9DB',
-    height:70,
-    alignItems:'center',
-    height:hp('12%'),
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    backgroundColor: '#365478',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D8D9DB',
+    height: 70,
+    alignItems: 'center',
+    height: hp('12%'),
   },
   footer: {
     position: 'absolute',
@@ -64,11 +64,13 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
-  Owner:{
-    paddingLeft:60,
+  Owner: {
+    paddingLeft: 60,
+    alignSelf: 'flex-end'
   },
-  noOwner:{
-    paddingRight:60,
+  notOwner: {
+    paddingRight: 60,
+    alignSelf: 'flex-start'
   },
   Body: {
     marginTop: 10,
@@ -78,19 +80,16 @@ const styles = StyleSheet.create({
     flex: 0.9
   },
   postHeader: {
-    backgroundColor: 'white',
+    width: hp('44%'),
     borderRadius: 8,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    paddingRight: 24,
-    paddingLeft: 24,
-    paddingTop: 5,
-    paddingBottom: 5
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   postDesc: {
     backgroundColor: '#FAFAFA',
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
     paddingRight: 24,
     paddingLeft: 24,
     paddingTop: 2,
@@ -100,17 +99,25 @@ const styles = StyleSheet.create({
   postTitulo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 2
+    marginRight: 10
   },
   Nomepost: {
-    fontSize: 10,
+    alignItems: 'flex-end',
+    fontSize: 8,
     color: '#C8C8C8'
   },
   postTitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#365478',
     fontWeight: 'bold',
     paddingLeft: 10
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 40 / 2,
+    borderWidth: 1,
+    borderColor: "#D8D9DB",
   },
   postDescricao: {
     fontSize: 15,

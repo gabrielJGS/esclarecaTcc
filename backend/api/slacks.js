@@ -7,12 +7,13 @@ const Slacks = require('../models/Slacks');
 module.exports = app => {
     const index = async (req, res) => {
         const { user_id, search_text } = req.headers;
-        const { page } = req.params;
-        const qtdLoad = 10
+        const { page } = req.query;
+        const qtdLoad = 5
         const user = await Users.findById(user_id);
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
+        console.log(page)
         const count = await Slacks.find({ tag: { $in: search_text != "" ? search_text.split(',') : user.tags } }).countDocuments()
         res.header('X-Total-Count', count)
 
@@ -36,9 +37,9 @@ module.exports = app => {
                         "messages": { "$ifNull": [{ "$arrayElemAt": ["$messages.count", 0] }, 0] }
                     }
                 },
+                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
                 { $skip: (page - 1) * qtdLoad },
                 { $limit: qtdLoad },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } }
             ])
             .catch(err => res.status(400).json(err))
         return res.json(slacks)

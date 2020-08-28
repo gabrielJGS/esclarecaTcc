@@ -32,12 +32,11 @@ export default function PostPage({ route, navigation }) {
                 setUserIsPostOwner(true);
             }
         }
-
     }, [press])
 
-    useEffect(() => {
-        reloadPage()
-    }, [press])
+    // useEffect(() => {
+    //     reloadPage()
+    // }, [press])
 
     function navigateToHome() {
         navigation.navigate('Home')

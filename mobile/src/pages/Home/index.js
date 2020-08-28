@@ -45,7 +45,6 @@ export default function Home() {
         reloadPosts()
     }
 
-
     // useEffect(() => {
     //     reload()
     //     async function reload() {
@@ -67,7 +66,7 @@ export default function Home() {
         setModalVisible(!modalVisible)
     }
 
-    function showModalPesquisa(){
+    function showModalPesquisa() {
         setModalPesquisaVisible(!modalPesquisaVisible)
     }
 
@@ -88,7 +87,7 @@ export default function Home() {
                 headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite },
                 params: { page }
             })
-            
+
             setPosts([...posts, ...response.data])
             if (response.data.length > 0) {
                 setPage(page + 1)
@@ -120,7 +119,7 @@ export default function Home() {
         }
         setRefreshing(false)
     }
-    
+
     return (
         //reidner 26/04
         <View style={styles.container}>
@@ -188,7 +187,7 @@ export default function Home() {
                                         <TouchableOpacity style={styles.filterButton} onPress={() => setSearchDesc(!searchDesc)}>
                                             <View>
                                                 <Text style={[styles.filterText, { color: searchDesc ? '#7DCEA0' : '#365478' }]}>Descrição</Text>
-                                                <Text style={[styles.filterText, { color: searchDesc ? '#7DCEA0' : '#365478', marginTop:-3 }]}>e Título</Text>
+                                                <Text style={[styles.filterText, { color: searchDesc ? '#7DCEA0' : '#365478', marginTop: -3 }]}>e Título</Text>
                                             </View>
                                             <Feather name="file-text" size={12} color="#7DCEA0"></Feather>
                                         </TouchableOpacity>
@@ -230,9 +229,9 @@ export default function Home() {
                     numberOfLines={2}
                     returnKeyType="done"
                 />
-                <View style={{flexDirection:'row', justifyContent:'space-between',}}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
                     <TouchableOpacity onPress={reloadPosts}>
-                        <Feather name="search" size={18} color="#FFC300" style={{ marginTop: 2, marginRight:20 }} />
+                        <Feather name="search" size={18} color="#FFC300" style={{ marginTop: 2, marginRight: 20 }} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={showModalPesquisa}>
                         <Feather name="more-vertical" size={18} color="#FFC300" style={{ marginTop: 2 }} />
@@ -241,7 +240,7 @@ export default function Home() {
             </View>
 
             <Posts posts={posts} reloadPosts={reloadPosts} refreshing={refreshing} onEndReached={onLoadMore}
-                searchSolved={searchSolved} searchFavorite={searchFavorite} loading={loading} navigation={navigation}
+                searchSolved={searchSolved} searchFavorite={searchFavorite} loading={loading} navigation={navigation} type={type}
             />
 
             <Animatable.View

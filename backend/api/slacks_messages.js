@@ -6,15 +6,17 @@ const Slacks = require('../models/Slacks');
 const Slacks_Messages = require('../models/Slacks_Messages');
 
 module.exports = app => {
-    const index = async(req, res) => {
-        const { user } = req.headers
+    const index = async (req, res) => {
+        const { user_id } = req.headers
         const { slack } = req.params;
         //Páginação
         const qtdLoad = 5
         const { page = 1 } = req.query;
 
-        const userExiste = await Users.findById(user);
+        const userExiste = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
         if (!userExiste) {
+            console.log(user_id)
             return res.status(401).send('Usuário inválido');
         }
 
@@ -23,79 +25,81 @@ module.exports = app => {
         if (!slackOri) {
             return res.status(401).send('Slack inválida');
         }
+        const count = await Slacks_Messages.find({ slack }).countDocuments()
+        res.header('X-Total-Count', count)
 
         const messages = await Slacks_Messages
             .aggregate([
-                { $match: { slacks: slackOri._id } },
-                { $sort: { postedIn: -1 } },
+                { $match: { slack: slackOri._id } },
+                { $sort: { postedIn: 1 } },
+                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
                 { $skip: (page - 1) * qtdLoad },
-                { $limit: qtdLoad },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } }
+                { $limit: qtdLoad }
             ])
             .catch(err => res.status(400).json(err))
 
         return res.json(messages)
     }
-    const save = async(req, res) => {
-        const { user } = req.headers
-        const { message } = req.body
+    const save = async (req, res) => {
+        const { user_id } = req.headers
+        const { slack_msg } = req.body
         const { slack } = req.params
 
-        const userExiste = await Users.findById(user);
+        const userExiste = await Users.findById(user_id);
         if (!userExiste) {
             return res.status(401).send('Usuário inválido');
         }
-        if (!slack || !message) {
-            return res.status(400).send('Algum campo não foi preenchido');
+        const slackOri = await Slacks.findById(slack)
+            .catch(err => res.status(400).json(err))
+        if (!slackOri) {
+            return res.status(401).send('Slack inválida');
+        }
+
+        if (slack_msg.trim() === '') {
+            return res.status(400).send('A mensagem não pode ser vazia');
         }
 
         const send = await Slacks_Messages.create({
             slack,
-            user,
+            user: user_id,
             postedIn: momentTz().tz("America/Sao_Paulo").format(),
-            message
+            message: slack_msg
         })
             .catch(err => res.status(400).json(err))
-            if (userExiste.ranking === NaN || userExiste.ranking === undefined){
-                value = 3
-            }
-            else{
-                value = userExiste.ranking + 3
-            }
-            const result = await Users.findByIdAndUpdate(user, { ranking: value })
+        const result = await Users.findByIdAndUpdate(user_id, { ranking: userExiste.ranking + 3 })
         res.status(204).send()
     }
-    const remove = async(req, res) => {
-        const { user } = req.headers
-        const { slack, comm } = req.params
+    const remove = async (req, res) => {
+        const { user_id } = req.headers
+        const { slack, slack_msg } = req.params
+        console.log(user_id + "-" + slack + "-" + slack_msg)
 
-        const userExiste = await Users.findById(user);
-
+        const userExiste = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
         if (!userExiste) {
             return res.status(401).send('Usuário inválido');
         }
-
-        const messageToRemove = await Slacks_Messages.findById(comm)
+        const slackOri = await Slacks.findById(slack)
             .catch(err => res.status(400).json(err))
-        if(!messageToRemove){
-            res.status(400).send("Mensagem não encontrada com o id: " + comm)
+        if (!slackOri) {
+            return res.status(401).send('Slack inválida');
         }
 
-        if (messageToRemove.slacks._id == slack || messageToRemove.user._id == user) {
+        const messageToRemove = await Slacks_Messages.findById(slack_msg)
+            .catch(err => res.status(400).json(err))
+        if (!messageToRemove) {
+            res.status(400).send("Mensagem não encontrada com o id: " + slack_msg)
+        }
+
+        if (messageToRemove.slack == slack && (messageToRemove.user == user_id || slackOri.user == user_id)) {
             await Slacks_Messages.remove(messageToRemove)
                 .catch(err => res.status(400).json(err))
-            
-            if (userExiste.ranking === NaN || userExiste.ranking === undefined){
-                value = 0
-            }
-            else{
-                value = userExiste.ranking - 3
-            }
-            const result = await userExistes.findByIdAndUpdate(user, { ranking: value })
+
+            const result = await Users.findByIdAndUpdate(user_id, { ranking: userExiste.ranking - 3 })
             res.status(204).send()
-        } 
+        }
         else {//Se não, não tem permissão
-            res.status(401).send(`Usuário ${user} não autorizado a deletar o comentário.`)
+            res.status(401).send(`Usuário ${user_id} não autorizado a deletar o comentário.`)
         }
     }
 

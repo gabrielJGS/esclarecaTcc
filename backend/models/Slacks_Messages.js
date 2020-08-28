@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const Slacks_MessagesSchema = new mongoose.Schema({
-    slacks: {
+    slack: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Slacks'
     },
