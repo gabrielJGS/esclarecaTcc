@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, AsyncStorage } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
+import { showError } from '../common'
+import api from '../services/api'
 
 export default function Posts(props) {
     const styles = {
@@ -100,7 +102,7 @@ export default function Posts(props) {
             }, {
                 headers: { user_id }
             })
-            await reloadPosts()
+            await props.reloadPosts()
         } catch (e) {
             showError(e)
         }
