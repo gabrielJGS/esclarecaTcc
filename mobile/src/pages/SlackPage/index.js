@@ -32,7 +32,7 @@ export default function SlackPage({ route, navigation }) {
             userId
         })
     }
-
+    
     async function handlePostMessage() {
         if (messageText.trim() !== '') {
             try {
