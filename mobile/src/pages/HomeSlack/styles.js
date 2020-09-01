@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     color:'#444'
   },
   viewInput:{
-    paddingVertical:hp('1%'), 
+    paddingVertical:hp('0%'), 
     paddingHorizontal:16
   },
   perfilName:{
