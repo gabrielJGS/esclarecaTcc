@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Image, Switch, ActivityIndicator, Alert, View, AsyncStorage, Text, TextInput, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback, FlatList } from "react-native";
 import api from '../../services/api'
 import * as Animatable from 'react-native-animatable'
-import { FontAwesome } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
 import UserPermission from '../../UserPermissions';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -31,15 +30,18 @@ export default function Profile({ route, navigation }) {
   const [isLoggedUser, setIsLoggedUser] = useState(false);
   // const [press, setPress] = useState(false);
   const [type, setType] = useState(false);
-
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const [liked, setLiked] = useState(false);
+  const toggleType = (pType) => {
+    setType(pType)
+  }
+  const toggleLiked = () => {
+    setLiked(liked => !liked)
+  }
 
   //Imagem
   const [avatar, setAvatar] = useState('https://www.colegiodepadua.com.br/img/user.png');
   const [isUploadingImage, setIsUploadingImage] = useState(false)
 
-  //sobre os posts
   //Posts do usuário
   const [posts, setPosts] = useState([])
   const [total, setTotal] = useState(0)
@@ -49,15 +51,14 @@ export default function Profile({ route, navigation }) {
 
   useEffect(() => {
     loadUser(route.params.userId)
-    loadPosts()
-  }, [route.params.userId])
+  }, [userId])
 
   useEffect(() => {
     reload()
     async function reload() {
       await reloadPosts()
     }
-  }, [type, userId])
+  }, [type, liked])
 
   function logoutUser() {
     AsyncStorage.clear()
@@ -75,11 +76,6 @@ export default function Profile({ route, navigation }) {
   function navigateToContent() {
     setType(true)
     reloadPosts()
-  }
-  function navigateToPost(post) {
-    navigation.navigate('PostPage', {
-      post
-    })
   }
 
   async function loadUser(id) {
@@ -118,21 +114,7 @@ export default function Profile({ route, navigation }) {
       password
     })
     setPassword("")
-    //setPress(previousState => !previousState)
     handleModal()
-  }
-
-  async function handleLike(postId) {
-    const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-    try {
-      const response = await api.post(`/posts/${postId}/like`, {
-      }, {
-        headers: { user_id }
-      })
-      await reloadPosts()
-    } catch (e) {
-      showError(e)
-    }
   }
 
   async function loadPosts() {
@@ -143,13 +125,20 @@ export default function Profile({ route, navigation }) {
     if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
       return
     }
-
     setLoading(true)//Altera para o loading iniciado
     try {
-      const response = await api.get(`/users/${userId}/posts`, {
-        headers: { type },
-        params: { page }
-      })
+      let response
+      if (liked === true) {
+        response = await api.get(`/users/${userId}/liked`, {
+          headers: { type },
+          params: { page }
+        })
+      } else {
+        response = await api.get(`/users/${userId}/posts`, {
+          headers: { type },
+          params: { page }
+        })
+      }
 
       setPosts([...posts, ...response.data])
       setTotal(response.headers['x-total-count'])
@@ -166,14 +155,20 @@ export default function Profile({ route, navigation }) {
     if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
       return
     }
-
     setRefreshing(true)//Altera para o loading iniciado
-
     try {
-      const response = await api.get(`/users/${userId}/posts`, {
-        headers: { type },
-        params: { page: 1 }
-      })
+      let response
+      if (liked === true) {
+        response = await api.get(`/users/${userId}/liked`, {
+          headers: { type },
+          params: { page: 1 }
+        })
+      } else {
+        response = await api.get(`/users/${userId}/posts`, {
+          headers: { type },
+          params: { page: 1 }
+        })
+      }
       setPosts(response.data)
       if (response.data.length > 0) {
         setPage(2)
@@ -192,43 +187,6 @@ export default function Profile({ route, navigation }) {
       </View>
     );
   };
-
-  function handleDate(data) {
-    var day = new Date(data);
-    var today = new Date();
-    var d = new String(data);
-    let text = new String();
-
-    var horas = Math.abs(day - today) / 36e5;
-    var horasArrend = Math.round(horas)
-
-    if (horasArrend > 24) {
-      text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
-    }
-    else if (horasArrend < 1) {
-      text = "Há menos de 1 hora"
-    }
-    else {
-      text = "Há " + horasArrend + " horas atrás"
-    }
-
-    return text
-  }
-
-  function handleTitle(title) {
-    var titulo = new String(title);
-    var tam = new Number(titulo.length)
-    let text = new String();
-
-    if (tam > 20) {
-      text = titulo.substring(0, 20) + "..."
-    }
-    else {
-      text = titulo
-    }
-
-    return text
-  }
 
   async function handlePickUpdate() {
     UserPermission.getCameraPermission()
@@ -395,20 +353,20 @@ export default function Profile({ route, navigation }) {
           :
           <>
             <TouchableOpacity style={styles.detailsButton} onPress={() =>
-          Alert.alert(
-            'Bloquear',
-            'Deseja realmente bloquear o usuário?',
-            [
-              { text: 'Não', onPress: () => { return null } },
-              {
-                text: 'Sim', onPress: () => {
-                  () => {};
-                }
-              },
-            ],
-            { cancelable: false }
-          )}
-        >
+              Alert.alert(
+                'Bloquear',
+                'Deseja realmente bloquear o usuário?',
+                [
+                  { text: 'Não', onPress: () => { return null } },
+                  {
+                    text: 'Sim', onPress: () => {
+                      () => { };
+                    }
+                  },
+                ],
+                { cancelable: false }
+              )}
+            >
               <Feather name="slash" size={25} color="#E73751"></Feather>
             </TouchableOpacity>
           </>
@@ -473,19 +431,19 @@ export default function Profile({ route, navigation }) {
         <View style={{ flexDirection: 'row', alignItems: "center", justifyContent: 'center', paddingHorizontal: 30 }}>
           <Text style={{ color: '#FFC300', fontWeight: 'bold' }}>Enviadas</Text>
           <Switch trackColor={{ false: "#FFC300", true: "#fff" }}
-            thumbColor={isEnabled ? "#fff" : "#FFC300"}
+            thumbColor={liked ? "#fff" : "#FFC300"}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isEnabled}
+            onValueChange={toggleLiked}
+            value={liked}
           />
           <Text style={{ color: 'white', fontWeight: 'bold' }}>Curtidas</Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: hp('8.5%'), top: 2 }}>
-          <TouchableOpacity style={styles.detailsBar} onPress={navigateToDoubts}>
+          <TouchableOpacity style={styles.detailsBar} onPress={() => toggleType(false)}>
             <Text style={[styles.detailsButtonText, { color: type == false ? "#FFC300" : "white" }]}>Dúvidas</Text>
             <Feather name="edit-3" size={16} color={type == false ? "#FFC300" : "white"}></Feather>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.detailsBar} onPress={navigateToContent}>
+          <TouchableOpacity style={styles.detailsBar} onPress={() => toggleType(true)}>
             <Text style={[styles.detailsButtonText, { color: type == true ? "#FFC300" : "white" }]}>Conteúdos</Text>
             <Feather name="book-open" size={16} color={type == true ? "#FFC300" : "white"}></Feather>
           </TouchableOpacity>
@@ -493,8 +451,8 @@ export default function Profile({ route, navigation }) {
       </Animatable.View>
 
       <Posts posts={posts} reloadPosts={reloadPosts} refreshing={refreshing} onEndReached={loadPosts}
-                searchSolved={false} searchFavorite={false} loading={loading} navigation={navigation}
-            />
+        searchSolved={false} searchFavorite={false} loading={loading} navigation={navigation}
+      />
 
     </View>
   )
