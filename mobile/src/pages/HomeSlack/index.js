@@ -29,6 +29,8 @@ export default function HomeSlack() {
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
 
+    const[idU, setIdU] = useState('')
+
     const handlePrivadoModal = () => setPrivadoModal(previousState => !previousState);
 
     function handleModal() {
@@ -54,6 +56,8 @@ export default function HomeSlack() {
         }
 
         const user_id = await AsyncStorage.getItem('user');
+        setIdU(user_id);
+        
         try {
             const response = await api.get(`/slacks`, {
                 headers: { user_id, search_text: searchText },
@@ -377,23 +381,30 @@ export default function HomeSlack() {
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                                     <Text style={styles.Nomepost}>{slack.user ? slack.user[0].name : ''}</Text>
                                     <Text style={styles.Nomepost}>{slack.tag ? slack.tag[0] : ''}</Text>
-                                    <TouchableOpacity onPress={() =>
-                                        handleDeleteSlack(slack)}
-                                        //         },
-                                        // Alert.alert(
-                                        //     'Excluir',
-                                        //     'Deseja excluir sua slack?',
-                                        //     [
-                                        //         { text: 'Não', onPress: () => { return null } },
-                                        //         {
-                                        //             text: 'Sim', onPress: () => { () => 
-                                        //     ],
-                                        //     { cancelable: false }
-                                        // )}
-                                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
-                                    >
-                                        <Feather name="trash-2" size={15} color='#E73751'></Feather>
-                                    </TouchableOpacity>
+                                    {idU === slack.user[0]._id ?
+                                        <>
+                                            <TouchableOpacity onPress={() =>
+                                                handleDeleteSlack(slack)}
+                                                //         },
+                                                // Alert.alert(
+                                                //     'Excluir',
+                                                //     'Deseja excluir sua slack?',
+                                                //     [
+                                                //         { text: 'Não', onPress: () => { return null } },
+                                                //         {
+                                                //             text: 'Sim', onPress: () => { () => 
+                                                //     ],
+                                                //     { cancelable: false }
+                                                // )}
+                                                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+                                            >
+                                                <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                                            </TouchableOpacity>
+                                        </>
+                                        :
+                                        <>
+                                        </>
+                                }
                                 </View>
                                 <TouchableOpacity style={styles.Ver} onPress={() => navigateToSlack(slack)}>
                                     <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
