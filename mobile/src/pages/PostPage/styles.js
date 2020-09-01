@@ -8,7 +8,6 @@ export default StyleSheet.create({
 
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingVertical: 15,
     paddingHorizontal: 32,
     backgroundColor: '#365478',
