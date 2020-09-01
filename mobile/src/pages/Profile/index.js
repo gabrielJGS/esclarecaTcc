@@ -68,16 +68,7 @@ export default function Profile({ route, navigation }) {
   function handleModal() {
     setModalVisible(!modalVisible)
   }
-
-  function navigateToDoubts() {
-    setType(false)
-    reloadPosts()
-  }
-  function navigateToContent() {
-    setType(true)
-    reloadPosts()
-  }
-
+  
   async function loadUser(id) {
     const response = await api.get(`/users/${id}`, {})
     if (response.data) {
