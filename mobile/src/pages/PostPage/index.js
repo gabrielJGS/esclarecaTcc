@@ -256,7 +256,7 @@ export default function PostPage({ route, navigation }) {
                             <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
                         </TouchableOpacity>
                         <ScrollView>
-                        <Text style={{fontSize: 15, color: 'white', paddingRight: 40, maxHeight:115 }}>{post.desc}</Text>
+                        <Text style={{fontSize: 15, color: 'white', paddingRight: 40, maxHeight:300 }}>{post.desc}</Text>
                         </ScrollView>
                         <View style={{ flexDirection: 'row', paddingTop: 10, alignItems: 'flex-end' }}>
                             <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>Anexos</Text>

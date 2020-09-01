@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start'
   },
   Body: {
-    marginTop: 10,
+    marginTop: 5,
     flex: 1
   },
   BodyFlat: {
@@ -86,7 +86,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#F2F3F4',
   },
   postDesc: {
     backgroundColor: '#FAFAFA',
@@ -94,6 +95,8 @@ const styles = StyleSheet.create({
     paddingLeft: 24,
     paddingTop: 2,
     paddingBottom: 12,
+    borderBottomLeftRadius:8,
+    borderBottomRightRadius:8,
   },
 
   postTitulo: {

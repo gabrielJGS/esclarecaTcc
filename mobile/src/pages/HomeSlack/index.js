@@ -369,9 +369,9 @@ export default function HomeSlack() {
                                 <View style={styles.postTitulo}>
                                     <Feather name={slack.senha != '' ? "lock" : 'unlock'} size={14} color={slack.senha != '' ? "#5AAAA5" : "#7DCEA0"} style={{ marginRight: 5 }} />
                                     <Text style={styles.postTitle}>{slack.nome}</Text>
-                                    <Text style={styles.Nomepost}>{handleDate(slack.createdIn)}</Text>
                                     {/* Colocar a data no canto direito da tela */}
                                 </View>
+                                <Text style={styles.Nomepost}>{handleDate(slack.createdIn)}</Text>
                             </View>
                             <View style={styles.headerTags}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
