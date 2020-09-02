@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, AsyncStorage, Alert, TextInput, FlatList, ActivityIndicator, Image } from 'react-native';
-import { Feather, Ionicons } from '@expo/vector-icons'
+import { Feather, Ionicons, Foundation } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
 
 import { showError, showSucess } from '../../common'
@@ -165,8 +165,8 @@ export default function SlackPage({ route, navigation }) {
                         <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight: 5 }}>{slack.nome + " - " + slack.tag}</Text>
-                        <Feather name="slack" size={18} color="#FFC300" style={{ marginTop: 2 }} />
+                        <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight: 8 }}>{slack.nome + " - " + slack.tag}</Text>
+                        <Foundation name="lightbulb" size={30} color="#FFC300" style={{ marginBottom: 5 }} />
                     </View>
                 </View>
 

@@ -251,7 +251,7 @@ export default function PostPage({ route, navigation }) {
                         <Image style={styles.avatar} source={{ uri: post.user[0].url ? `${post.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                     </TouchableOpacity>
                     <View style={{ paddingLeft: 10 }}>
-                        <TouchableOpacity onPress={navigateToProfile}>
+                        <TouchableOpacity onPress={() => navigateToProfile(post.user[0]._id)}>
                             <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
                             <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
                         </TouchableOpacity>
