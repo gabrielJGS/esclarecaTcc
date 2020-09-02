@@ -346,6 +346,7 @@ export default function PostPage({ route, navigation }) {
                         refreshing={refreshing}
                         onRefresh={reloadPage}
                         ListFooterComponent={renderFooter}
+                        removeClippedSubviews={false}
                         renderItem={({ item: comment }) => (
                             <Animatable.View
                                 style={styles.post}

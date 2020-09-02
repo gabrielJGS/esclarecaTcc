@@ -166,6 +166,7 @@ export default function Posts(props) {
                     onEndReachedThreshold={0.2}
                     ListFooterComponent={renderFooter}
                     showsVerticalScrollIndicator={false}
+                    removeClippedSubviews={false}
                     renderItem={({ item: post }) => (
                         (props.searchSolved === false || (props.searchSolved === true && post.solved === true))  &&
                             (props.searchFavorite === false || (props.searchFavorite === true && post.didILiked === true)) ?
