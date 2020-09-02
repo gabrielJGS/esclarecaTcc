@@ -136,6 +136,7 @@ export default function Preferences (){
                 <View style={{bottom: 0,position: 'absolute',width: '100%', alignItems:"center", backgroundColor:'#365478', paddingVertical:8}}>
                     <Text style={{color:'#D8D9DB'}}>Equipe Esclareça{'\u2122'}, {year}</Text>
                     <Text style={{color:'#D8D9DB', top:3}}>Copyright {'\u00A9'} {year} Brazil. All rights reserved</Text>
+                    <Text style={{color:'#D8D9DB', top:3}}>Logo created by Luckas Vinicius Faria Ribeiro</Text>
                 </View>
             </View>
         </View>

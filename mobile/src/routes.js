@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { StyleSheet, Alert, Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar } from "react-native";
-import { Feather, FontAwesome5 } from '@expo/vector-icons'
+import { Feather, FontAwesome5, Foundation } from '@expo/vector-icons'
 import { Avatar } from 'react-native-elements';
 import { DotsLoader } from 'react-native-indicator';
 import { AuthContext } from './context'
@@ -155,9 +155,9 @@ function CustomDrawerContent(props) {
                         /> */}
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <Feather name="slack" size={20} color="#365478"></Feather>
+                                <Foundation name="lightbulb" size={23} color="#365478"></Foundation>
                             )}
-                            label="Slack"
+                            label="EsclaChat"
                             onPress={() => { props.navigation.navigate('HomeSlack') }}
                         />
                         <DrawerItem

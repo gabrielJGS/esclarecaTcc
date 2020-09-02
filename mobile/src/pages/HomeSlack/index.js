@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, TouchableOpacity, ScrollView, Alert, Modal, TouchableWithoutFeedback, TextInput, Switch, AsyncStorage, FlatList } from 'react-native';
-import { Feather } from '@expo/vector-icons'
+import { Feather, FontAwesome, Foundation } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import * as Animatable from 'react-native-animatable'
 import Dialog from "react-native-dialog";
@@ -8,7 +8,7 @@ import { showError, showSucess } from '../../common'
 import styles from './styles'
 import api from '../../services/api'
 
-export default function HomeSlack() {
+export default function HomeSlack(props) {
     const navigation = useNavigation();
 
     const [searchText, setSearchText] = useState('')
@@ -28,6 +28,8 @@ export default function HomeSlack() {
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
+
+    const[idU, setIdU] = useState('')
 
     const handlePrivadoModal = () => setPrivadoModal(previousState => !previousState);
 
@@ -54,6 +56,8 @@ export default function HomeSlack() {
         }
 
         const user_id = await AsyncStorage.getItem('user');
+        setIdU(user_id);
+        
         try {
             const response = await api.get(`/slacks`, {
                 headers: { user_id, search_text: searchText },
@@ -115,7 +119,7 @@ export default function HomeSlack() {
                 headers: { user_id }
             })
             if (response.status == 204) {
-                showSucess('Slack criado com sucesso')
+                showSucess('EsclaChat criado com sucesso')
                 setNomeModal('')
                 setTagModal('')
                 setPrivadoModal(false)
@@ -136,7 +140,7 @@ export default function HomeSlack() {
                 headers: { user_id }
             })
             if (response.status == 204) {
-                showSucess('Slack apagado com sucesso')
+                showSucess('EsclaChat apagado com sucesso')
                 await reloadSlacks()
             } else {
                 showError("Ocorreu um erro: " + response)
@@ -175,6 +179,12 @@ export default function HomeSlack() {
         }
     }
 
+    function navigateToProfile(userId) {
+        props.navigation.navigate('Profile', {
+            userId
+        })
+    }
+
     renderFooter = () => {
         if (!loading || !refreshing) return null;
         return (
@@ -210,9 +220,9 @@ export default function HomeSlack() {
         <View style={styles.container}>
             {/* Modal de digitar senha */}
             <Dialog.Container visible={dialogVisible}>
-                <Dialog.Title>Slack Privada</Dialog.Title>
+                <Dialog.Title>EsclaChat Privada</Dialog.Title>
                 <Dialog.Description>
-                    Digite a senha para continuar
+                    Digite a senha para continuar:
                 </Dialog.Description>
                 <Dialog.Input
                     style={{ borderBottomWidth: 1, borderBottomColor: '#D8D9DB' }}
@@ -239,14 +249,14 @@ export default function HomeSlack() {
                                 <ScrollView>
                                     <View style={styles.indicator} />
                                     <View style={styles.modalPerfil}>
-                                        <Text style={styles.perfilTitle}>Criar Slack  </Text>
+                                        <Text style={styles.perfilTitle}>Criar EsclaChat  </Text>
                                         <Feather name="plus-circle" size={17} color="#365478"></Feather>
                                     </View>
                                     <View style={styles.viewInput}>
                                         <Text style={styles.modalSubtitle}>Nome</Text>
                                         <TextInput
                                             style={styles.input}
-                                            placeholder="Indique o nome da slack..."
+                                            placeholder="Indique o nome do EsclaChat..."
                                             placeholderTextColor="#999"
                                             autoCapitalize="words"
                                             autoCorrect={false}
@@ -260,7 +270,7 @@ export default function HomeSlack() {
                                         <Text style={styles.modalSubtitle}>Tag</Text>
                                         <TextInput
                                             style={styles.input}
-                                            placeholder="Indique o tag da slack..."
+                                            placeholder="Indique o tag do EsclaChat..."
                                             placeholderTextColor="#999"
                                             autoCapitalize="words"
                                             autoCorrect={false}
@@ -325,15 +335,15 @@ export default function HomeSlack() {
                     <Feather name="menu" size={20} color="#FFC300"></Feather>
                 </TouchableOpacity>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight: 5 }}>Slack</Text>
-                    <Feather name="slack" size={18} color="#FFC300" style={{ marginTop: 2 }} />
+                    <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight: 8 }}>EsclaChat</Text>
+                    <Foundation name="lightbulb" size={30} color="#FFC300" style={{ marginBottom: 5 }} />
                 </View>
             </View>
 
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 32, paddingVertical: 10 }}>
                 <TextInput
                     style={styles.input}
-                    placeholder="Indique tag da slack..."
+                    placeholder="Indique tag de um EsclaChat..."
                     placeholderTextColor="#999"
                     autoCapitalize="words"
                     autoCorrect={false}
@@ -369,31 +379,41 @@ export default function HomeSlack() {
                                 <View style={styles.postTitulo}>
                                     <Feather name={slack.senha != '' ? "lock" : 'unlock'} size={14} color={slack.senha != '' ? "#5AAAA5" : "#7DCEA0"} style={{ marginRight: 5 }} />
                                     <Text style={styles.postTitle}>{slack.nome}</Text>
-                                    {/* Colocar a data no canto direito da tela */}
+                                    <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 8 }} />
+                                    <Text style={{ marginLeft: 2, fontSize: 10, color: 'gray' }}>12</Text>
                                 </View>
-                                <Text style={styles.Nomepost}>{handleDate(slack.createdIn)}</Text>
+                                <Text style={styles.Nomepost}>Criado em: {handleDate(slack.createdIn)}</Text>
                             </View>
                             <View style={styles.headerTags}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={styles.Nomepost}>{slack.user ? slack.user[0].name : ''}</Text>
-                                    <Text style={styles.Nomepost}>{slack.tag ? slack.tag[0] : ''}</Text>
-                                    <TouchableOpacity onPress={() =>
-                                        handleDeleteSlack(slack)}
-                                        //         },
-                                        // Alert.alert(
-                                        //     'Excluir',
-                                        //     'Deseja excluir sua slack?',
-                                        //     [
-                                        //         { text: 'Não', onPress: () => { return null } },
-                                        //         {
-                                        //             text: 'Sim', onPress: () => { () => 
-                                        //     ],
-                                        //     { cancelable: false }
-                                        // )}
-                                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
-                                    >
-                                        <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => navigateToProfile(slack.user[0]._id)} >
+                                        <Text style={styles.Nomepost}>{slack.user ? slack.user[0].name : ''}</Text>
+                                        <Text style={styles.Nomepost}>{slack.tag ? slack.tag[0] : ''}</Text>
                                     </TouchableOpacity>
+                                    {idU === slack.user[0]._id ?
+                                        <>
+                                            <TouchableOpacity onPress={() =>
+                                                handleDeleteSlack(slack)}
+                                                //         },
+                                                // Alert.alert(
+                                                //     'Excluir',
+                                                //     'Deseja excluir sua slack?',
+                                                //     [
+                                                //         { text: 'Não', onPress: () => { return null } },
+                                                //         {
+                                                //             text: 'Sim', onPress: () => { () => 
+                                                //     ],
+                                                //     { cancelable: false }
+                                                // )}
+                                                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+                                            >
+                                                <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                                            </TouchableOpacity>
+                                        </>
+                                        :
+                                        <>
+                                        </>
+                                }
                                 </View>
                                 <TouchableOpacity style={styles.Ver} onPress={() => navigateToSlack(slack)}>
                                     <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
