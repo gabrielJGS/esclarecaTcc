@@ -34,13 +34,17 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    ranking: Number
+    ranking: Number,
+    blocked: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users'
+    }]
     //userPhoto: { Schema.Types.Mixed }
 });
 
-UserSchema.pre("save", function(){
-    if(!this.url){
-        if(this.key){
+UserSchema.pre("save", function () {
+    if (!this.url) {
+        if (this.key) {
             this.url = `http:${hostIp}:3333/files/${this.key}`;//coloca AQUI seu localhost
         }
     }

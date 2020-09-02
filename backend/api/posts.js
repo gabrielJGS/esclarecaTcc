@@ -161,7 +161,7 @@ module.exports = app => {
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
-        const count = await Posts.find({ tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch }).countDocuments()
+        const count = await Posts.find({ tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch, user: { $nin: user.blocked } }).countDocuments()
         res.header('X-Total-Count', count)
         return res.json(count)
         // return res.json(count)
@@ -182,7 +182,7 @@ module.exports = app => {
         }
         const posts = await Posts
             .aggregate([
-                { $match: { tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch } },
+                { $match: { tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch, user: { $nin: user.blocked } } },
                 { $sort: { postedIn: -1 } },
                 {
                     $lookup: {

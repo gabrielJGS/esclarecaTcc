@@ -68,7 +68,7 @@ export default function Profile({ route, navigation }) {
   function handleModal() {
     setModalVisible(!modalVisible)
   }
-  
+
   async function loadUser(id) {
     const response = await api.get(`/users/${id}`, {})
     if (response.data) {
@@ -106,6 +106,26 @@ export default function Profile({ route, navigation }) {
     })
     setPassword("")
     handleModal()
+  }
+
+  async function blockUser() {
+
+    try {
+      const usuarioAtual = await AsyncStorage.getItem('user');
+
+      const response = await api.post(`/users/${userId}/block`, {}, { headers: { user_id: usuarioAtual } })
+      if (response.status == 204) {
+        showSucess("Usuário bloqueado com sucesso")
+      } else if (response.status == 201) {
+        showSucess("Usuário desbloqueado com sucesso")
+      }
+      else {
+        showError("Ocorreu um erro ao processar a requisição!")
+      }
+      loadUser(userId)
+    } catch (e) {
+      showError("Erro: " + e)
+    }
   }
 
   async function loadPosts() {
@@ -344,19 +364,20 @@ export default function Profile({ route, navigation }) {
           :
           <>
             <TouchableOpacity style={styles.detailsButton} onPress={() =>
-              Alert.alert(
-                'Bloquear',
-                'Deseja realmente bloquear o usuário?',
-                [
-                  { text: 'Não', onPress: () => { return null } },
-                  {
-                    text: 'Sim', onPress: () => {
-                      () => { };
-                    }
-                  },
-                ],
-                { cancelable: false }
-              )}
+              blockUser()}
+            // Alert.alert(
+            //   'Bloquear',
+            //   'Deseja realmente bloquear o usuário?',
+            //   [
+            //     { text: 'Não', onPress: () => { return null } },
+            //     {
+            //       text: 'Sim', onPress: () => {
+            //         () => { };
+            //       }
+            //     },
+            //   ],
+            //   { cancelable: false }
+            // )}
             >
               <Feather name="slash" size={25} color="#E73751"></Feather>
             </TouchableOpacity>

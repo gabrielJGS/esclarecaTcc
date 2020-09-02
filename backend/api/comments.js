@@ -20,12 +20,18 @@ module.exports = app => {
     const getTotalComments = async (req, res) => {
         const { post } = req.params;
 
+        const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
+        }
+
         const postOri = await Posts.findById(post)
             .catch(err => res.status(400).json(err))
         if (!postOri) {
             return res.status(401).send('Post inválido');
         }
-        const count = await Posts_Comments.find({ post }).countDocuments()
+        const count = await Posts_Comments.find({ post, user: { $nin: user.blocked } }).countDocuments()
 
         res.header('X-Total-Count', count)
         return res.json(count)
@@ -50,10 +56,14 @@ module.exports = app => {
             return res.status(401).send('Post inválido');
         }
 
+        const count = await Posts_Comments.find({ post, user: { $nin: user.blocked } }).countDocuments()
+
+        res.header('X-Total-Count', count)
+
         const comments = await Posts_Comments
             .aggregate([
-                { $match: { post: postOri._id } },
-                { $sort: {solvedPost: -1, postedIn: -1 } },
+                { $match: { post: postOri._id, user: { $nin: user.blocked } } },
+                { $sort: { solvedPost: -1, postedIn: 1 } },
                 {
                     "$addFields": {
                         "didILiked": {
@@ -66,7 +76,7 @@ module.exports = app => {
                 { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
                 { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
             ])
-            .catch(err => res.status(400).json(err))
+            .catch(err => { return res.status(400).json(err) })
 
         return res.json(comments)
     }
@@ -91,13 +101,13 @@ module.exports = app => {
             solvedPost: false,
         })
             .catch(err => res.status(400).json(err))
-            if (userExiste.ranking === NaN || userExiste.ranking === undefined){
-                value = 3
-            }
-            else{
-                value = userExiste.ranking + 3
-            }
-            const result = await Users.findByIdAndUpdate(user, { ranking: value })
+        if (userExiste.ranking === NaN || userExiste.ranking === undefined) {
+            value = 3
+        }
+        else {
+            value = userExiste.ranking + 3
+        }
+        const result = await Users.findByIdAndUpdate(user, { ranking: value })
         res.status(204).send()
 
     }
@@ -120,10 +130,10 @@ module.exports = app => {
             await Posts_Comments.deleteOne(commentToDelete)
                 .catch(err => res.status(400).json(err))
 
-            if (user.ranking === NaN || user.ranking === undefined){
+            if (user.ranking === NaN || user.ranking === undefined) {
                 value = 0
             }
-            else{
+            else {
                 value = user.ranking - 3
             }
             const result = await Users.findByIdAndUpdate(user, { ranking: value })
@@ -208,10 +218,10 @@ module.exports = app => {
                 await postToUpdate.save()
                     .catch(err => res.status(400).json(err))
 
-                if (user.ranking === NaN || user.ranking === undefined){
+                if (user.ranking === NaN || user.ranking === undefined) {
                     value = 10
                 }
-                else{
+                else {
                     value = user.ranking + 10
                 }
                 const result = await Users.findByIdAndUpdate(user, { ranking: value })
