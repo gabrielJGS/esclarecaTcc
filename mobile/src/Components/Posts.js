@@ -196,7 +196,7 @@ export default function Posts(props) {
                                     </View>
                                 </View>
                                 <View style={styles.postDesc}>
-                                    <Text style={styles.postDescricao}>{handleBigText(post.desc)}</Text>
+                                    <Text selectable={true} selectionColor='#FFC300' style={styles.postDescricao}>{handleBigText(post.desc)}</Text>
                                 </View>
                                 <View style={{ paddingHorizontal: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>

@@ -256,7 +256,7 @@ export default function PostPage({ route, navigation }) {
                             <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
                         </TouchableOpacity>
                         <ScrollView>
-                        <Text style={{fontSize: 15, color: 'white', paddingRight: 40, maxHeight:300 }}>{post.desc}</Text>
+                        <Text selectable={true} selectionColor='#FFC300' style={{fontSize: 15, color: 'white', paddingRight: 40, maxHeight:300 }}>{post.desc}</Text>
                         </ScrollView>
                         <View style={{ flexDirection: 'row', paddingTop: 10, alignItems: 'flex-end' }}>
                             <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>Anexos</Text>
@@ -386,7 +386,7 @@ export default function PostPage({ route, navigation }) {
                                     </View>
                                 </View>
                                 <View style={styles.postDesc}>
-                                    <Text style={styles.postDescricao}>{comment.message}</Text>
+                                    <Text style={styles.postDescricao} selectable={true} selectionColor='#FFC300'>{comment.message}</Text>
                                 </View>
                                 <View style={{ marginLeft: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
