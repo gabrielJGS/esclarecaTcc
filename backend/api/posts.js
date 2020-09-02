@@ -56,6 +56,7 @@ module.exports = app => {
         const posts = await Posts
             .aggregate([
                 { $match: { user: user._id, type: typeSearch } },
+
                 { $sort: { postedIn: -1 } },
                 {
                     $lookup: {
@@ -89,21 +90,27 @@ module.exports = app => {
     const getLikesByUser = async (req, res) => {
         const { id } = req.params;
         const { type } = req.headers;
-        const typeSearch = type == 'false' ? false : true
-
-        //Páginação
-        const qtdLoad = 5
         const { page = 1 } = req.query
 
-        const user = await Users.findById(user_id)
+        if (id == undefined) {
+            return res.status(401).send('Usuário inválido');
+        }
+        const typeSearch = type == 'false' ? false : true
+        //Páginação
+        const qtdLoad = 5
+
+        const user = await Users.findById(id)
             .catch(err => res.status(400).json(err))
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
 
+        const count = await Posts.find({ likes: { $in: [user._id] }, type: typeSearch }).countDocuments()
+            .catch(err => res.status(400).json(err))
+        res.header('X-Total-Count', count)
         const posts = await Posts
             .aggregate([
-                { $match: { likes: { $in: id }, type: typeSearch } },
+                { $match: { likes: { $in: [user._id] }, type: typeSearch } },
                 { $sort: { postedIn: -1 } },
                 {
                     $lookup: {
@@ -119,7 +126,7 @@ module.exports = app => {
                 {
                     "$addFields": {
                         "didILiked": {
-                            "$in": [mongoose.Types.ObjectId(id), "$likes"]
+                            "$in": [mongoose.Types.ObjectId(user._id), "$likes"]
                         },
                         "commentsCount": { "$ifNull": [{ "$arrayElemAt": ["$commentsCount.count", 0] }, 0] }
                     }
@@ -130,7 +137,6 @@ module.exports = app => {
                 { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
             ])
             .catch(err => res.status(400).json(err))
-
         return res.json(posts)
     }
 
@@ -231,13 +237,13 @@ module.exports = app => {
             user: user_id,
         })
             .catch(err => res.status(400).json(err))
-            if (user.ranking === NaN || user.ranking === undefined){
-                value = 5
-            }
-            else{
-                value = user.ranking + 5
-            }
-            const result = await Users.findByIdAndUpdate(user_id, { ranking: value })
+        if (user.ranking === NaN || user.ranking === undefined) {
+            value = 5
+        }
+        else {
+            value = user.ranking + 5
+        }
+        const result = await Users.findByIdAndUpdate(user_id, { ranking: value })
         res.status(204).send()
 
     }
@@ -251,10 +257,10 @@ module.exports = app => {
         if (!postToBeRemoved) { return res.status(400).send("Post não encontrado com o id: " + post) }//Caso o id seja válido mas não exista vai cair aqui
         if (postToBeRemoved.user == user_id) {//Se é o dono post deleta
             await Posts.deleteOne(postToBeRemoved)
-            if (user.ranking === NaN || user.ranking === undefined){
+            if (user.ranking === NaN || user.ranking === undefined) {
                 value = 0
             }
-            else{
+            else {
                 value = user.ranking - 5
             }
             const result = await Users.findByIdAndUpdate(user_id, { ranking: value })

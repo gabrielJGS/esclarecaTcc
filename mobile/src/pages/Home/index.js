@@ -38,24 +38,21 @@ export default function Home() {
     }
     function navigateToDoubts() {
         setType(false)
-        reloadPosts()
     }
     function navigateToContent() {
         setType(true)
-        reloadPosts()
     }
 
-    // useEffect(() => {
-    //     reload()
-    //     async function reload() {
-    //         await reloadPosts()
-    //     }
-    // }, [type])
+    useEffect(() => {
+        reload()
+        async function reload() {
+            await reloadPosts()
+        }
+    }, [type])
 
     useEffect(() => {
-        setSearchSolved(false);
+        setSearchSolved(false)
         setSearchFavorite(false)
-        loadPosts()
     }, [])
 
     const onLoadMore = useCallback(() => {
