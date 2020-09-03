@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, AsyncStorage } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
-import { showError } from '../common'
+import { showError, handleLimitBigText, handleDate } from '../common'
 import api from '../services/api'
 
 export default function Posts(props) {
@@ -116,46 +116,9 @@ export default function Posts(props) {
         );
     };
 
-    function handleBigText(t) {
-        var texto = new String(t);
-        var tam = new Number(texto.length)
-        let text = new String();
-
-        if (tam > 280) {
-            text = texto.substring(0, 280) + "..."
-        }
-        else {
-            text = texto
-        }
-
-        return text
-    }
-
-    function handleDate(data) {
-        var day = new Date(data);
-        var today = new Date();
-        var d = new String(data);
-        let text = new String();
-
-        var horas = Math.abs(day - today) / 36e5;
-        var horasArrend = Math.round(horas)
-
-        if (horasArrend > 24) {
-            text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
-        }
-        else if (horasArrend < 1) {
-            text = "Há menos de 1 hora"
-        }
-        else {
-            text = "Há " + horasArrend + " horas atrás"
-        }
-
-        return text
-    }
     return (
         <View style={styles.Body}>
             <View style={styles.BodyFlat}>
-                <Text>{props.loading}</Text>
                 <FlatList
                     data={props.posts}
                     style={styles.postsList}
@@ -168,7 +131,7 @@ export default function Posts(props) {
                     showsVerticalScrollIndicator={false}
                     removeClippedSubviews={false}
                     renderItem={({ item: post }) => (
-                        (props.searchSolved === false || (props.searchSolved === true && post.solved === true))  &&
+                        (props.searchSolved === false || (props.searchSolved === true && post.solved === true)) &&
                             (props.searchFavorite === false || (props.searchFavorite === true && post.didILiked === true)) ?
                             <Animatable.View
                                 style={styles.post}
@@ -197,7 +160,7 @@ export default function Posts(props) {
                                     </View>
                                 </View>
                                 <View style={styles.postDesc}>
-                                    <Text selectable={true} selectionColor='#FFC300' style={styles.postDescricao}>{handleBigText(post.desc)}</Text>
+                                    <Text selectable={true} selectionColor='#FFC300' style={styles.postDescricao}>{handleLimitBigText(post.desc)}</Text>
                                 </View>
                                 <View style={{ paddingHorizontal: 25, paddingBottom: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>

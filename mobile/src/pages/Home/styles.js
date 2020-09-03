@@ -144,7 +144,6 @@ export default StyleSheet.create({
     elevation: 10,
   },
   modalFilter:{
-    height:28, 
     backgroundColor:'#C8C8C8', 
     borderTopLeftRadius:5, 
     borderTopRightRadius:5, 
@@ -152,6 +151,7 @@ export default StyleSheet.create({
     alignItems:'center'
   },
   filterTitle:{
+    marginLeft: 3,
     color:'black', 
     fontWeight:'bold',
     fontSize:16

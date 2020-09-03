@@ -126,11 +126,10 @@ function CustomDrawerContent(props) {
                                         uri: avatar
                                             ? `${avatar}?${new Date().getTime()}`
                                             : 'https://www.colegiodepadua.com.br/img/user.png',
-
                                     }}
                                     size={50}
                                 />
-                                <View style={{ marginLeft: 15, flexDirection: 'column', marginTop: 0 }}>
+                                <View style={{ marginLeft: 15, flexDirection: 'column', maxWidth: 200}}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{userName ? userName : 'Meu perfil'}</Text>
                                     <Text style={{ fontSize: 13, color: '#365478' }}>{userTags ? userTags.toString() : ''}</Text>
                                 </View>
