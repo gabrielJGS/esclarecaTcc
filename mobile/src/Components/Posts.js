@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, AsyncStorage } from 'react-native';
-import { Feather, FontAwesome } from '@expo/vector-icons'
+import { Feather, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
 import { showError } from '../common'
 import api from '../services/api'
