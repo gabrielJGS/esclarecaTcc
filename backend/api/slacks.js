@@ -13,13 +13,13 @@ module.exports = app => {
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
-        console.log(page)
-        const count = await Slacks.find({ tag: { $in: search_text != "" ? search_text.split(',') : user.tags } }).countDocuments()
+
+        const count = await Slacks.find({ tag: { $in: search_text != "" ? search_text.split(',') : user.tags }, user: { $nin: user.blocked } }).countDocuments()
         res.header('X-Total-Count', count)
 
         const slacks = await Slacks
             .aggregate([
-                { $match: { tag: { $in: search_text != "" ? search_text.split(',') : user.tags } } },
+                { $match: { tag: { $in: search_text != "" ? search_text.split(',') : user.tags }, user: { $nin: user.blocked } } },
                 { $sort: { createdIn: -1 } },
                 {
                     $lookup: {

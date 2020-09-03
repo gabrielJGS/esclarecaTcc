@@ -16,7 +16,6 @@ module.exports = app => {
         const userExiste = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))
         if (!userExiste) {
-            console.log(user_id)
             return res.status(401).send('Usuário inválido');
         }
 
@@ -30,7 +29,7 @@ module.exports = app => {
 
         const messages = await Slacks_Messages
             .aggregate([
-                { $match: { slack: slackOri._id } },
+                { $match: { slack: slackOri._id, user: { $nin: userExiste.blocked } } },
                 { $sort: { postedIn: 1 } },
                 { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
                 { $skip: (page - 1) * qtdLoad },
@@ -72,7 +71,6 @@ module.exports = app => {
     const remove = async (req, res) => {
         const { user_id } = req.headers
         const { slack, slack_msg } = req.params
-        console.log(user_id + "-" + slack + "-" + slack_msg)
 
         const userExiste = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))

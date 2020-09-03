@@ -1,9 +1,6 @@
 const bcrypt = require('bcrypt-nodejs')
 const Users = require('../models/Users');
 const { hostIp } = require('../.env')
-//const GridFsStorage = require("multer-gridfs-storage");
-//const Grid = require("gridfs-stream");
-//const multer = require("multer");
 
 module.exports = app => {
     const obterHash = (password, callback) => {
@@ -27,7 +24,7 @@ module.exports = app => {
             res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`)
         } else {
             obterHash(req.body.password.trim().toLowerCase(), hash => {
-                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()), key, url, ranking: 0 })
+                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()), key, url, ranking: 0, blocked: [] })
                     .then(_ => res.status(204).send())
                     .catch(err => res.status(400).json(err))
             })
@@ -85,14 +82,15 @@ module.exports = app => {
         user = Users.findByIdAndUpdate(id, { tags: tags.split(',').map(tag => tag.trim()) })
             .then(_ => res.status(204).send())
             .catch(err => res.status(400).json(err))
-
     }
     const profile = async (req, res) => {
         const { id } = req.params;
         const user = await Users.findById(id)
+            .populate('blocked').populate('user')
             .catch(err => res.status(400).json(err))
         res.json(user)
     }
+
     const list = async (req, res) => {
         const top = await Users.find()
             .sort({ ranking: -1 })
@@ -100,5 +98,43 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
         res.json(top)
     }
-    return { save, update, patch, profile, upload, list }
+
+    const blockUser = async (req, res) => {
+        const { id } = req.params;
+        const { user_id } = req.headers;
+        if (id == user_id) {
+            return res.status(401).send('Usuário a bloquear é o mesmo logado');
+        }
+
+        const userToBlock = await Users.findById(id)
+            .catch(err => res.status(400).json(err))
+        if (!userToBlock) {
+            return res.status(401).send('Usuário a bloquear inválido');
+        }
+        const userLogged = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
+        if (!userLogged) {
+            return res.status(401).send('Usuário informado é inválido');
+        }
+
+        if (userLogged.blocked.find(u => u == id)) {//Desbloqueando
+            const index = userLogged.blocked.indexOf(id);
+            if (index > -1) {
+                userLogged.blocked.splice(index, 1);
+            }
+            await userLogged.save()
+                .catch(err => res.status(400).json(err))
+            res.status(201).send()
+        }
+        else {//Bloqueando
+            userLogged.blocked.push(id)
+            await userLogged.save()
+                .catch(err => res.status(400).json(err))
+
+            res.status(204).send()
+        }
+
+
+    }
+    return { save, update, patch, profile, upload, list, blockUser }
 };

@@ -125,7 +125,7 @@ function CustomDrawerContent(props) {
                                     source={{
                                         uri: avatar
                                             ? `${avatar}?${new Date().getTime()}`
-                                            : 'https://anebrasil.org.br/wp-content/uploads/2016/06/img-user-geral.png',
+                                            : 'https://www.colegiodepadua.com.br/img/user.png',
 
                                     }}
                                     size={50}

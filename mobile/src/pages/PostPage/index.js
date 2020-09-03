@@ -23,20 +23,22 @@ export default function PostPage({ route, navigation }) {
 
     useEffect(() => {
         handleID()
-        loadComments()
         async function handleID() {
-
             const user_id = await AsyncStorage.getItem('user');
             setActiveUser(user_id);
             if (user_id === post.user[0]._id) {
                 setUserIsPostOwner(true);
             }
         }
-    }, [press])
+    }, [])
 
-    // useEffect(() => {
-    //     reloadPage()
-    // }, [press])
+    useEffect(() => {
+        rePost()
+        async function rePost() {
+            const user_id = await AsyncStorage.getItem('user');
+            await reloadPage()
+        }
+    }, [press])
 
     function navigateToHome() {
         navigation.navigate('Home')
@@ -63,7 +65,7 @@ export default function PostPage({ route, navigation }) {
                 if (response.status == 204) {
                     showSucess("Comentário cadastrado com sucesso")
                     setCommentText('')
-                    setPress(previousState => !previousState)
+                    setPress(!press)
                 } else {
                     showError("Ocorreu um erro")
                 }
@@ -77,8 +79,7 @@ export default function PostPage({ route, navigation }) {
         if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
-        const getTotal = await api.head(`/posts/${post._id}`)
-        setTotal(getTotal.headers['x-total-count'])
+
         if (total > 0 && comments.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
             return
         }
@@ -94,6 +95,7 @@ export default function PostPage({ route, navigation }) {
             setComments([...comments, ...response.data])
             if (response.data.length > 0) {
                 setPage(page + 1)
+                setTotal(response.headers['x-total-count'])
             }
         } catch (e) {
             showError(e)
@@ -130,6 +132,7 @@ export default function PostPage({ route, navigation }) {
             setComments(response.data)
             if (response.data.length > 0) {
                 setPage(2)
+                setTotal(response.headers['x-total-count'])
             }
         } catch (e) {
             showError(e)
@@ -155,7 +158,7 @@ export default function PostPage({ route, navigation }) {
             }, {
                 headers: { user_id }
             })
-            await reloadPage()
+            await reloadPost()
         } catch (e) {
             showError(e)
         }
@@ -172,7 +175,7 @@ export default function PostPage({ route, navigation }) {
         } catch (e) {
             showError(e)
         }
-        await reloadPage()
+        setPress(!press)
     }
 
     async function handleDeleteComment(commId) {
