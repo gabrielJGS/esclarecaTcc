@@ -110,7 +110,7 @@ export default function PostPage({ route, navigation }) {
             setPost(response.data[0])
 
         } catch (e) {
-            console.log(e)
+            showError("Aconteceu um erro: \n" + e)
         }
 
     }
@@ -237,7 +237,7 @@ export default function PostPage({ route, navigation }) {
                             <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
                         </TouchableOpacity>
                         <ScrollView>
-                        <Text selectable={true} selectionColor='#FFC300' style={{fontSize: 15, color: 'white', paddingRight: 40, maxHeight:300 }}>{post.desc}</Text>
+                            <Text selectable={true} selectionColor='#FFC300' style={{ fontSize: 15, color: 'white', paddingRight: 40, maxHeight: 300 }}>{post.desc}</Text>
                         </ScrollView>
                         <View style={{ flexDirection: 'row', paddingTop: 10, alignItems: 'flex-end' }}>
                             <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>Anexos</Text>
@@ -258,18 +258,18 @@ export default function PostPage({ route, navigation }) {
                         </TouchableOpacity>
                         {userIsPostOwner ?
                             <>
-                                <TouchableOpacity onPress={handleDeletePost}
-                                    // Alert.alert(
-                                    //     'Excluir',
-                                    //     'Deseja excluir sua dúvida?',
-                                    //     [
-                                    //         { text: 'Não', onPress: () => { return null } },
-                                    //         {
-                                    //             text: 'Sim', onPress: () => { }
-                                    //         },
-                                    //     ],
-                                    //     { cancelable: false }
-                                    // )}
+                                <TouchableOpacity onPress={() =>
+                                    Alert.alert(
+                                        'Excluir',
+                                        'Deseja excluir sua dúvida?',
+                                        [
+                                            { text: 'Não', onPress: () => { return null } },
+                                            {
+                                                text: 'Sim', onPress: () => { handleDeletePost() }
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    )}
                                     style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 15 }}
                                 >
                                     <Feather name="trash-2" size={15} color='#E73751'></Feather>
@@ -342,27 +342,24 @@ export default function PostPage({ route, navigation }) {
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={styles.Nomepost}>{handleDate(comment.postedIn)}</Text>
                                             {comment.user[0]._id === activeUser || userIsPostOwner ?
-                                                <>
-                                                    <TouchableOpacity onPress={() => handleDeleteComment(comment._id)}
-                                                        // Alert.alert(
-                                                        //     'Excluir',
-                                                        //     'Deseja excluir sua Resposta?',
-                                                        //     [
-                                                        //         { text: 'Não', onPress: () => console.log("teste") },
-                                                        //         {
-                                                        //             text: 'Sim', onPress: console.log("teste")
-                                                        //         },
-                                                        //     ],
-                                                        //     { cancelable: false }
-                                                        // )}
-                                                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
-                                                    >
-                                                        <Feather name="trash-2" size={15} color='#E73751'></Feather>
-                                                    </TouchableOpacity>
-                                                </>
+                                                <TouchableOpacity onPress={() =>
+                                                    Alert.alert(
+                                                        'Excluir',
+                                                        'Deseja excluir sua Resposta?',
+                                                        [
+                                                            { text: 'Não', onPress: () => { return null } },
+                                                            {
+                                                                text: 'Sim', onPress: () => { handleDeleteComment(comment._id) }
+                                                            },
+                                                        ],
+                                                        { cancelable: false }
+                                                    )}
+                                                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
+                                                >
+                                                    <Feather name="trash-2" size={15} color='#E73751'></Feather>
+                                                </TouchableOpacity>
                                                 :
-                                                <>
-                                                </>
+                                                null
                                             }
                                         </View>
                                     </View>

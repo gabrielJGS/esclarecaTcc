@@ -188,12 +188,6 @@ export default function Home() {
                                         <Feather name="file-text" size={12} color="#7DCEA0" />
                                     </TouchableOpacity>
                                 </View>
-                                {/* <View style={styles.filterSub}>
-                                    <TouchableOpacity style={styles.filterButton} onPress={() => setSearchType('user')}>
-                                        <Text style={[styles.filterText, { color: searchType == 'user' ? '#7DCEA0' : '#365478' }]}>Usuário</Text>
-                                        <Feather name="users" size={12} color="#7DCEA0" />
-                                    </TouchableOpacity>
-                                </View> */}
                             </View>
                             <View style={{ backgroundColor: '#C8C8C8', borderRadius: 5, padding: 3 }}>
                                 <TouchableOpacity style={styles.filterButton} onPress={() => { setSearchType(''); }}>

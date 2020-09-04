@@ -51,14 +51,14 @@ export default function Profile({ route, navigation }) {
 
   useEffect(() => {
     loadUser(route.params.userId)
-  }, [userId])
+  }, [route.params.userId])
 
   useEffect(() => {
     reload()
     async function reload() {
       await reloadPosts()
     }
-  }, [type, liked])
+  }, [route.params.userId, type, liked])
 
   function logoutUser() {
     AsyncStorage.clear()
@@ -98,7 +98,7 @@ export default function Profile({ route, navigation }) {
       showError("Confirme ou digite sua nova senha!")
       return
     }
-    const response = await api.put(`/users/${userId}`, {
+    const response = await api.put(`/users/${route.params.userId}`, {
       name,
       email,
       tags: tags.toString(','),
@@ -113,7 +113,7 @@ export default function Profile({ route, navigation }) {
     try {
       const usuarioAtual = await AsyncStorage.getItem('user');
 
-      const response = await api.post(`/users/${userId}/block`, {}, { headers: { user_id: usuarioAtual } })
+      const response = await api.post(`/users/${route.params.userId}/block`, {}, { headers: { user_id: usuarioAtual } })
       if (response.status == 204) {
         showSucess("Usuário bloqueado com sucesso")
       } else if (response.status == 201) {
@@ -122,7 +122,7 @@ export default function Profile({ route, navigation }) {
       else {
         showError("Ocorreu um erro ao processar a requisição!")
       }
-      loadUser(userId)
+      loadUser(route.params.userId)
     } catch (e) {
       showError("Erro: " + e)
     }
@@ -140,12 +140,12 @@ export default function Profile({ route, navigation }) {
     try {
       let response
       if (liked === true) {
-        response = await api.get(`/users/${userId}/liked`, {
+        response = await api.get(`/users/${route.params.userId}/liked`, {
           headers: { type },
           params: { page }
         })
       } else {
-        response = await api.get(`/users/${userId}/posts`, {
+        response = await api.get(`/users/${route.params.userId}/posts`, {
           headers: { type },
           params: { page }
         })
@@ -163,6 +163,7 @@ export default function Profile({ route, navigation }) {
   }
 
   async function reloadPosts() {
+
     if (refreshing) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
       return
     }
@@ -170,12 +171,12 @@ export default function Profile({ route, navigation }) {
     try {
       let response
       if (liked === true) {
-        response = await api.get(`/users/${userId}/liked`, {
+        response = await api.get(`/users/${route.params.userId}/liked`, {
           headers: { type },
           params: { page: 1 }
         })
       } else {
-        response = await api.get(`/users/${userId}/posts`, {
+        response = await api.get(`/users/${route.params.userId}/posts`, {
           headers: { type },
           params: { page: 1 }
         })
@@ -222,11 +223,11 @@ export default function Profile({ route, navigation }) {
     try {
       const data = new FormData();
       data.append('file', { uri: localUri, name: filename, type })
-      const response = await api.post(`/users/${userId}/photo`, data)
+      const response = await api.post(`/users/${route.params.userId}/photo`, data)
       if (response.status == 201) {
         showSucess("Foto alterada com sucesso")
         setIsUploadingImage(false)
-        await loadUser(userId)
+        await loadUser(route.params.userId)
       } else {
         showError(response)
       }
@@ -364,20 +365,17 @@ export default function Profile({ route, navigation }) {
           :
           <>
             <TouchableOpacity style={styles.detailsButton} onPress={() =>
-              blockUser()}
-            // Alert.alert(
-            //   'Bloquear',
-            //   'Deseja realmente bloquear o usuário?',
-            //   [
-            //     { text: 'Não', onPress: () => { return null } },
-            //     {
-            //       text: 'Sim', onPress: () => {
-            //         () => { };
-            //       }
-            //     },
-            //   ],
-            //   { cancelable: false }
-            // )}
+              Alert.alert(
+                'Bloquear',
+                'Deseja realmente bloquear o usuário?',
+                [
+                  { text: 'Não', onPress: () => { return null } },
+                  {
+                    text: 'Sim', onPress: () => { blockUser() }
+                  },
+                ],
+                { cancelable: false }
+              )}
             >
               <Feather name="slash" size={25} color="#E73751"></Feather>
             </TouchableOpacity>
