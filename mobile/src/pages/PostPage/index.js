@@ -110,7 +110,7 @@ export default function PostPage({ route, navigation }) {
             setPost(response.data[0])
 
         } catch (e) {
-            console.log(e)
+            showError("Aconteceu um erro: \n" + e)
         }
 
     }
