@@ -204,8 +204,6 @@ module.exports = app => {
                 }
             }
         }
-        // search_type === 'desc' ? match.tags : { $in: user.tags }
-        // User name n vai rolar ainda n kkkk
 
         const posts = await Posts
             .aggregate([
