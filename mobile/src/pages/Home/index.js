@@ -22,14 +22,12 @@ export default function Home() {
     //filtro
     const [modalVisible, setModalVisible] = useState(false);//Janela de seleção
     const [searchFavorite, setSearchFavorite] = useState(false);
-    const [searchSolved, setSearchSolved] = useState('');
+    const [searchSolved, setSearchSolved] = useState(false);
     const [searchText, setSearchText] = useState('');
 
     //Pesquisa
     const [modalPesquisaVisible, setModalPesquisaVisible] = useState(false);//Janela de seleção
-    const [searchTag, setSearchTag] = useState(true);
-    const [searchDesc, setSearchDesc] = useState(false);
-    const [searchUser, setSearchUser] = useState(false);
+    const [searchType, setSearchType] = useState('')
 
     function navigateToNewPost() {
         navigation.navigate('NewPost', {
@@ -50,11 +48,6 @@ export default function Home() {
         }
     }, [type])
 
-    useEffect(() => {
-        setSearchSolved(false)
-        setSearchFavorite(false)
-    }, [])
-
     const onLoadMore = useCallback(() => {
         loadPosts();
     })
@@ -72,7 +65,7 @@ export default function Home() {
             return
         }
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
-        const getTotal = await api.head('/posts', { headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite } })
+        const getTotal = await api.head('/posts', { headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite, search_type: searchType } })
         setTotal(getTotal.headers['x-total-count'])
         if (total > 0 && posts.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
             return
@@ -81,7 +74,7 @@ export default function Home() {
         setLoading(true)//Altera para o loading iniciado
         try {
             const response = await api.get('/posts', {
-                headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite },
+                headers: { user_id, type, search_text: searchText, search_type: searchType },
                 params: { page }
             })
 
@@ -104,7 +97,7 @@ export default function Home() {
 
         try {
             const response = await api.get('/posts', {
-                headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite },
+                headers: { user_id, type, search_text: searchText, search_type: searchType },
                 params: { page: 1 }
             })
             setPosts(response.data)
@@ -138,19 +131,19 @@ export default function Home() {
                                     <View style={styles.filterSub}>
                                         <TouchableOpacity style={styles.filterButton} onPress={() => setSearchFavorite(!searchFavorite)}>
                                             <Text style={[styles.filterText, { color: searchFavorite ? '#FFC300' : '#365478' }]}>Favoritos</Text>
-                                            <Feather name="heart" size={12} color="#FFC300"></Feather>
+                                            <Feather name="heart" size={12} color="#FFC300" />
                                         </TouchableOpacity>
                                     </View>
                                     <View style={styles.filterSub}>
                                         <TouchableOpacity style={styles.filterButton} onPress={() => setSearchSolved(!searchSolved)}>
                                             <Text style={[styles.filterText, { color: searchSolved ? '#FFC300' : '#365478' }]}>Esclarecidos </Text>
-                                            <Feather name="check-circle" size={12} color="#FFC300"></Feather>
+                                            <Feather name="check-circle" size={12} color="#FFC300" />
                                         </TouchableOpacity>
                                     </View>
                                     <View style={styles.filterExit}>
                                         <TouchableOpacity style={styles.filterButton} onPress={() => { setSearchSolved(false); setSearchFavorite(false) }}>
                                             <Text style={styles.filterText}>Sem filtro </Text>
-                                            <Feather name="x-circle" size={12} color="#E73751"></Feather>
+                                            <Feather name="x-circle" size={12} color="#E73751" />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -160,47 +153,58 @@ export default function Home() {
                 </Modal>
             </View>
 
-            <View>
-                <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={modalPesquisaVisible}
-                    onRequestClose={showModalPesquisa}
-                >
-                    <TouchableWithoutFeedback onPress={showModalPesquisa}>
-                        <View style={styles.modalContent}>
-                            <View style={styles.modalPesquisaBody}>
-                                <View style={styles.modalFilter}>
-                                    <Text style={styles.filterTitle}>Pesquisar Por:</Text>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalPesquisaVisible}
+                onRequestClose={showModalPesquisa}
+            >
+                <TouchableWithoutFeedback onPress={showModalPesquisa}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalPesquisaBody}>
+                            <View style={styles.modalFilter}>
+                                <Text style={styles.filterTitle}>Pesquisar Por:</Text>
+                            </View>
+                            <View style={styles.filterView}>
+                                <View style={styles.filterSub}>
+                                    <TouchableOpacity style={styles.filterButton} onPress={() => setSearchType('tags')}>
+                                        <Text style={[styles.filterText, { color: searchType == 'tags' ? '#7DCEA0' : '#365478' }]}>Tags</Text>
+                                        <Feather name="hash" size={12} color="#7DCEA0" />
+                                    </TouchableOpacity>
                                 </View>
-                                <View style={styles.filterView}>
-                                    <View style={styles.filterSub}>
-                                        <TouchableOpacity style={styles.filterButton} onPress={() => setSearchTag(!searchTag)}>
-                                            <Text style={[styles.filterText, { color: searchTag ? '#7DCEA0' : '#365478' }]}>Tags</Text>
-                                            <Feather name="hash" size={12} color="#7DCEA0"></Feather>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.filterSub}>
-                                        <TouchableOpacity style={styles.filterButton} onPress={() => setSearchDesc(!searchDesc)}>
-                                            <View>
-                                                <Text style={[styles.filterText, { color: searchDesc ? '#7DCEA0' : '#365478' }]}>Descrição</Text>
-                                                <Text style={[styles.filterText, { color: searchDesc ? '#7DCEA0' : '#365478', marginTop: -3 }]}>e Título</Text>
-                                            </View>
-                                            <Feather name="file-text" size={12} color="#7DCEA0"></Feather>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.filterSub}>
-                                        <TouchableOpacity style={styles.filterButton} onPress={() => setSearchUser(!searchUser)}>
-                                            <Text style={[styles.filterText, { color: searchUser ? '#7DCEA0' : '#365478' }]}>Usuário</Text>
-                                            <Feather name="users" size={12} color="#7DCEA0"></Feather>
-                                        </TouchableOpacity>
-                                    </View>
+                                <View style={styles.filterSub}>
+                                    <TouchableOpacity style={styles.filterButton} onPress={() => setSearchType('desc')}>
+                                        <View>
+                                            <Text style={[styles.filterText, { color: searchType == 'desc' ? '#7DCEA0' : '#365478' }]}>Descrição</Text>
+                                        </View>
+                                        <Feather name="file-text" size={12} color="#7DCEA0" />
+                                    </TouchableOpacity>
                                 </View>
+                                <View style={styles.filterSub}>
+                                    <TouchableOpacity style={styles.filterButton} onPress={() => setSearchType('title')}>
+                                        <View>
+                                            <Text style={[styles.filterText, { color: searchType == 'title' ? '#7DCEA0' : '#365478', marginTop: -3 }]}>Título</Text>
+                                        </View>
+                                        <Feather name="file-text" size={12} color="#7DCEA0" />
+                                    </TouchableOpacity>
+                                </View>
+                                {/* <View style={styles.filterSub}>
+                                    <TouchableOpacity style={styles.filterButton} onPress={() => setSearchType('user')}>
+                                        <Text style={[styles.filterText, { color: searchType == 'user' ? '#7DCEA0' : '#365478' }]}>Usuário</Text>
+                                        <Feather name="users" size={12} color="#7DCEA0" />
+                                    </TouchableOpacity>
+                                </View> */}
+                            </View>
+                            <View style={{ backgroundColor: '#C8C8C8', borderRadius: 5, padding: 3 }}>
+                                <TouchableOpacity style={styles.filterButton} onPress={() => { setSearchType(''); }}>
+                                    <Text style={styles.filterText}> Limpar</Text>
+                                    <Feather name="x-circle" size={12} color="#E73751" />
+                                </TouchableOpacity>
                             </View>
                         </View>
-                    </TouchableWithoutFeedback>
-                </Modal>
-            </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
 
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
