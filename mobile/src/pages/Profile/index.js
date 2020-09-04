@@ -51,7 +51,7 @@ export default function Profile({ route, navigation }) {
 
   useEffect(() => {
     loadUser(route.params.userId)
-  }, [userId])
+  }, [route.params.userId])
 
   useEffect(() => {
     reload()
@@ -363,6 +363,7 @@ export default function Profile({ route, navigation }) {
           </>
           :
           <>
+          <View style={{justifyContent:'space-between',flexDirection:'row'}}>
             <TouchableOpacity style={styles.detailsButton} onPress={() =>
               blockUser()}
             // Alert.alert(
@@ -381,6 +382,10 @@ export default function Profile({ route, navigation }) {
             >
               <Feather name="slash" size={25} color="#E73751"></Feather>
             </TouchableOpacity>
+            <TouchableOpacity style={[styles.detailsButton,{paddingLeft:20}]} onPress={() =>{}}>
+              <Feather name="user-plus" size={25} color="#7DCEA0"></Feather>
+            </TouchableOpacity>
+            </View>
           </>
         }
         <TouchableOpacity style={styles.detailsButton} onPress={() =>
