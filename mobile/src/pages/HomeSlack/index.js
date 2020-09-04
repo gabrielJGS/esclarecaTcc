@@ -29,7 +29,7 @@ export default function HomeSlack(props) {
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
 
-    const[idU, setIdU] = useState('')
+    const [idU, setIdU] = useState('')
 
     const handlePrivadoModal = () => setPrivadoModal(previousState => !previousState);
 
@@ -57,7 +57,7 @@ export default function HomeSlack(props) {
 
         const user_id = await AsyncStorage.getItem('user');
         setIdU(user_id);
-        
+
         try {
             const response = await api.get(`/slacks`, {
                 headers: { user_id, search_text: searchText },
@@ -358,7 +358,7 @@ export default function HomeSlack(props) {
                                     <Feather name={slack.senha != '' ? "lock" : 'unlock'} size={14} color={slack.senha != '' ? "#5AAAA5" : "#7DCEA0"} style={{ marginRight: 5 }} />
                                     <Text style={styles.postTitle}>{slack.nome}</Text>
                                     <FontAwesome name="commenting-o" style={{ color: '#D8D9DB', fontSize: 12, marginLeft: 8 }} />
-                                    <Text style={{ marginLeft: 2, fontSize: 10, color: 'gray' }}>12</Text>
+                                    <Text style={{ marginLeft: 2, fontSize: 10, color: 'gray' }}>{slack.messages}</Text>
                                 </View>
                                 <Text style={styles.Nomepost}>Criado em: {handleDate(slack.createdIn)}</Text>
                             </View>
@@ -371,18 +371,15 @@ export default function HomeSlack(props) {
                                     {idU === slack.user[0]._id ?
                                         <>
                                             <TouchableOpacity onPress={() =>
-                                                handleDeleteSlack(slack)}
-                                                //         },
-                                                // Alert.alert(
-                                                //     'Excluir',
-                                                //     'Deseja excluir sua slack?',
-                                                //     [
-                                                //         { text: 'Não', onPress: () => { return null } },
-                                                //         {
-                                                //             text: 'Sim', onPress: () => { () => 
-                                                //     ],
-                                                //     { cancelable: false }
-                                                // )}
+                                                Alert.alert(
+                                                    'Excluir',
+                                                    'Deseja excluir sua slack?',
+                                                    [
+                                                        { text: 'Não', onPress: () => { return null } },
+                                                        { text: 'Sim', onPress: () => { handleDeleteSlack(slack) } }
+                                                    ],
+                                                    { cancelable: false }
+                                                )}
                                                 style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
                                             >
                                                 <Feather name="trash-2" size={15} color='#E73751'></Feather>
@@ -391,7 +388,7 @@ export default function HomeSlack(props) {
                                         :
                                         <>
                                         </>
-                                }
+                                    }
                                 </View>
                                 <TouchableOpacity style={styles.Ver} onPress={() => navigateToSlack(slack)}>
                                     <Feather name="chevron-right" size={25} color='#FFC300'></Feather>
