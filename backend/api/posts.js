@@ -164,11 +164,13 @@ module.exports = app => {
         const count = await Posts.find({ tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch, user: { $nin: user.blocked } }).countDocuments()
         res.header('X-Total-Count', count)
         return res.json(count)
-        // return res.json(count)
     }
 
     const index = async (req, res) => {
-        const { user_id, type, search_text } = req.headers;
+        const { user_id, type, search_type } = req.headers;
+        let { search_text } = req.headers;
+        search_text = search_text.trim()
+
         const typeSearch = type == 'false' ? false : true
 
         //Páginação
@@ -180,9 +182,36 @@ module.exports = app => {
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
+
+        //Montagem dos filtros
+        let match = {
+            type: typeSearch,
+            user: { $nin: user.blocked }
+        }
+
+        if (search_type === '' || search_text === '') {
+            match.tags = { $in: user.tags }
+        } else {
+            if (search_type === 'tags') {
+                match.tags = { $in: search_text.split(',') }
+            } else {
+                if (search_type === 'title') {
+                    match.title = { '$regex': search_text, '$options': 'i' }
+                } else {
+                    if (search_type === 'desc') {
+                        match.desc = { '$regex': search_text, '$options': 'i' }
+                    }
+                }
+            }
+        }
+        // search_type === 'desc' ? match.tags : { $in: user.tags }
+        // User name n vai rolar ainda n kkkk
+
         const posts = await Posts
             .aggregate([
-                { $match: { tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch, user: { $nin: user.blocked } } },
+                {
+                    $match: match
+                },
                 { $sort: { postedIn: -1 } },
                 {
                     $lookup: {

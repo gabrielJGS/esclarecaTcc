@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, AsyncStorage, Alert, TextInput, FlatList,
 import { Feather, Ionicons, Foundation } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
 
-import { showError, showSucess } from '../../common'
+import { showError, showSucess, handleDate } from '../../common'
 import api from '../../services/api'
 
 import styles from './styles'
@@ -134,28 +134,6 @@ export default function SlackPage({ route, navigation }) {
             </View>
         );
     };
-
-    function handleDate(data) {
-        var day = new Date(data);
-        var today = new Date();
-        var d = new String(data);
-        let text = new String();
-
-        var horas = Math.abs(day - today) / 36e5;
-        var horasArrend = Math.round(horas)
-
-        if (horasArrend > 24) {
-            text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
-        }
-        else if (horasArrend < 1) {
-            text = "Há menos de 1 hora"
-        }
-        else {
-            text = "Há " + horasArrend + " horas atrás"
-        }
-
-        return text
-    }
 
     return (
         user == null ? renderFooter :

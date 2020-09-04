@@ -7,7 +7,7 @@ import api from '../../services/api'
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 
-import { showError, showSucess } from '../../common'
+import { showError, showSucess, handleDate } from '../../common'
 
 export default function PostPage({ route, navigation }) {
     const [commentText, setCommentText] = useState('')
@@ -215,28 +215,6 @@ export default function PostPage({ route, navigation }) {
             </View>
         );
     };
-
-    function handleDate(data) {
-        var day = new Date(data);
-        var today = new Date();
-        var d = new String(data);
-        let text = new String();
-
-        var horas = Math.abs(day - today) / 36e5;
-        var horasArrend = Math.round(horas)
-
-        if (horasArrend > 24) {
-            text = "" + d.substring(8, 10) + "/" + d.substring(5, 7) + "/" + d.substring(0, 4)
-        }
-        else if (horasArrend < 1) {
-            text = "Há menos de 1 hora"
-        }
-        else {
-            text = "Há " + horasArrend + " horas atrás"
-        }
-
-        return text
-    }
 
     return (
         //reidner 26/04
