@@ -32,7 +32,7 @@ export default function SlackPage({ route, navigation }) {
             userId
         })
     }
-    
+
     async function handlePostMessage() {
         if (messageText.trim() !== '') {
             try {
@@ -168,42 +168,41 @@ export default function SlackPage({ route, navigation }) {
                                         duration={1000}
                                     >
                                         <View style={styles.postHeader}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                            {message.user[0].url ?
-                                                <Image style={styles.avatar} source={{ uri: message.user[0].url ? `${message.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
-                                                : <Feather name="camera" size={30} color='#D8D9DB' />}
-                                            <TouchableOpacity onPress={() => navigateToProfile(message.user[0]._id)}>
-                                                <Text style={styles.postTitle}>{message.user ? message.user[0].name : ''}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text style={styles.Nomepost}>{handleDate(message.postedIn)}</Text>
-                                            {user != null && (user == slack.user[0]._id || user == message.user[0]._id) ?
-                                                <>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                                {message.user[0].url ?
+                                                    <Image style={styles.avatar} source={{ uri: message.user[0].url ? `${message.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                                                    : <Feather name="camera" size={30} color='#D8D9DB' />}
+                                                <TouchableOpacity onPress={() => navigateToProfile(message.user[0]._id)}>
+                                                    <Text style={styles.postTitle}>{message.user ? message.user[0].name : ''}</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Text style={styles.Nomepost}>{handleDate(message.postedIn)}</Text>
+                                                {user != null && (user == slack.user[0]._id || user == message.user[0]._id) ?
+                                                    <>
 
-                                                    <TouchableOpacity onPress={() =>
-                                                        handleDeleteMessage(message._id)
-                                                        // Alert.alert(
-                                                        //     'Excluir',
-                                                        //     'Deseja excluir sua mensagem?',
-                                                        //     [
-                                                        //         { text: 'Não', onPress: () => { return null } },
-                                                        //         {
-                                                        //             text: 'Sim', onPress: () => { }
-                                                        //         },
-                                                        //     ],
-                                                        //     { cancelable: false }
-                                                        // )
-                                                    }
-                                                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
-                                                    >
-                                                        <Feather name="trash-2" size={15} color='#E73751' />
-                                                    </TouchableOpacity>
-                                                </>
-                                                :
-                                                <>
-                                                </>
-                                            }
+                                                        <TouchableOpacity onPress={() =>
+                                                            Alert.alert(
+                                                                'Excluir',
+                                                                'Deseja excluir sua mensagem?',
+                                                                [
+                                                                    { text: 'Não', onPress: () => { return null } },
+                                                                    {
+                                                                        text: 'Sim', onPress: () => { handleDeleteMessage(message._id) }
+                                                                    },
+                                                                ],
+                                                                { cancelable: false }
+                                                            )
+                                                        }
+                                                            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
+                                                        >
+                                                            <Feather name="trash-2" size={15} color='#E73751' />
+                                                        </TouchableOpacity>
+                                                    </>
+                                                    :
+                                                    <>
+                                                    </>
+                                                }
                                             </View>
                                         </View>
                                         <View style={styles.postDesc}>

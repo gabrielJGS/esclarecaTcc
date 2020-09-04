@@ -175,7 +175,6 @@ export default function Posts(props) {
                                         <Text style={{ fontSize: 13, color: '#7DCEA0', fontWeight: '800' }}>Dúvida finalizada</Text>
                                         <Feather name="check-circle" size={15} color='#7DCEA0' style={{ marginLeft: 5 }}></Feather>
                                     </View> : null}
-
                                 </View>
                             </Animatable.View>
                             : <View></View>

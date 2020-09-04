@@ -59,7 +59,7 @@ export default function Register() {
                         showError(x)
                     }
                 } catch (e) {
-                    alert("Error:\n" + e)
+                    showError("Error:\n" + e)
                 }
             } else {
                 showError("Erro")
