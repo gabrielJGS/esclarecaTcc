@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { StyleSheet, Alert, Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar } from "react-native";
-import { Feather, FontAwesome5, Foundation } from '@expo/vector-icons'
+import { Feather, FontAwesome5, Foundation, FontAwesome } from '@expo/vector-icons'
 import { Avatar } from 'react-native-elements';
 import { DotsLoader } from 'react-native-indicator';
 import { AuthContext } from './context'
@@ -25,6 +25,9 @@ import Preferences from './pages/Preferences'
 import Ranking from './pages/Ranking'
 import HomeSlack from './pages/HomeSlack';
 import SlackPage from './pages/SlackPage';
+import Network from './pages/Network';
+//import NetworkBlock from './pages/NetworkBlock';
+//import NetworkAdd from './pages/NetworkAdd';
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -50,14 +53,6 @@ const PostStack = () => (
     </MainStack.Navigator>
 )
 
-// const ContentStack = () => (
-//     <Main2Stack.Navigator screenOptions={{ headerShown: false }}>
-//         <Main2Stack.Screen name="HomeContent" component={HomeContent}></Main2Stack.Screen>
-//         <Main2Stack.Screen name="NewContent" component={NewContent}></Main2Stack.Screen>
-//         <MainStack.Screen name="ContentPage" component={ContentPage}></MainStack.Screen>
-//     </Main2Stack.Navigator>
-// )
-
 const SlackStack = () => (
     <Main3Stack.Navigator screenOptions={{ headerShown: false }}>
         <Main3Stack.Screen name="HomeSlack" component={HomeSlack}></Main3Stack.Screen>
@@ -65,14 +60,22 @@ const SlackStack = () => (
     </Main3Stack.Navigator>
 )
 
+const NetworkStack = () => (
+    <Main2Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Main2Stack.Screen name="Network" component={Network}></Main2Stack.Screen>
+        {/*<Main2Stack.Screen name="NetworkBlock" component={NetworkBlock}></Main2Stack.Screen>
+        <Main2Stack.Screen name="NetworkAdd" component={NetworkAdd}></Main2Stack.Screen>*/}
+    </Main2Stack.Navigator>
+)
+
 const drawerNavigator = () => (
     <drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
         <drawer.Screen name="Home" component={PostStack}></drawer.Screen>
-        {/* <drawer.Screen name="HomeContent" component={ContentStack}></drawer.Screen> */}
         <drawer.Screen name="Profile" component={Profile}></drawer.Screen>
         <drawer.Screen name="Preferences" component={Preferences}></drawer.Screen>
         <drawer.Screen name="Ranking" component={Ranking}></drawer.Screen>
         <drawer.Screen name="HomeSlack" component={SlackStack}></drawer.Screen>
+        <drawer.Screen name="Network" component={NetworkStack}></drawer.Screen>
     </drawer.Navigator>
 )
 
@@ -158,6 +161,13 @@ function CustomDrawerContent(props) {
                             )}
                             label="EsclaChat"
                             onPress={() => { props.navigation.navigate('HomeSlack') }}
+                        />
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <FontAwesome name="users" size={18} color="#365478"></FontAwesome>
+                            )}
+                            label="Conexões"
+                            onPress={() => { props.navigation.navigate('Network') }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
