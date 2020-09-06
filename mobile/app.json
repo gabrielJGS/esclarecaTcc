@@ -23,10 +23,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.esclareca.appmobile",
+      "supportsTablet": true,
+      "buildNumber": "1.0.0"
     },
     "android": {
-      "package": "com.esclareca.appmobile"
+      "package": "com.esclareca.appmobile",
+      "versionCode": 1
     }
   }
 }

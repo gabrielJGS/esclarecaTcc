@@ -42,7 +42,7 @@ export default function Network(){
             <View style={styles.Search}>
                 <TextInput
                     style={styles.input}
-                    placeholder="Pesquise o assunto desejado..."
+                    placeholder="Pesquise o usuário desejado..."
                     placeholderTextColor="#999"
                     autoCapitalize="words"
                     autoCorrect={false}
@@ -59,13 +59,18 @@ export default function Network(){
                 </View>
             </View>
 
-            <View style={{alignItems:'center', top:5, marginLeft:'67%',marginRight:'3%',flexDirection:'row', justifyContent:'space-between'}}>
+            <View style={{alignItems:'center', top:5 ,paddingHorizontal:'4%',flexDirection:'row', justifyContent:'space-between'}}>
                 <TouchableOpacity >
-                    <Text style={{fontSize:15, fontWeight:'bold', color:'#365478'}}>Bloqueados</Text>
+                    <Text style={{fontSize:15, fontWeight:'bold', color:'#783654'}}>Todos os Usuários</Text>
                 </TouchableOpacity>
-                <TouchableOpacity >
-                    <Text style={{fontSize:15, fontWeight:'bold', color:'#365478'}}>Seguidos</Text>
-                </TouchableOpacity>
+                <View style={{alignItems:'flex-end'}}>
+                    <TouchableOpacity >
+                        <Text style={{fontSize:13, fontWeight:'bold', color:'#365478'}}>Bloqueados</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity >
+                        <Text style={{fontSize:13, fontWeight:'bold', color:'#365478'}}>Seguidos</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
 
             {/*<FlatList

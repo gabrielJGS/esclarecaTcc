@@ -65,7 +65,7 @@ export default function Preferences() {
                 </View>
             </View>
 
-            <View style={{ marginHorizontal: 32, top: 50, flex: 1 }}>
+            <View style={{ marginHorizontal: 32, top: 30, flex: 1 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 5, borderBottomWidth: 1, borderBottomColor: '#D8D8D8' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Feather name="alert-octagon" size={24} color="#CAA859" />

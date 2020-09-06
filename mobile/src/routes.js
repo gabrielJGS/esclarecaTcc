@@ -16,18 +16,13 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
 import NewPost from './pages/NewPost'
-// import HomeContent from './pages/HomeContent'
-// import NewContent from './pages/NewContent'
 import Profile from './pages/Profile'
 import PostPage from './pages/PostPage'
-// import ContentPage from './pages/ContentPage'
 import Preferences from './pages/Preferences'
 import Ranking from './pages/Ranking'
 import HomeSlack from './pages/HomeSlack';
 import SlackPage from './pages/SlackPage';
 import Network from './pages/Network';
-//import NetworkBlock from './pages/NetworkBlock';
-//import NetworkAdd from './pages/NetworkAdd';
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -63,8 +58,6 @@ const SlackStack = () => (
 const NetworkStack = () => (
     <Main2Stack.Navigator screenOptions={{ headerShown: false }}>
         <Main2Stack.Screen name="Network" component={Network}></Main2Stack.Screen>
-        {/*<Main2Stack.Screen name="NetworkBlock" component={NetworkBlock}></Main2Stack.Screen>
-        <Main2Stack.Screen name="NetworkAdd" component={NetworkAdd}></Main2Stack.Screen>*/}
     </Main2Stack.Navigator>
 )
 

@@ -194,7 +194,7 @@ export default function SlackPage({ route, navigation }) {
                                                                 { cancelable: false }
                                                             )
                                                         }
-                                                            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 10 }}
+                                                            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 5 }}
                                                         >
                                                             <Feather name="trash-2" size={15} color='#E73751' />
                                                         </TouchableOpacity>

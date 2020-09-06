@@ -107,7 +107,8 @@ const styles = StyleSheet.create({
   Nomepost: {
     alignItems: 'flex-end',
     fontSize: 8,
-    color: '#C8C8C8'
+    color: '#C8C8C8',
+    marginLeft:10
   },
   postTitle: {
     fontSize: 14,
