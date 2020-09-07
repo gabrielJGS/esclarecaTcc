@@ -30,7 +30,7 @@ export default function Init(){
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.Header}>
                 <Animatable.Image
-                    animation="bounceIn"
+                    animation="fadeInUpBig"
                     duration={1500}
                     source={logo}
                     style={styles.Logotype}

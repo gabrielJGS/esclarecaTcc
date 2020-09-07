@@ -109,7 +109,7 @@ export default function Preferences() {
             </View>
             <View style={{ flex: 1, alignItems: 'center', paddingTop: 20 }}>
                 <Animatable.View animation="fadeInLeft" duration={1000}>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>FIQUE LIGADO EM NOSSAS REDES</Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Conecte-se com a Esclareça:</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 30, paddingVertical: 20 }}>
                         <TouchableOpacity onPress={handleComposeMail}>
                             <Feather name="mail" size={30} color="#D44638" />
@@ -134,7 +134,7 @@ export default function Preferences() {
                     </View>
                 </Animatable.View>
                 <View style={{ bottom: 0, position: 'absolute', width: '100%', alignItems: "center", backgroundColor: '#365478', paddingVertical: 8 }}>
-                    <Text style={{ color: '#D8D9DB' }}>Equipe Esclareça{'\u2122'}, {year}</Text>
+                    <Text style={{ color: '#D8D9DB' }}>Esclareça{'\u2122'} - {year}</Text>
                     <Text style={{ color: '#D8D9DB', top: 3 }}>Copyright {'\u00A9'} {year} Brazil. All rights reserved</Text>
                     <Text style={{ color: '#D8D9DB', top: 3 }}>Logo created by Luckas Vinicius Faria Ribeiro</Text>
                 </View>

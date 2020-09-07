@@ -20,8 +20,8 @@ export default StyleSheet.create({
         paddingHorizontal:30,
     },
     Logotype:{
-        width: wp('50%'),
-        height: hp('10%'),
+        width: wp('90%'),
+        height: hp('42%'),
     },
     Title:{
         color: '#365478',

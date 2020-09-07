@@ -223,7 +223,7 @@ export default function PostPage({ route, navigation }) {
             <View style={styles.headerPost}>
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.detailsButton} onPress={() => navigateToHome()}>
-                        <Feather name="arrow-left" size={20} color="#FFC300"></Feather>
+                        <Feather name="chevron-left" size={20} color="#FFC300"></Feather>
                     </TouchableOpacity>
                     <Text style={styles.DuvidaTitle}>{post.title}</Text>
                 </View>

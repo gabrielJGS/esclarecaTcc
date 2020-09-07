@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 //import { useNavigation } from '@react-navigation/native'
 
 import { SafeAreaView, View, TextInput, TouchableOpacity, AsyncStorage, Text, Image, ScrollView } from 'react-native';
-import { Ionicons } from "@expo/vector-icons"
+import { Ionicons, Feather } from "@expo/vector-icons"
 
 import api from '../../services/api'
 
@@ -47,7 +47,7 @@ export default function NewPost({ route, navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleCancel}>
-          <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
+          <Feather name="chevron-left" size={24} color="#FFC300"></Feather>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSubmit}>
           <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20 }}>Postar {type == false ? 'dúvida' : 'conteúdo'}</Text>

@@ -71,9 +71,8 @@ export default StyleSheet.create({
     },
     img: {
         width: wp('50%'),
-        height: hp('10%'),
-        marginTop: hp('7%'),
-        marginLeft: hp('2%')
+        height: hp('25%'),
+        marginTop: hp('2%'),
     },
     title: {
         fontWeight: 'bold',

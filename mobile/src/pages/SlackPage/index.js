@@ -140,7 +140,7 @@ export default function SlackPage({ route, navigation }) {
             < View style={styles.container} >
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="md-arrow-back" size={24} color="#FFC300"></Ionicons>
+                        <Feather name="chevron-left" size={24} color="#FFC300"></Feather>
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight: 8 }}>{slack.nome + " - " + slack.tag}</Text>

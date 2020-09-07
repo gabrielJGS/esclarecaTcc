@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar } from "react-native";
 import api from '../../services/api'
 
-import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo maior
+import logo from '../../assets/icon.png'; // Nessa página poderia usar uma logo maior
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 
@@ -79,8 +79,8 @@ export default function Login() {
         })} style={styles.container}>
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
-                <Image
-                    animation="bounceIn"
+                <Animatable.Image
+                    animation="fadeInUpBig"
                     duration={0}
                     source={logo}
                     style={styles.img}
