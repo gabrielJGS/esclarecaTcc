@@ -3,23 +3,26 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 export default StyleSheet.create({
     container: {
-        backgroundColor: 'white',
+        backgroundColor:'#365478',
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
-    header: {
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: wp('100%'),
-        height: 100,
-    },
+    header:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        paddingVertical:12,
+        paddingHorizontal:32,
+        backgroundColor:'#365478',
+        borderBottomWidth:1,
+        borderBottomColor:'#365478',
+        height:70,
+        alignItems:'center',
+        height:hp('10%'),
+      },
     img: {
         width: wp('22%'),
         height: hp('8%'),
         marginTop: hp('16%'),
-        marginLeft: hp('7%'),
+        marginLeft: hp('9%'),
     },
     form: {
         backgroundColor: 'white',
@@ -49,11 +52,12 @@ export default StyleSheet.create({
         borderRadius: 5,
     },
     button: {
-        height: hp('6%'),
+        height: hp('5%'),
+        width:wp('50%'),
         backgroundColor: '#365478',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
+        borderRadius: 50,
         marginTop: hp('2%')
     },
     buttonText: {
@@ -72,14 +76,15 @@ export default StyleSheet.create({
         borderColor: '#289cff'
     },
     OvalShapeView: {
-        marginBottom: hp('2%'),
-        width: wp('50%'),
-        height: hp('33.4%'),
+        marginTop: hp('10%'),
+        width: wp('30%'),
+        height: hp('20%'),
         borderRadius: 80,
         backgroundColor: '#365478',
         transform: [
             { scaleX: 2 }
-        ]
+        ],
+        marginLeft:'25%'
     },
     images: {
         backgroundColor: '#B2BABB',
@@ -93,6 +98,16 @@ export default StyleSheet.create({
         height: 120,
         borderRadius: 120 / 2,
         backgroundColor: '#B2BABB',
-        marginTop:30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        top:20
+    },
+    forms:{
+        justifyContent: 'center',alignItems: 'center', backgroundColor:'white', 
+        marginHorizontal:hp('5%'),
+        paddingHorizontal:hp('2%'), 
+        marginTop:hp('5%'), flex:1, 
+        marginBottom:hp('10%'),
+        borderRadius:10
     }
 });

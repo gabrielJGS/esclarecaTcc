@@ -65,10 +65,10 @@ export default function Network(){
                 </TouchableOpacity>
                 <View style={{alignItems:'flex-end'}}>
                     <TouchableOpacity >
-                        <Text style={{fontSize:13, fontWeight:'bold', color:'#365478'}}>Bloqueados</Text>
+                        <Text style={{fontSize:14, fontWeight:'bold', color:'#365478'}}>Bloqueados</Text>
                     </TouchableOpacity>
                     <TouchableOpacity >
-                        <Text style={{fontSize:13, fontWeight:'bold', color:'#365478'}}>Seguidos</Text>
+                        <Text style={{fontSize:14, fontWeight:'bold', color:'#365478'}}>Seguidos</Text>
                     </TouchableOpacity>
                 </View>
             </View>

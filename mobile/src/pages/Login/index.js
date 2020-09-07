@@ -68,6 +68,10 @@ export default function Login() {
         navigation.navigate('Register');
     }
 
+    async function navigateToPassword() {
+        navigation.navigate('Password');
+    }
+
     return (
         <KeyboardAvoidingView behavior={Platform.select({
             ios: 'padding',
@@ -75,9 +79,9 @@ export default function Login() {
         })} style={styles.container}>
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
-                <Animatable.Image
+                <Image
                     animation="bounceIn"
-                    duration={1500}
+                    duration={0}
                     source={logo}
                     style={styles.img}
                     resizeMode="stretch"
@@ -111,7 +115,7 @@ export default function Login() {
                     onChangeText={setSenha}
                     returnKeyType="done"
                 />
-                <TouchableOpacity onPress={handleForgetPassword} style={{ marginBottom: 0 }}>
+                <TouchableOpacity onPress={navigateToPassword} style={{ marginBottom: 0 }}>
                     <Text style={{ color: '#e8423f' }}>Esqueci a senha</Text>
                 </TouchableOpacity>
 

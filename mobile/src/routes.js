@@ -23,6 +23,7 @@ import Ranking from './pages/Ranking'
 import HomeSlack from './pages/HomeSlack';
 import SlackPage from './pages/SlackPage';
 import Network from './pages/Network';
+import Password from './pages/Password'
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -36,6 +37,7 @@ const AuthStack = () => (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
         <HomeStack.Screen name="Init" component={Init}></HomeStack.Screen>
         <HomeStack.Screen name="Login" component={Login}></HomeStack.Screen>
+        <HomeStack.Screen name="Password" component={Password}></HomeStack.Screen>
         <HomeStack.Screen name="Register" component={Register}></HomeStack.Screen>
     </HomeStack.Navigator>
 )

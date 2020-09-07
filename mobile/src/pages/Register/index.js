@@ -114,84 +114,76 @@ export default function Register() {
         <KeyboardAvoidingView behavior="" style={styles.container}>
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
             <View style={styles.header}>
-
-                <View style={styles.OvalShapeView} >
-                    <Animatable.Image
-                        animation="bounceIn"
-                        duration={1500}
-                        source={logo}
-                        style={styles.img}
-                        resizeMode="stretch"
-                    />
-                </View>
+                <TouchableOpacity onPress ={() => navigation.goBack()}>
+                    <Feather name="chevron-left" size={20} color="#FFC300"></Feather>
+                </TouchableOpacity>
+                <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight:5 }}>Registre-se</Text>
             </View>
-            <TouchableOpacity style={styles.circle} onPress={() => handlePickUpdate()}>
-                <Image style={{ width: 120, height: 120, borderRadius: 120 / 2, borderWidth: 3, borderColor: "#FFF" }}
-                    source={{ uri: avatar == 'https://www.colegiodepadua.com.br/img/user.png' ? avatar : avatar.uri }} />
-                {/* <Feather
-                            name="camera" size={40}
-                            style={styles.images}
-                        /> */}
-            </TouchableOpacity>
-            <ScrollView>
-                <Animatable.View
-                    style={styles.form}
-                    animation="fadeIn">
-                    <Text style={styles.label1}>NOME *</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Insira seu nome"
-                        placeholderTextColor="#999"
-                        autoCapitalize="words"
-                        autoCorrect={false}
-                        value={name}
-                        onChangeText={setName}
-                        returnKeyType="done"
-                    />
-                    <Text style={styles.label}>E-MAIL *</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Seu e-mail"
-                        placeholderTextColor="#999"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        value={email}
-                        onChangeText={setEmail}
-                        returnKeyType="done"
-                    />
-                    <Text style={styles.label}>SENHA *</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Sua senha"
-                        placeholderTextColor="#999"
-                        secureTextEntry={true}
-                        password={true}
-                        autoCapitalize="words"
-                        autoCorrect={false}
-                        value={password}
-                        onChangeText={setPassword}
-                        returnKeyType="done"
-                    />
-                    <Text style={styles.label}>TAGS *</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Seus interesses separados por ' , '"
-                        placeholderTextColor="#999"
-                        autoCapitalize="words"
-                        autoCorrect={false}
-                        value={tags}
-                        onChangeText={setTags}
-                        returnKeyType="go"
-                    />
-                    <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-                        <Text style={styles.buttonText}>Registre-se</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={handleCancel} style={styles.buttonCancel}>
-                        <Text style={[styles.buttonText, { color: '#365478' }]}>Voltar</Text>
-                    </TouchableOpacity>
-                </Animatable.View>
-            </ScrollView>
+            <View style={styles.forms}>
+                <TouchableOpacity style={styles.circle} onPress={() => handlePickUpdate()}>
+                    <Image style={{ width: 120, height: 120, borderRadius: 120 / 2, borderWidth: 3, borderColor: "#FFF" }}
+                        source={{ uri: avatar == 'https://www.colegiodepadua.com.br/img/user.png' ? avatar : avatar.uri }} />
+                </TouchableOpacity>
+            
+                <ScrollView style={{top:20}}>
+                    <Animatable.View
+                        style={styles.form}
+                        animation="fadeIn">
+                        <Text style={styles.label1}>Nome</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Insira seu nome"
+                            placeholderTextColor="#999"
+                            autoCapitalize="words"
+                            autoCorrect={false}
+                            value={name}
+                            onChangeText={setName}
+                            returnKeyType="done"
+                        />
+                        <Text style={styles.label}>E-mail</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Seu e-mail"
+                            placeholderTextColor="#999"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            value={email}
+                            onChangeText={setEmail}
+                            returnKeyType="done"
+                        />
+                        <Text style={styles.label}>Senha</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Sua senha"
+                            placeholderTextColor="#999"
+                            secureTextEntry={true}
+                            password={true}
+                            autoCapitalize="words"
+                            autoCorrect={false}
+                            value={password}
+                            onChangeText={setPassword}
+                            returnKeyType="done"
+                        />
+                        <Text style={styles.label}>Tags</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Seus interesses separados por ' , '"
+                            placeholderTextColor="#999"
+                            autoCapitalize="words"
+                            autoCorrect={false}
+                            value={tags}
+                            onChangeText={setTags}
+                            returnKeyType="go"
+                        />
+                        <View style={{alignItems:'center', marginRight:5}}>
+                            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+                                <Text style={styles.buttonText}>Registrar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Animatable.View>
+                </ScrollView>
+            </View>
         </KeyboardAvoidingView>
     )
 }
