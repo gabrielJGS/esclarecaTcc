@@ -34,7 +34,9 @@ export default StyleSheet.create({
     },
     Button:{
         alignItems:'flex-end',
-        marginTop: hp('5%'),
+        marginTop: hp('1%'),
+        justifyContent:'space-between',
+        flexDirection:'row',
     },
     Register: {
         height: hp('6%'),
@@ -43,11 +45,43 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection:'row',
-        borderRadius:50,
+        borderRadius:20,
+        top:2
+    },
+    Google: {
+        height: hp('5%'),
+        width:wp('44%'),
+        backgroundColor: '#f5f5f5',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection:'row',
+        borderRadius:20,
+        paddingHorizontal:8,
+    },
+    Facebook: {
+        height: hp('5%'),
+        width:wp('44%'),
+        backgroundColor: '#445c94',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection:'row',
+        borderRadius:20,
+        paddingHorizontal:8,
+        top:2
     },
     Inicie:{
         color:'white',
         fontWeight:'bold',
         fontSize:hp('2.5%')
+    },
+    GoogleF:{
+        color:'black',
+        fontWeight:'bold',
+        fontSize:hp('2%')
+    },
+    FacebookF:{
+        color:'white',
+        fontWeight:'bold',
+        fontSize:hp('2%')
     }
 })
