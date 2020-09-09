@@ -26,7 +26,7 @@ export default function PostPage({ route, navigation }) {
         async function handleID() {
             const user_id = await AsyncStorage.getItem('user');
             setActiveUser(user_id);
-            if (user_id === post.user[0]._id) {
+            if (user_id === post.user._id) {
                 setUserIsPostOwner(true);
             }
         }
@@ -228,12 +228,12 @@ export default function PostPage({ route, navigation }) {
                     <Text style={styles.DuvidaTitle}>{post.title}</Text>
                 </View>
                 <View style={styles.DuvidaCorpo}>
-                    <TouchableOpacity onPress={() => navigateToProfile(post.user[0]._id)}>
-                        <Image style={styles.avatar} source={{ uri: post.user[0].url ? `${post.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                    <TouchableOpacity onPress={() => navigateToProfile(post.user._id)}>
+                        <Image style={styles.avatar} source={{ uri: post.user.url ? `${post.user.url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                     </TouchableOpacity>
                     <View style={{ paddingLeft: 10 }}>
-                        <TouchableOpacity onPress={() => navigateToProfile(post.user[0]._id)}>
-                            <Text style={styles.CorpoTitle}>{post.user[0].name}</Text>
+                        <TouchableOpacity onPress={() => navigateToProfile(post.user._id)}>
+                            <Text style={styles.CorpoTitle}>{post.user.name}</Text>
                             <Text style={styles.Nomepost}>{post.tags.toString()}</Text>
                         </TouchableOpacity>
                         <ScrollView>
@@ -335,13 +335,13 @@ export default function PostPage({ route, navigation }) {
                                 duration={1000}>
                                 <View style={styles.postHeader}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <TouchableOpacity style={styles.postTitulo} onPress={() => navigateToProfile(comment.user[0]._id)}>
-                                            <Image style={styles.avatar} source={{ uri: comment.user[0].url ? `${comment.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
-                                            <Text style={styles.postTitle}>{comment.user[0].name}</Text>
+                                        <TouchableOpacity style={styles.postTitulo} onPress={() => navigateToProfile(comment.user._id)}>
+                                            <Image style={styles.avatar} source={{ uri: comment.user.url ? `${comment.user.url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                                            <Text style={styles.postTitle}>{comment.user.name}</Text>
                                         </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={styles.Nomepost}>{handleDate(comment.postedIn)}</Text>
-                                            {comment.user[0]._id === activeUser || userIsPostOwner ?
+                                            {comment.user._id === activeUser || userIsPostOwner ?
                                                 <TouchableOpacity onPress={() =>
                                                     Alert.alert(
                                                         'Excluir',

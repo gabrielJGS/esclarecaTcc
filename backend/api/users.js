@@ -86,7 +86,7 @@ module.exports = app => {
     const profile = async (req, res) => {
         const { id } = req.params;
         const user = await Users.findById(id)
-            .populate('blocked').populate('user')
+            .populate('blocked', ['name', 'tags', 'ranking'])
             .catch(err => res.status(400).json(err))
         res.json(user)
     }

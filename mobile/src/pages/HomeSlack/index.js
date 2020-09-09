@@ -364,11 +364,11 @@ export default function HomeSlack(props) {
                             </View>
                             <View style={styles.headerTags}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => navigateToProfile(slack.user[0]._id)} >
-                                        <Text style={styles.Nomepost}>{slack.user ? slack.user[0].name : ''}</Text>
+                                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => navigateToProfile(slack.user._id)} >
+                                        <Text style={styles.Nomepost}>{slack.user ? slack.user.name : ''}</Text>
                                         <Text style={styles.Nomepost}>{slack.tag ? slack.tag[0] : ''}</Text>
                                     </TouchableOpacity>
-                                    {idU === slack.user[0]._id ?
+                                    {idU === slack.user._id ?
                                         <>
                                             <TouchableOpacity onPress={() =>
                                                 Alert.alert(

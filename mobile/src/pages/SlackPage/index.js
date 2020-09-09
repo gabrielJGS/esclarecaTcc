@@ -161,7 +161,7 @@ export default function SlackPage({ route, navigation }) {
                             onRefresh={reloadMessages}
                             ListFooterComponent={renderFooter}
                             renderItem={({ item: message }) => (
-                                <View style={message.user[0]._id == user ? styles.Owner : styles.notOwner}>
+                                <View style={message.user._id == user ? styles.Owner : styles.notOwner}>
                                     <Animatable.View
                                         style={styles.post}
                                         animation="fadeInDown"
@@ -169,16 +169,16 @@ export default function SlackPage({ route, navigation }) {
                                     >
                                         <View style={styles.postHeader}>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                                {message.user[0].url ?
-                                                    <Image style={styles.avatar} source={{ uri: message.user[0].url ? `${message.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                                                {message.user.url ?
+                                                    <Image style={styles.avatar} source={{ uri: message.user.url ? `${message.user.url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                                     : <Feather name="camera" size={30} color='#D8D9DB' />}
-                                                <TouchableOpacity onPress={() => navigateToProfile(message.user[0]._id)}>
-                                                    <Text style={styles.postTitle}>{message.user ? message.user[0].name : ''}</Text>
+                                                <TouchableOpacity onPress={() => navigateToProfile(message.user._id)}>
+                                                    <Text style={styles.postTitle}>{message.user ? message.user.name : ''}</Text>
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                                 <Text style={styles.Nomepost}>{handleDate(message.postedIn)}</Text>
-                                                {user != null && (user == slack.user[0]._id || user == message.user[0]._id) ?
+                                                {user != null && (user == slack.user._id || user == message.user._id) ?
                                                     <>
 
                                                         <TouchableOpacity onPress={() =>
