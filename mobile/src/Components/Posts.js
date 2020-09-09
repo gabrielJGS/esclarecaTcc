@@ -140,14 +140,14 @@ export default function Posts(props) {
                                 <View style={styles.postHeader}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <View style={[styles.postTitulo, { flex: 2, maxWidth: 200 }]}>
-                                            <Image style={styles.avatar} source={{ uri: post.user[0].url ? `${post.user[0].url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                                            <Image style={styles.avatar} source={{ uri: post.user.url ? `${post.user.url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                             <TouchableOpacity onPress={() => navigateToPost(post)}>
                                                 <Text style={styles.postTitle}>{post.title}</Text>
                                             </TouchableOpacity>
                                         </View>
                                         <View style={{ alignItems: 'flex-end', flex: 1 }}>
-                                            <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => navigateToProfile(post.user[0]._id)}>
-                                                <Text style={styles.Nomepost}>{post.user[0].name}</Text>
+                                            <TouchableOpacity style={{ alignItems: 'flex-end' }} onPress={() => navigateToProfile(post.user._id)}>
+                                                <Text style={styles.Nomepost}>{post.user.name}</Text>
                                                 <Text style={styles.Nomepost}>{handleDate(post.postedIn)}</Text>
                                             </TouchableOpacity>
                                         </View>

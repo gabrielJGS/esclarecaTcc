@@ -26,8 +26,23 @@ module.exports = app => {
                         }
                     }
                 },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
-                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
+                {
+                    '$lookup': {
+                        'from': 'users',
+                        'let': { 'user': '$user' },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': { '$eq': ['$_id', '$$user'] }
+                                }
+                            },
+                            { '$project': { 'name': 1, 'url': 1, '_id': 1 } }
+                        ],
+                        'as': "user"
+                    }
+                },
+                { $unwind: '$user' },
+                // { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
             ])
             .catch(err => res.status(400).json(err))
 
@@ -79,8 +94,23 @@ module.exports = app => {
                 },
                 { $skip: (page - 1) * qtdLoad },
                 { $limit: qtdLoad },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
-                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
+                {
+                    '$lookup': {
+                        'from': 'users',
+                        'let': { 'user': '$user' },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': { '$eq': ['$_id', '$$user'] }
+                                }
+                            },
+                            { '$project': { 'name': 1, 'url': 1, '_id': 1 } }
+                        ],
+                        'as': "user"
+                    }
+                },
+                { $unwind: '$user' },
+                // { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
             ])
             .catch(err => res.status(400).json(err))
 
@@ -133,8 +163,23 @@ module.exports = app => {
                 },
                 { $skip: (page - 1) * qtdLoad },
                 { $limit: qtdLoad },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
-                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
+                {
+                    '$lookup': {
+                        'from': 'users',
+                        'let': { 'user': '$user' },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': { '$eq': ['$_id', '$$user'] }
+                                }
+                            },
+                            { '$project': { 'name': 1, 'url': 1, '_id': 1 } }
+                        ],
+                        'as': "user"
+                    }
+                },
+                { $unwind: '$user' },
+                // { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
             ])
             .catch(err => res.status(400).json(err))
         return res.json(posts)
@@ -232,8 +277,23 @@ module.exports = app => {
                 },
                 { $skip: (page - 1) * qtdLoad },
                 { $limit: qtdLoad },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
-                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
+                {
+                    '$lookup': {
+                        'from': 'users',
+                        'let': { 'user': '$user' },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': { '$eq': ['$_id', '$$user'] }
+                                }
+                            },
+                            { '$project': { 'name': 1, 'url': 1, '_id': 1 } }
+                        ],
+                        'as': "user"
+                    }
+                },
+                { $unwind: '$user' },
+                // { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
             ])
             .catch(err => res.status(400).json(err))
 

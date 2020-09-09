@@ -8,7 +8,7 @@ module.exports = app => {
     const index = async (req, res) => {
         const { user_id, search_text } = req.headers;
         const { page } = req.query;
-        const qtdLoad = 5
+        const qtdLoad = 10
         const user = await Users.findById(user_id);
         if (!user) {
             return res.status(401).send('Usuário inválido');
@@ -37,7 +37,22 @@ module.exports = app => {
                         "messages": { "$ifNull": [{ "$arrayElemAt": ["$messages.count", 0] }, 0] }
                     }
                 },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+                {
+                    '$lookup': {
+                        'from': 'users',
+                        'let': { 'user': '$user' },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': { '$eq': ['$_id', '$$user'] }
+                                }
+                            },
+                            { '$project': { 'name': 1, '_id': 1 } }
+                        ],
+                        'as': "user"
+                    }
+                },
+                { $unwind: '$user' },
                 { $skip: (page - 1) * qtdLoad },
                 { $limit: qtdLoad },
             ])

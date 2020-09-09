@@ -31,7 +31,22 @@ module.exports = app => {
             .aggregate([
                 { $match: { slack: slackOri._id, user: { $nin: userExiste.blocked } } },
                 { $sort: { postedIn: 1 } },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
+                {
+                    '$lookup': {
+                        'from': 'users',
+                        'let': { 'user': '$user' },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': { '$eq': ['$_id', '$$user'] }
+                                }
+                            },
+                            { '$project': { 'name': 1, 'url': 1, '_id': 1 } }
+                        ],
+                        'as': "user"
+                    }
+                },
+                { $unwind: '$user' },
                 { $skip: (page - 1) * qtdLoad },
                 { $limit: qtdLoad }
             ])

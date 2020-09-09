@@ -6,17 +6,6 @@ const Posts = require('../models/Posts');
 const Posts_Comments = require('../models/Posts_Comments');
 
 module.exports = app => {
-    // const getOne = async (req, res) => {
-    //     const { post } = req.params;
-    //     const post = await Posts.findById(post)
-    //         .catch(err => res.status(400).json(err))
-    //     if (!post) {
-    //         return res.status(400).send('Post não encontrado')
-    //     }
-    //     await post.populate('posts').populate('user').execPopulate()
-    //     return res.json(post);
-    // }
-
     const getTotalComments = async (req, res) => {
         const { post } = req.params;
 
@@ -73,8 +62,23 @@ module.exports = app => {
                 },
                 { $skip: (page - 1) * qtdLoad },
                 { $limit: qtdLoad },
-                { $lookup: { from: 'users', localField: 'user', foreignField: '_id', as: 'user' } },
-                { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
+                {
+                    '$lookup': {
+                        'from': 'users',
+                        'let': { 'user': '$user' },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': { '$eq': ['$_id', '$$user'] }
+                                }
+                            },
+                            { '$project': { 'name': 1, 'url': 1, '_id': 1 } }
+                        ],
+                        'as': "user"
+                    }
+                },
+                { $unwind: '$user' },
+                // { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
             ])
             .catch(err => { return res.status(400).json(err) })
 
