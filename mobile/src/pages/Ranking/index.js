@@ -100,9 +100,9 @@ export default function Ranking(){
                 </View>
             </View>
             <TouchableOpacity style={{alignItems:'center', top:30, flexDirection:'row', justifyContent:'center'}} onPress={handleModal}>
-                <MaterialCommunityIcons name="podium" size={18} color="#5CBA58"/>
+                <MaterialCommunityIcons name="podium" size={18} color="#F1948A"/>
                 <Text style={{fontWeight:'bold',fontSize:22, color:'#2E4053'}}> Ranking Esclareça</Text>
-                <Feather name="info" size={12} color="#5CBA58" style={{bottom:3,left:2}} />
+                <Feather name="info" size={15} color="#F1948A" style={{bottom:3,left:2}} />
             </TouchableOpacity>
             <Animatable.View View style={{marginHorizontal:30,top:60,flex:1, paddingBottom:10}} animation="fadeInDown" duration={1000}>
                 <FlatList
