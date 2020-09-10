@@ -109,7 +109,6 @@ export default function Profile({ route, navigation }) {
   }
 
   async function blockUser() {
-
     try {
       const usuarioAtual = await AsyncStorage.getItem('user');
 
@@ -118,6 +117,9 @@ export default function Profile({ route, navigation }) {
         showSucess("Usuário bloqueado com sucesso")
       } else if (response.status == 201) {
         showSucess("Usuário desbloqueado com sucesso")
+      }
+      else if (response.status == 401) {
+        showSucess("Não é possível bloquear você mesmo!")
       }
       else {
         showError("Ocorreu um erro ao processar a requisição!")
@@ -364,25 +366,25 @@ export default function Profile({ route, navigation }) {
           </>
           :
           <>
-          <View style={{justifyContent:'space-between',flexDirection:'row'}}>
-            <TouchableOpacity style={styles.detailsButton} onPress={() =>
-              Alert.alert(
-                'Bloquear',
-                'Deseja realmente bloquear o usuário?',
-                [
-                  { text: 'Não', onPress: () => { return null } },
-                  {
-                    text: 'Sim', onPress: () => { blockUser() }
-                  },
-                ],
-                { cancelable: false }
-              )}
-            >
-              <Feather name="slash" size={25} color="#E73751"></Feather>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.detailsButton,{paddingLeft:20}]} onPress={() =>{}}>
-              <Feather name="user-plus" size={25} color="#7DCEA0"></Feather>
-            </TouchableOpacity>
+            <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+              <TouchableOpacity style={styles.detailsButton} onPress={() =>
+                Alert.alert(
+                  'Bloquear',
+                  'Deseja realmente bloquear o usuário?',
+                  [
+                    { text: 'Não', onPress: () => { return null } },
+                    {
+                      text: 'Sim', onPress: () => { blockUser() }
+                    },
+                  ],
+                  { cancelable: false }
+                )}
+              >
+                <Feather name="slash" size={25} color="#E73751"></Feather>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.detailsButton, { paddingLeft: 20 }]} onPress={() => { }}>
+                <Feather name="user-plus" size={25} color="#7DCEA0"></Feather>
+              </TouchableOpacity>
             </View>
           </>
         }

@@ -99,11 +99,30 @@ module.exports = app => {
         res.json(top)
     }
 
+    const index = async (req, res) => {
+        const { search_text } = req.headers
+        //Páginação
+        const qtdLoad = 10
+        const { page = 1 } = req.query
+
+        const count = await Users.find({ name: { '$regex': `${search_text}`, '$options': 'i' } }).countDocuments()
+        
+
+        res.header('X-Total-Count', count)
+
+        const users = await Users.find({ name: { '$regex': `${search_text}`, '$options': 'i' } })
+            .sort({ ranking: -1 })
+            .skip((page - 1) * qtdLoad)
+            .limit(qtdLoad)
+            .catch(err => res.status(400).json(err))
+        res.json(users)
+    }
+
     const blockUser = async (req, res) => {
         const { id } = req.params;
         const { user_id } = req.headers;
         if (id == user_id) {
-            return res.status(401).send('Usuário a bloquear é o mesmo logado');
+            return res.status(205).send('Usuário a bloquear é o mesmo logado');
         }
 
         const userToBlock = await Users.findById(id)
@@ -136,5 +155,5 @@ module.exports = app => {
 
 
     }
-    return { save, update, patch, profile, upload, list, blockUser }
+    return { save, update, patch, profile, upload, list, blockUser, index }
 };
