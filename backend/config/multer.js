@@ -3,12 +3,7 @@ const path = require('path');
 const crypto = require('crypto');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
-const { storageOption, s3Config_bucket, s3Config_accessKeyId, s3Config_secretAccessKey } = require('../.env')
-try {
-    const { storageOption, s3Config_bucket, s3Config_accessKeyId, s3Config_secretAccessKey } = require('../../.env')
-} catch{
-    const { storageOption, s3Config_bucket, s3Config_accessKeyId, s3Config_secretAccessKey } = require('../.env')
-}
+const { storageOption, s3Config_bucket, s3Config_accessKeyId, s3Config_secretAccessKey } = require('../../.env')
 
 
 const storageTypes = {
