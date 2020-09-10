@@ -17,6 +17,7 @@ module.exports = app => {
     //ranking
     app.get('/ranking', app.api.users.list)
 
+    app.get('/users', app.api.users.index)//Pesquisar usuário
     app.get('/users/:id/posts', app.api.posts.getByUser)//Posts do usuário
     app.get('/users/:id/liked', app.api.posts.getLikesByUser)//Posts curtidos pelo usuário
     app.post('/users/:id/block', app.api.users.blockUser)//Bloquear usuário

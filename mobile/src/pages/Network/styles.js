@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
   post: {
     borderRadius: 8,
     backgroundColor: '#fff',
-    marginTop:12,
     marginBottom: 5,
     marginHorizontal:12,
     shadowColor: 'rgb(0, 0, 0)',
