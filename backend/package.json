@@ -4,7 +4,8 @@
   "description": "Novo backend",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon"
+    "start": "node index.js",
+    "dev": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -31,11 +32,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
-    "nodemon": "^2.0.4",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "2.0.2"
   }
 }

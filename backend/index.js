@@ -21,6 +21,6 @@ consign()
     .into(app)//inserir os then acima na variavel app
 
 app.db = db
-app.listen(3333, () => {
+app.listen(process.env.PORT || 3333, () => {
     console.log('backend log')
 })
