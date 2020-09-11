@@ -7,6 +7,9 @@
     "start": "node index.js",
     "dev": "nodemon"
   },
+  "engines": {
+    "node": "12.16.x"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/EsclarecaApp/esclarecaTcc.git"
