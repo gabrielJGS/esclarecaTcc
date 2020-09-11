@@ -4,7 +4,11 @@
   "description": "Novo backend",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon"
+    "start": "node index.js",
+    "dev": "nodemon"
+  },
+  "engines": {
+    "node": "12.16.x"
   },
   "repository": {
     "type": "git",
