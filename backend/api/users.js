@@ -152,8 +152,6 @@ module.exports = app => {
 
             res.status(204).send()
         }
-
-
     }
     return { save, update, patch, profile, upload, list, blockUser, index }
 };
