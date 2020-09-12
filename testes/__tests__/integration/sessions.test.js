@@ -1,5 +1,6 @@
 const api = require('../../services/api')
 
+//REGISTRAR USUÁRIO
 describe('Authentication_Registro', () =>{
     it('Registrar usuário e retornar status 204', async () =>{
         const response = await api.post('/signup', {
@@ -11,6 +12,7 @@ describe('Authentication_Registro', () =>{
     });
 });
 
+//LOGIN USUÁRIO
 describe('Authentication_Login', () =>{
     it('Logar usuário e retornar status 200', async () =>{
         const response = await api.post('/signin', {
@@ -21,3 +23,6 @@ describe('Authentication_Login', () =>{
         expect(response.status).toBe(200);
     });
 });
+
+
+//PRONTO
