@@ -165,7 +165,7 @@ export default function Register() {
                             onChangeText={setPassword}
                             returnKeyType="done"
                         />
-                        <Text style={styles.label}>Tags</Text>
+                        <Text style={styles.label}>Tags <Text style={{color:'#999', fontSize:12, fontWeight:'normal'}}>(assuntos do seu interesse)</Text></Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Seus interesses separados por ' , '"
