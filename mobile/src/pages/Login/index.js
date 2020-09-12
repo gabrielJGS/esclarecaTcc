@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
+import { Feather, FontAwesome,SimpleLineIcons } from '@expo/vector-icons'
 
 import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar } from "react-native";
 import api from '../../services/api'
@@ -122,9 +123,11 @@ export default function Login() {
                 <View style={styles.btn}>
                     <TouchableOpacity onPress={handleSubmit} style={styles.button}>
                         <Text style={styles.buttonText}>Login</Text>
+                        <Feather style={{top:1, left:10}} name="chevron-right" size={20} color="#FFC300"></Feather>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={navigateToRegister} style={styles.button2}>
-                        <Text style={styles.buttonText2}>Cadastre-se</Text>
+                        <Text style={styles.buttonText2}>Não possui registro?</Text>
+                        <Text style={styles.buttonText2}>Cadastre-se aqui!</Text>
                     </TouchableOpacity>
                 </View>
             </Animatable.View>

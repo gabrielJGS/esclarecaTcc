@@ -63,6 +63,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius:50,
+        flexDirection:'row'
     },
     buttonText: {
         color: '#FFF',
@@ -85,19 +86,15 @@ export default StyleSheet.create({
         paddingBottom: hp('2%')
     },
     button2: {
-        marginTop: hp('2%'),
+        marginTop: hp('1%'),
         height: hp('6%'),
-        backgroundColor: 'white',
-        borderColor: '#FFC300',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 50,
-        borderWidth: 1
     },
     buttonText2: {
-        color: '#365478',
-        fontWeight: 'bold',
-        fontSize:  hp('2.5%'),
+        color: '#FFC300',
+        fontWeight: 'normal',
+        fontSize:  hp('2%'),
     },
     btn: {
         flex: 1,

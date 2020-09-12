@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#365478',
     fontSize: 15,
+    left:2
 },
   input: {
     borderBottomWidth: 1,

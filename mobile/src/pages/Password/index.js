@@ -51,7 +51,7 @@ export default function Password(){
                 />
                 <TouchableOpacity style={{flexDirection:'row', alignItems:'center', justifyContent: 'space-between'}} onPress ={handleForgetPassword}>
                     <Text style={styles.label}>Enviar</Text>
-                    <Feather name="chevron-right" size={20} style={{top:1}} color="#FFC300"></Feather>
+                    <Feather name="chevron-right" size={20} style={{top:1,left:2}} color="#FFC300"></Feather>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
