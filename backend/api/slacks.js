@@ -9,7 +9,8 @@ module.exports = app => {
         const { user_id, search_text } = req.headers;
         const { page } = req.query;
         const qtdLoad = 10
-        const user = await Users.findById(user_id);
+        const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
@@ -66,12 +67,17 @@ module.exports = app => {
 
         const valid = nome && tag
         valid == false ? res.status(400).send('Algum campo não foi preenchido') : null
+        
+        if (nome.trim() === '' || tag.trim() === '') {
+            return res.status(400).send('Algum campo não foi preenchido');
+        }
 
         nome.trim()
         tag.trim()
         senha ? senha.trim() : senha
 
-        const user = await Users.findById(user_id);
+        const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
@@ -93,6 +99,8 @@ module.exports = app => {
         const { slack } = req.params;
 
         const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
+        if(!user){return res.status(400).send()}
 
         const slackRemove = await Slacks.findById(slack)
             .catch(err => { return res.status(400).json(err) })//Caso o id seja inválido vai cair aqui

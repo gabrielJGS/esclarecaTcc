@@ -59,7 +59,8 @@ module.exports = app => {
         const { slack_msg } = req.body
         const { slack } = req.params
 
-        const userExiste = await Users.findById(user_id);
+        const userExiste = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
         if (!userExiste) {
             return res.status(401).send('Usuário inválido');
         }

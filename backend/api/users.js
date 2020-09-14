@@ -52,7 +52,7 @@ module.exports = app => {
 
                 user = Users.findByIdAndUpdate(id, { name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()) })
                     .then(_ => res.status(204).send())
-                    .catch(err => res.status(400).json(err))
+                    .catch(err => res.status(500).json(err))
             })
         }
     }
@@ -122,7 +122,7 @@ module.exports = app => {
         const { id } = req.params;
         const { user_id } = req.headers;
         if (id == user_id) {
-            return res.status(205).send('Usuário a bloquear é o mesmo logado');
+            return res.status(400).json({message: "Não é possível bloquear você mesmo"});
         }
 
         const userToBlock = await Users.findById(id)

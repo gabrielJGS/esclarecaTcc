@@ -15,6 +15,10 @@ module.exports = app => {
             return res.status(401).send('Usuário inválido');
         }
 
+        const postToBeRemoved = await Posts.findById(post)
+            .catch(err => { return res.status(400).json(err) })//Caso o id seja inválido vai cair aqui
+        if (!postToBeRemoved) { return res.status(400).send("Post não encontrado") }//Caso o id seja válido mas não exista vai cair aqui
+
         const posts = await Posts
             .aggregate([
                 { $match: { _id: mongoose.Types.ObjectId(post) } },
@@ -206,7 +210,12 @@ module.exports = app => {
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
-        const count = await Posts.find({ tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch, user: { $nin: user.blocked } }).countDocuments()
+        if(!type){
+            return res.status(400).send('Campos inválidos');
+        }
+        const count = await Posts.find({ tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch, user: { $nin: user.blocked } })
+            .countDocuments()
+            .catch(err => res.status(400).send(err))
         res.header('X-Total-Count', count)
         return res.json(count)
     }
@@ -308,12 +317,16 @@ module.exports = app => {
         desc.trim()
         tags.trim()
 
-        const user = await Users.findById(user_id);
+        const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
         if (!user) {
-            return res.status(401).send('Usuário inválido');
+            return res.status(400).send('Usuário inválido');
         }
         const valid = !title || !desc || !tags || (type != true || type != false)
         valid == false ? res.status(400).send('Algum campo não foi preenchido') : null
+        if (title.trim() === '' || desc.trim() === '') {
+            return res.status(400).send('Algum campo não foi preenchido');
+        }
         const post = await Posts.create({
             title,
             desc,
@@ -331,7 +344,7 @@ module.exports = app => {
             value = user.ranking + 5
         }
         const result = await Users.findByIdAndUpdate(user_id, { ranking: value })
-        res.status(204).send()
+        return res.status(204).send()
 
     }
 
@@ -339,9 +352,15 @@ module.exports = app => {
         const { user_id } = req.headers;
         const { post } = req.params;
         const user = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
+        if (!user) {
+            return res.status(401).send('Usuário inválido');
+        }
+
         const postToBeRemoved = await Posts.findById(post)
             .catch(err => { return res.status(400).json(err) })//Caso o id seja inválido vai cair aqui
         if (!postToBeRemoved) { return res.status(400).send("Post não encontrado com o id: " + post) }//Caso o id seja válido mas não exista vai cair aqui
+        
         if (postToBeRemoved.user == user_id) {//Se é o dono post deleta
             await Posts.deleteOne(postToBeRemoved)
             if (user.ranking === NaN || user.ranking === undefined) {
@@ -386,7 +405,7 @@ module.exports = app => {
                 await postToUpdate.save()
                     .catch(err => res.status(400).json(err))
 
-                res.status(201).send()
+                res.status(204).send()
             }
         }
     }

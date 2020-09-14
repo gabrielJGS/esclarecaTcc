@@ -90,7 +90,8 @@ module.exports = app => {
         const { user } = req.headers
         const { message } = req.body
         const { post } = req.params
-        const userExiste = await Users.findById(user);
+        const userExiste = await Users.findById(user)
+            .catch(err => res.status(400).json(err))
         if (!userExiste) {
             return res.status(401).send('Usuário inválido');
         }
@@ -112,7 +113,7 @@ module.exports = app => {
             value = userExiste.ranking + 3
         }
         const result = await Users.findByIdAndUpdate(user, { ranking: value })
-        res.status(204).send()
+        return res.status(204).send()
 
     }
 
@@ -142,7 +143,7 @@ module.exports = app => {
             }
             const result = await Users.findByIdAndUpdate(user, { ranking: value })
 
-            res.status(204).send()
+            return res.status(204).send()
         } else {//Se não, não tem permissão
             res.status(401).send(`Usuário ${user_id} não autorizado a deletar o comentário.`)
         }
@@ -177,7 +178,7 @@ module.exports = app => {
                 await commToUpdate.save()
                     .catch(err => res.status(400).json(err))
 
-                res.status(201).send()
+                res.status(204).send()
             }
         }
     }
@@ -197,7 +198,7 @@ module.exports = app => {
         const commentToUpdate = await Posts_Comments.findById(comm)
             .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
         if (!commentToUpdate) {
-            res.status(400).send("Comentário não encontrado com o id: " + req.params)
+            return res.status(400).send("Comentário não encontrado com o id: " + req.params)
         } else {//Caso encontre o comentário, entra para as modificações
             //Validação de post
             const postToUpdate = await Posts.findById(commentToUpdate.post)
