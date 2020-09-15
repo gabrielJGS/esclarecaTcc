@@ -100,24 +100,21 @@ export default function Network() {
         try {
             const usuarioAtual = await AsyncStorage.getItem('user');
 
+            if (uId == usuarioAtual) {
+                showError("Não é possível bloquear você mesmo")
+                return;
+            }
             const response = await api.post(`/users/${uId}/block`, {}, { headers: { user_id: usuarioAtual } })
-            console.log(response.status)
-            console.log(response.data)
             if (response.status == 204) {
                 showSucess("Usuário bloqueado com sucesso")
-            } else if (response.status == 201) {
+            }
+            if (response.status == 201) {
                 showSucess("Usuário desbloqueado com sucesso")
-            }
-            else if (response.status == 205) {
-                showSucess("Não é possível bloquear você mesmo!")
-            }
-            else {
-                showError("Ocorreu um erro ao processar a requisição!")
             }
             await loadBlockedFollowedUsers()
             await reloadUsers()
         } catch (e) {
-            showError("Erro: " +e)
+            showError(e)
         }
     }
     renderFooter = () => {
