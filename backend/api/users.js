@@ -121,12 +121,10 @@ module.exports = app => {
     const blockUser = async (req, res) => {
         const { id } = req.params;
         const { user_id } = req.headers;
-        console.log(id)
-        console.log(user_id)
+    
         if (id == user_id) {
-            return res.status(205).send("Não é possível bloquear você mesmo");
+            return res.status(400).send("Não é possível bloquear você mesmo");
         }
-      
 
         const userToBlock = await Users.findById(id)
             .catch(err => res.status(400).json(err))
