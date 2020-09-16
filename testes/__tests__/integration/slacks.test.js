@@ -3,7 +3,7 @@ const api = require('../../services/api')
 //NOVO SLACK
 describe('Slack_New', () =>{
     //Criar slack válido
-    it('Novo slack válido e retornar status 204', async () =>{
+    it('Criar slack válido e retornar status 204', async () =>{
         await api.post(`/slacks`, {
             nome: "Jest", tag: "NodeJS", senha: ''//Garantir que seja enviado sem senha caso o switch esteja desativado mas tenha texto preenchido
         }, {
@@ -16,7 +16,7 @@ describe('Slack_New', () =>{
     });
     
     //Criar slack inválido por possuir campos em branco
-    it('Novo slack inválido por possuir campos em branco e retornar status 400', async () =>{
+    it('Criar slack inválido por possuir campos em branco e retornar status 400', async () =>{
         await api.post(`/slacks`, {
             nome: "", tag: "NodeJS", senha: ''//Garantir que seja enviado sem senha caso o switch esteja desativado mas tenha texto preenchido
         }, {
@@ -29,7 +29,7 @@ describe('Slack_New', () =>{
     });
 
     //Criar slack inválido por possuir id usuário inválido
-    it('Novo slack inválido por possuir id usuário inválido e retornar status 400', async () =>{
+    it('Criar slack inválido por possuir id usuário inválido e retornar status 400', async () =>{
         await api.post(`/slacks`, {
             nome: "Jest", tag: "NodeJS", senha: ''//Garantir que seja enviado sem senha caso o switch esteja desativado mas tenha texto preenchido
         }, {
@@ -46,7 +46,7 @@ describe('Slack_New', () =>{
 describe('Slack_Del', () =>{
     
     //Deletar slack inválido por possuir id slack inexistente
-    it('Deletar slack inválido por possuir id slack inexistente e retornar status 400', async () =>{
+    it('Deletar slack inválido por id slack ser inexistente e retornar status 400', async () =>{
         await api.delete(`/slacks/1abc`, {
             headers: { user_id: "5f35e2e48973d417809ddb70"}
         }).then(response =>{
@@ -57,7 +57,7 @@ describe('Slack_Del', () =>{
     });
 
     //Deletar slack inválido por possuir id usuario inexistente
-    it('Deletar slack inválido por possuir id usuario inexistente e retornar status 400', async () =>{
+    it('Deletar slack inválido por id do usuário ser inexistente e retornar status 400', async () =>{
         await api.delete(`/slacks/5f45a55ad06a0111ec49ef7a`, {
             headers: { user_id: "1abc"}
         }).then(response =>{
@@ -68,7 +68,7 @@ describe('Slack_Del', () =>{
     });
 
     //Deletar slack inválido por possuir id usuario ser diferente do cadastrado no slack
-    it('Deletar slack inválido por possuir id usuario inexistente e retornar status 401', async () =>{
+    it('Deletar slack inválido por id usuário ser inexistente e retornar status 401', async () =>{
         await api.delete(`/slacks/5f45a55ad06a0111ec49ef7a`, {
             headers: { user_id: "5f0ce694a8119330ecc59fa9"}
         }).then(response =>{
@@ -105,7 +105,7 @@ describe('Slack_ListAll', () =>{
     });
 
     //Listar slacks válido pesquisa
-    it('Listar todas slacks válido pesquisa texto e retornar status 200', async () =>{
+    it('Listar todas slacks válido com pesquisa de texto e retornar status 200', async () =>{
         await api.get(`/slacks`, {
             headers: { user_id:"5f35e2e48973d417809ddb70", search_text: "Jest" },
             params: { page:1 }
@@ -117,7 +117,7 @@ describe('Slack_ListAll', () =>{
     });
 
     //Listar slacks inválido por id ser inválido
-    it('Listar todas slacks inválido por id ser inválido e retornar status 400', async () =>{
+    it('Listar todas slacks inválido por id do usuário ser inválido e retornar status 400', async () =>{
         await api.get(`/slacks`, {
             headers: { user_id: "1abc", search_text: "" },
             params: { page:1 }
@@ -129,7 +129,7 @@ describe('Slack_ListAll', () =>{
     });
 
     //Listar slacks inválido por id falta de parâmetro
-    it('Listar todas slacks inválido por falta de parâmetro e retornar status 401', async () =>{
+    it('Listar todas slacks inválido por falta de parâmetro obrigatório e retornar status 401', async () =>{
         await api.get(`/slacks`, {
             headers: { search_text: "" },
         }).then(response =>{
@@ -143,7 +143,7 @@ describe('Slack_ListAll', () =>{
 //LISTAR SLACKS E MENSAGENS
 describe('Slack_List', () =>{
     //Listar slack válido 
-    it('Listar slack válido e mensagem e retornar status 200', async () =>{
+    it('Selecionar slack e listar mensagens do slack válido com retorno de status 200', async () =>{
         await api.get(`/slacks/5f402d44489b622b3c506b55`,
         {
             headers: { user_id:"5f35e2e48973d417809ddb70" },
@@ -156,7 +156,7 @@ describe('Slack_List', () =>{
     });
 
     //Listar slack inválido por id slack ser inexistente
-    it('Listar slack inválido id slack ser inexistente e mensagem e retornar status 400', async () =>{
+    it('Selecionar slack e listar mensagens inválido por id do slack ser inexistente com retorno de status 400', async () =>{
         await api.get(`/slacks/1abc`,
         {
             headers: { user_id:"5f35e2e48973d417809ddb70" },
@@ -169,7 +169,7 @@ describe('Slack_List', () =>{
     });
 
     //Listar slack inválido por id user ser inexistente
-    it('Listar slack inválido id user ser inexistente e mensagem e retornar status 400', async () =>{
+    it('Selecionar slack e listar mensagens inválido por id usuário ser inexistente com retorno de status 400', async () =>{
         await api.get(`/slacks/5f402d44489b622b3c506b55`,
         {
             headers: { user_id:"1abc" },
@@ -185,7 +185,7 @@ describe('Slack_List', () =>{
 //NOVA MENSAGEM
 describe('Slack_NewMessage', () =>{
     //Nova mensagem Válido
-    it('Nova mensagem válido e retornar status 204', async () =>{
+    it('Enviar nova mensagem válido e retornar status 204', async () =>{
         await api.post(`/slacks/5f402d44489b622b3c506b55`, {
             slack_msg: "oi",
         }, {
@@ -198,7 +198,7 @@ describe('Slack_NewMessage', () =>{
     });
 
     //Nova mensagem inválido por id slack ser inexistente
-    it('Nova mensagem inválido por id slack ser inexistente e retornar status 400', async () =>{
+    it('Enviar nova mensagem inválido por id do slack ser inexistente e retornar status 400', async () =>{
         await api.post(`/slacks/1abc`, {
             slack_msg: "oi",
         }, {
@@ -210,8 +210,8 @@ describe('Slack_NewMessage', () =>{
         });
     });
 
-    //Nova mensagem inválido por id user ser inexistente
-    it('Nova mensagem inválido por id user ser inexistente e retornar status 400', async () =>{
+    //Enviar nova mensagem inválido por id user ser inexistente
+    it('Enviar nova mensagem inválido por id do usuário ser inexistente e retornar status 400', async () =>{
         await api.post(`/slacks/5f402d44489b622b3c506b55`, {
             slack_msg: "oi",
         }, {
@@ -223,8 +223,8 @@ describe('Slack_NewMessage', () =>{
         });
     });
 
-    //Nova mensagem inválido por mensagem vazia
-    it('Nova mensagem inválido por por mensagem vazia e retornar status 400', async () =>{
+    //Enviar nova mensagem inválido por mensagem vazia
+    it('Enviar nova mensagem inválido por mensagem ser vazia e retornar status 400', async () =>{
         await api.post(`/slacks/5f402d44489b622b3c506b55`, {
             slack_msg: "",
         }, {
@@ -236,8 +236,8 @@ describe('Slack_NewMessage', () =>{
         });
     });
 
-    //Nova mensagem inválido por falta de parametro
-    it('Nova mensagem inválido por falta de parametro e retornar status 401', async () =>{
+    //Enviar nova mensagem inválido por falta de parametro
+    it('Enviar nova mensagem inválido por falta de parâmetro obrigatório e retornar status 401', async () =>{
         await api.post(`/slacks/5f402d44489b622b3c506b55`, {}, {}).then(response =>{
             expect(response.status).toBe(401);
         }).catch(error =>{
@@ -249,7 +249,7 @@ describe('Slack_NewMessage', () =>{
 //DELETAR MENSAGEM
 describe('Slack_DelMessage', () =>{
     //Deletar mensagem inválido por id slack inexistente
-    it('Delete mensagem inválido por id slack inexistente e retornar status 400', async () =>{
+    it('Deletar mensagem inválido por id slack ser inexistente e retornar status 400', async () =>{
         await api.delete(`/slacks/1abc/5f46f05e42988f06b0eb680c`, {
             headers: { user_id:"5f35e2e48973d417809ddb70" }
         }).then(response =>{
@@ -260,7 +260,7 @@ describe('Slack_DelMessage', () =>{
     });
 
     //Deletar mensagem inválido por id mensagem inexistente
-    it('Delete mensagem inválido por id mensagem inexistente e retornar status 401', async () =>{
+    it('Deletar mensagem inválido por id mensagem ser inexistente e retornar status 401', async () =>{
         await api.delete(`/slacks/5f4706b3ebe82f1f9cd86a08/1abc`, {
             headers: { user_id:"5f35e2e48973d417809ddb70" }
         }).then(response =>{
@@ -271,7 +271,7 @@ describe('Slack_DelMessage', () =>{
     });
 
     //Deletar mensagem inválido por id usuário inexistente
-    it('Delete mensagem inválido por id usuário inexistente e retornar status 400', async () =>{
+    it('Deletar mensagem inválido por id usuário ser inexistente e retornar status 400', async () =>{
         await api.delete(`/slacks/5f4706b3ebe82f1f9cd86a08/5f46f05e42988f06b0eb680c`, {
             headers: { user_id:"1abc" }
         }).then(response =>{
@@ -282,7 +282,7 @@ describe('Slack_DelMessage', () =>{
     });
 
     //Deletar mensagem inválido por id usuário ser diferente do cadastrado na mensagem
-    it('Delete mensagem inválido por id usuário ser diferente do cadastrado na mensagem e retornar status 401', async () =>{
+    it('Deletar mensagem inválido por id usuário ser diferente do cadastrado na mensagem e retornar status 401', async () =>{
         await api.delete(`/slacks/5f4706b3ebe82f1f9cd86a08/5f46f05e42988f06b0eb680c`, {
             headers: { user_id:"5f5c15a0ed84b700175530c5" }
         }).then(response =>{
@@ -293,7 +293,7 @@ describe('Slack_DelMessage', () =>{
     });
 
     //Deletar mensagem válido
-    it('Delete mensagem válido e retornar status 204', async () =>{
+    it('Deletar mensagem válido e retornar status 204', async () =>{
         await api.delete(`/slacks/5f402d44489b622b3c506b55/5f5e14b99ac46218e0fe8588`, {
             headers: { user_id:"5f35e2e48973d417809ddb70" }
         }).then(response =>{

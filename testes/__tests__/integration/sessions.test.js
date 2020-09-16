@@ -5,7 +5,7 @@ describe('Authentication_Registro', () => {
     //Registro válido  
     it('Registrar usuário válido e retornar status 204', async () =>{
         await api.post('/signup', {
-            name:"Teste", email:"Jest3@gmail.com", password:"123", tags:"VBA, Node"
+            name:"Teste", email:"testedeunidade@gmail.com", password:"123", tags:"VBA, Node"
         }).then(response =>{
             expect(response.status).toBe(204);
         }).catch(error =>{
@@ -25,7 +25,7 @@ describe('Authentication_Registro', () => {
     });
 
     //Registro inválido (email existente)  
-    it('Registrar usuário inválido por email já existente e retornar status 400', async () =>{
+    it('Registrar usuário inválido por e-mail já estar existente no banco e retornar status 400', async () =>{
         await api.post('/signup', {
             name:"Teste", email:"Jest@gmail.com", password:"123", tags:"VBA, Node"
         }).then(response =>{
@@ -61,7 +61,7 @@ describe('Authentication_Login', () =>{
     });
 
     //Logar usuário inválido (email inválido)
-    it('Logar usuário inválido por email inválido e retornar status 400', async () =>{
+    it('Logar usuário inválido por e-mail não constar no banco e retornar status 400', async () =>{
         await api.post('/signin', {
             email:"JestTeste1234@gmail.com", password:"123"
         }).then(response =>{

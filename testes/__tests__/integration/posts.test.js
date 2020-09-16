@@ -3,7 +3,7 @@ const api = require('../../services/api')
 //NOVO POST save
 describe('POST_New', () =>{
     //Novo post válido dúvida
-    it('Novo POST válido dúvida e retornar status 204', async () =>{
+    it('Criar post válido de dúvida e retornar status 204', async () =>{
         await api.post(`/posts`, {
             title:"Jest", desc:"Teste Jest", tags:"NodeJS"
           }, {
@@ -18,8 +18,8 @@ describe('POST_New', () =>{
         });
     });
 
-    //Novo post válido Conteudo
-    it('Novo POST válido conteúdo e retornar status 204', async () =>{
+    //Criar post válido Conteudo
+    it('Criar post válido de conteúdo e retornar status 204', async () =>{
         await api.post(`/posts`, {
             title:"Jest", desc:"Teste Jest", tags:"NodeJS"
           }, {
@@ -34,8 +34,8 @@ describe('POST_New', () =>{
         });
     });
 
-    //Novo post iválido por id user inválido
-    it('Novo POST iválido por id user inválido e retornar status 400', async () =>{
+    //Criar post iválido por id user inválido
+    it('Criar post inválido por id usuário ser inválido e retornar status 400', async () =>{
         await api.post(`/posts`, {
             title:"Jest", desc:"Teste Jest", tags:"NodeJS"
           }, {
@@ -50,8 +50,8 @@ describe('POST_New', () =>{
         });
     });
 
-    //Novo post iválido por falta de campo ou em branco
-    it('Novo POST iválido por falta de campo ou em branco e retornar status 400', async () =>{
+    //Criar post iválido por falta de campo ou em branco
+    it('Criar post inválido por falta de campo ou campo em branco e retornar status 400', async () =>{
         await api.post(`/posts`, {
             title:"", desc:"Teste Jest", tags:""
           }, {
@@ -70,7 +70,7 @@ describe('POST_New', () =>{
 //LIST todos POST index
 describe('POST_ListAll', () =>{
     //Listar post válido de acordo com usuário
-    it('Listar post válido dúvida de acordo com usuário e retornar status 200', async () =>{
+    it('Listar posts válidos de dúvida de acordo com usuário e retornar status 200', async () =>{
         await api.get('/posts', {
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -86,7 +86,7 @@ describe('POST_ListAll', () =>{
         });
     });
 
-    it('Listar post válido conteúdo de acordo com usuário e retornar status 200', async () =>{
+    it('Listar post válido de conteúdo de acordo com usuário e retornar status 200', async () =>{
         await api.get('/posts', {
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -103,7 +103,7 @@ describe('POST_ListAll', () =>{
     });
 
     //Listar post válido de acordo com usuário e com pesquisa
-    it('Listar post pesquisa titulo válido dúvida de acordo com usuário e retornar status 200', async () =>{
+    it('Listar post com pesquisa por titulo válido de dúvida e retornar status 200', async () =>{
         await api.get('/posts', {
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -119,8 +119,8 @@ describe('POST_ListAll', () =>{
         });
     });
 
-    //Listar post válido de acordo com usuário e com pesquisa
-    it('Listar post pesquisa titulo válido conteúdo de acordo com usuário e retornar status 200', async () =>{
+    //Listar post válido e com pesquisa
+    it('Listar post pesquisa por titulo válido de conteúdo e retornar status 200', async () =>{
         await api.get('/posts', {
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -136,8 +136,8 @@ describe('POST_ListAll', () =>{
         });
     });
 
-    //Listar post válido de acordo com usuário e com pesquisa
-    it('Listar post pesquisa dúvida descrição válido de acordo com usuário e retornar status 200', async () =>{
+    //Listar post válido e com pesquisa
+    it('Listar post pesquisa de dúvida por descrição válido e retornar status 200', async () =>{
         await api.get('/posts', {
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -153,7 +153,7 @@ describe('POST_ListAll', () =>{
         });
     });
 
-    it('Listar post pesquisa conteúdo descrição válido de acordo com usuário e retornar status 200', async () =>{
+    it('Listar post pesquisa de conteúdo por descrição válido e retornar status 200', async () =>{
         await api.get('/posts', {
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -169,8 +169,8 @@ describe('POST_ListAll', () =>{
         });
     });
 
-    //Listar post válido de acordo com usuário e com pesquisa
-    it('Listar post pesquisa tags dúvida válido de acordo com usuário e retornar status 200', async () =>{
+    //Listar post válido e com pesquisa
+    it('Listar post de pesquisa por tags de dúvida válido e retornar status 200', async () =>{
         await api.get('/posts', {
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -186,8 +186,8 @@ describe('POST_ListAll', () =>{
         });
     });
 
-    //Listar post válido de acordo com usuário e com pesquisa
-    it('Listar post pesquisa tags conteúdo válido de acordo com usuário e retornar status 200', async () =>{
+    //Listar post válido e com pesquisa
+    it('Listar post de pesquisa por tags de conteúdo válido e retornar status 200', async () =>{
         await api.get('/posts', {
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -204,7 +204,7 @@ describe('POST_ListAll', () =>{
     });
 
     //Listar post inválido de acordo com usuário e com pesquisa
-    it('Listar post inválido por id inexistente e retornar 400', async () =>{
+    it('Listar post inválido por id usuário ser inexistente e retornar 400', async () =>{
         await api.get('/posts', {
             headers: { 
                 user_id:"1ab", 
@@ -224,7 +224,7 @@ describe('POST_ListAll', () =>{
 //CURTIR POST
 describe('POST_LIKE', () =>{
     //Curtir post válido
-    it('Curtir POST válido e retornar status 204', async () =>{
+    it('Curtir post válido e retornar status 204', async () =>{
         await api.post(`/posts/5f0ce863b9da0415546e3d66/like`, {
         }, {
             headers: { user_id:"5f0ce694a8119330ecc59fa9" }
@@ -234,7 +234,7 @@ describe('POST_LIKE', () =>{
     });
 
     //Descurtir post válido
-    it('Descurtir POST válido e retornar status 201', async () =>{
+    it('Descurtir post válido e retornar status 201', async () =>{
         await api.post(`/posts/5f0ce863b9da0415546e3d66/like`, {
         }, {
             headers: { user_id:"5f0ce694a8119330ecc59fa9" }
@@ -244,7 +244,7 @@ describe('POST_LIKE', () =>{
     });
 
     //Curtir post inválido por id user inexistente
-    it('Curtir POST inválido por id user inexistente e retornar status 400', async () =>{
+    it('Curtir post inválido por id usuário ser inexistente e retornar status 400', async () =>{
         await api.post(`/posts/5f0ce863b9da0415546e3d66/like`, {
         }, {
             headers: { user_id:"1abc" }
@@ -256,7 +256,7 @@ describe('POST_LIKE', () =>{
     });
 
     //Curtir post inválido por id post inexistente
-    it('Curtir POST inválido por id post inexistente e retornar status 400', async () =>{
+    it('Curtir post inválido por id post ser inexistente e retornar status 400', async () =>{
         await api.post(`/posts/1abc/like`, {
         }, {
             headers: { user_id:"5f0ce694a8119330ecc59fa9" }
@@ -282,7 +282,7 @@ describe('POST_SELECT', () =>{
     });
 
     //Selecionar post invalido por id usuário inválido
-    it('Selecionar post invalido por id usuário inválido e retornar status 400', async () =>{
+    it('Selecionar post inválido por id usuário ser inválido e retornar status 400', async () =>{
         await api.get(`/post/5f334200cb35e419787b2655`, {
             headers: { user_id:"1abc" }
         }).then(response =>{
@@ -293,7 +293,7 @@ describe('POST_SELECT', () =>{
     });
 
     //Selecionar post invalido por id post inválido
-    it('Selecionar post invalido por id post inválido e retornar status 400', async () =>{
+    it('Selecionar post inválido por id post ser inválido e retornar status 400', async () =>{
         await api.get(`/post/1abc`, {
             headers: { user_id:"5f0ce694a8119330ecc59fa9" }
         }).then(response =>{
@@ -307,7 +307,7 @@ describe('POST_SELECT', () =>{
 //DELETE POST
 describe('POST_DELETE', () =>{
     //Deletar post inválido por id usuário inexistente
-    it('DELETAR POST inválido por id usuário inexistente e retornar status 400', async () =>{
+    it('Excluir post inválido por id usuário ser inexistente e retornar status 400', async () =>{
         await api.delete(`/posts/5f55906ab07b400017b9778d`, {
             headers: { user_id:"1abc" }
         }).then(response =>{
@@ -317,8 +317,8 @@ describe('POST_DELETE', () =>{
         });
     });
 
-    //Deletar post inválido por id post inexistente
-    it('DELETAR POST inválido por id post inexistente e retornar status 400', async () =>{
+    //Excluir post inválido por id post inexistente
+    it('Excluir post inválido por id post ser inexistente e retornar status 400', async () =>{
         await api.delete(`/posts/1abc`, {
             headers: { user_id:"5f558f0fb07b400017b9778c" }
         }).then(response =>{
@@ -328,8 +328,8 @@ describe('POST_DELETE', () =>{
         });
     });
 
-    //Deletar post inválido por id usuário não ser o válido
-    it('DELETAR POST inválido por id usuário não ser o válido e retornar status 401', async () =>{
+    //Excluir post inválido por id usuário não ser o válido
+    it('Excluir post inválido por id usuário não ser o mesmo id do usuário cadastrado no post e retornar status 401', async () =>{
         await api.delete(`/posts/5f55906ab07b400017b9778d`, {
             headers: { user_id:"5f4ed9968c83250017344f09" }
         }).then(response =>{
@@ -339,8 +339,8 @@ describe('POST_DELETE', () =>{
         });
     });
 
-    //Deletar post válido (TROCAR VALORES)
-    it('DELETAR POST válido e retornar status 204', async () =>{
+    //Excluir post válido (TROCAR VALORES)
+    it('Excluir post válido e retornar status 204', async () =>{
         await api.delete(`/posts/5f55906ab07b400017b9778d`, {
             headers: { user_id:"5f558f0fb07b400017b9778c" }
         }).then(response =>{
@@ -354,7 +354,7 @@ describe('POST_DELETE', () =>{
 //TOTAL DE POSTS get total
 describe('POST_TOTAL', () =>{
     //Retornar total de posts dúvida
-    it('Total post válido dúvida e retornar status 200', async () =>{
+    it('Quantidade Total de post válido de dúvida e retornar status 200', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -369,7 +369,7 @@ describe('POST_TOTAL', () =>{
     });
     
     //Retornar total de posts conteúdo
-    it('Total post válido conteúdo e retornar status 200', async () =>{
+    it('Quantidade Total post válido de conteúdo e retornar status 200', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -384,7 +384,7 @@ describe('POST_TOTAL', () =>{
     });
 
     //Retornar total pesquisa de posts dúvida
-    it('Total post válido com pesquisa dúvida e retornar status 200', async () =>{
+    it('Quantidade Total post válido com pesquisa de dúvida e retornar status 200', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -399,7 +399,7 @@ describe('POST_TOTAL', () =>{
     });
     
     //Retornar total de posts conteúdo
-    it('Total post válido pesquisa conteúdo e retornar status 200', async () =>{
+    it('Retronar quantidade total post válido com pesquisa de conteúdo e retornar status 200', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -414,7 +414,7 @@ describe('POST_TOTAL', () =>{
     });
 
     //Retornar total de posts invalido id usuário
-    it('Total post inválido por id usuário inválido e retornar status 400', async () =>{
+    it('Retronar quantidade total post inválido por id usuário ser inválido e retornar status 400', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"1abc", 
@@ -429,7 +429,7 @@ describe('POST_TOTAL', () =>{
     });
 
     //Retornar total de posts invalido falta de parametro type
-    it('Total post inválido por falta de parametro type inválido e retornar status 400', async () =>{
+    it('Retronar quantidade total post inválido por falta de parâmetro "Type" ser inválido e retornar status 400', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"1abc",
