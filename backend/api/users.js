@@ -25,7 +25,7 @@ module.exports = app => {
         } else {
             obterHash(req.body.password.trim().toLowerCase(), hash => {
                 const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()), key, url, ranking: 0, blocked: [] })
-                    .then(_ => res.status(204).send())
+                    .then(u => res.status(204).send(u))
                     .catch(err => res.status(400).json(err))
             })
         }
@@ -106,7 +106,7 @@ module.exports = app => {
         const { page = 1 } = req.query
 
         const count = await Users.find({ name: { '$regex': `${search_text}`, '$options': 'i' } }).countDocuments()
-        
+
 
         res.header('X-Total-Count', count)
 
@@ -121,8 +121,9 @@ module.exports = app => {
     const blockUser = async (req, res) => {
         const { id } = req.params;
         const { user_id } = req.headers;
+    
         if (id == user_id) {
-            return res.status(400).json({message: "Não é possível bloquear você mesmo"});
+            return res.status(400).send("Não é possível bloquear você mesmo");
         }
 
         const userToBlock = await Users.findById(id)
