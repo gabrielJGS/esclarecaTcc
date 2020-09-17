@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema({
     blocked: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
+    }],
+    followed: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users'
     }]
     //userPhoto: { Schema.Types.Mixed }
 });

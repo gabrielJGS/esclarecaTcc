@@ -24,7 +24,7 @@ module.exports = app => {
             res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`)
         } else {
             obterHash(req.body.password.trim().toLowerCase(), hash => {
-                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()), key, url, ranking: 0, blocked: [] })
+                const user = Users.create({ name: req.body.name, email, password: hash, tags: tags.split(',').map(tag => tag.trim()), key, url, ranking: 0, blocked: [], followed: [] })
                     .then(u => res.status(204).send(u))
                     .catch(err => res.status(400).json(err))
             })
@@ -46,7 +46,6 @@ module.exports = app => {
         else {
             const email = req.body.email.trim().toLowerCase()
             const tags = req.body.tags.trim().toLowerCase()
-            console.log(req.body)
             obterHash(req.body.password.trim().toLowerCase(), hash => {
                 const password = hash
 
@@ -85,10 +84,24 @@ module.exports = app => {
     }
     const profile = async (req, res) => {
         const { id } = req.params;
-        const user = await Users.findById(id)
-            .populate('blocked', ['name', 'tags', 'ranking'])
+        const { user_id } = req.headers;
+
+        const userLogged = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))
-        res.json(user)
+        if (!userLogged) {
+            return res.status(401).send('Usuário logado inválido');
+        }
+
+        const user = await Users.findById(id)
+            .catch(err => res.status(400).json(err))
+        let response = { user, isBlocked: false, isFollowed: false }
+        if (userLogged.blocked.find(u => u == id)) {//Usuário está bloqueado pelo usuário logado
+            response.isBlocked = true
+        }
+        if (userLogged.followed.find(u => u == id)) {//Usuário está sendo seguido pelo usuário logado
+            response.isFollowed = true
+        }
+        res.json(response)
     }
 
     const list = async (req, res) => {
@@ -107,7 +120,6 @@ module.exports = app => {
 
         const count = await Users.find({ name: { '$regex': `${search_text}`, '$options': 'i' } }).countDocuments()
 
-
         res.header('X-Total-Count', count)
 
         const users = await Users.find({ name: { '$regex': `${search_text}`, '$options': 'i' } })
@@ -121,7 +133,7 @@ module.exports = app => {
     const blockUser = async (req, res) => {
         const { id } = req.params;
         const { user_id } = req.headers;
-    
+
         if (id == user_id) {
             return res.status(400).send("Não é possível bloquear você mesmo");
         }
@@ -134,7 +146,7 @@ module.exports = app => {
         const userLogged = await Users.findById(user_id)
             .catch(err => res.status(400).json(err))
         if (!userLogged) {
-            return res.status(401).send('Usuário informado é inválido');
+            return res.status(401).send('Usuário logado é inválido');
         }
 
         if (userLogged.blocked.find(u => u == id)) {//Desbloqueando
@@ -147,6 +159,15 @@ module.exports = app => {
             res.status(201).send()
         }
         else {//Bloqueando
+            if (userLogged.followed.find(u => u == id)) {//Deixando de seguir
+                const index = userLogged.followed.indexOf(id);
+                if (index > -1) {
+                    userLogged.followed.splice(index, 1);
+                }
+                await userLogged.save()
+                    .catch(err => res.status(400).json(err))
+            }
+
             userLogged.blocked.push(id)
             await userLogged.save()
                 .catch(err => res.status(400).json(err))
@@ -154,5 +175,42 @@ module.exports = app => {
             res.status(204).send()
         }
     }
-    return { save, update, patch, profile, upload, list, blockUser, index }
+
+    const followUser = async (req, res) => {
+        const { id } = req.params;
+        const { user_id } = req.headers;
+
+        if (id == user_id) {
+            return res.status(400).send("Não é possível seguir você mesmo");
+        }
+
+        const userToBlock = await Users.findById(id)
+            .catch(err => res.status(400).json(err))
+        if (!userToBlock) {
+            return res.status(401).send('Usuário a seguir inválido');
+        }
+        const userLogged = await Users.findById(user_id)
+            .catch(err => res.status(400).json(err))
+        if (!userLogged) {
+            return res.status(401).send('Usuário logado é inválido');
+        }
+
+        if (userLogged.followed.find(u => u == id)) {//Deixando de seguir
+            const index = userLogged.followed.indexOf(id);
+            if (index > -1) {
+                userLogged.followed.splice(index, 1);
+            }
+            await userLogged.save()
+                .catch(err => res.status(400).json(err))
+            res.status(201).send()
+        }
+        else {//Seguindo
+            userLogged.followed.push(id)
+            await userLogged.save()
+                .catch(err => res.status(400).json(err))
+
+            res.status(204).send()
+        }
+    }
+    return { save, update, patch, profile, upload, list, blockUser, followUser, index }
 };
