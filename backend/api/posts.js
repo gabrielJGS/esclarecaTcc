@@ -210,7 +210,7 @@ module.exports = app => {
         if (!user) {
             return res.status(401).send('Usuário inválido');
         }
-        if(!type){
+        if (!type) {
             return res.status(400).send('Campos inválidos');
         }
         const count = await Posts.find({ tags: { $in: search_text != "" ? search_text.split(',') : user.tags }, type: typeSearch, user: { $nin: user.blocked } })
@@ -262,7 +262,7 @@ module.exports = app => {
         const posts = await Posts
             .aggregate([
                 {
-                    $match: match
+                    $match: { $or: [match, { user: { $in: user.followed } }] }
                 },
                 { $sort: { postedIn: -1 } },
                 {
@@ -360,7 +360,7 @@ module.exports = app => {
         const postToBeRemoved = await Posts.findById(post)
             .catch(err => { return res.status(400).json(err) })//Caso o id seja inválido vai cair aqui
         if (!postToBeRemoved) { return res.status(400).send("Post não encontrado com o id: " + post) }//Caso o id seja válido mas não exista vai cair aqui
-        
+
         if (postToBeRemoved.user == user_id) {//Se é o dono post deleta
             await Posts.deleteOne(postToBeRemoved)
             if (user.ranking === NaN || user.ranking === undefined) {

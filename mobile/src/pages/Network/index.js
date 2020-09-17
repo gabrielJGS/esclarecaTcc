@@ -13,6 +13,7 @@ export default function Network() {
     const navigation = useNavigation()
     const [users, setUsers] = useState([])
     const [blockedUsers, setBlockedUsers] = useState([])
+    const [followedUsers, setFollowedUsers] = useState([])
     const [modoTela, setModoTela] = useState('todos')
 
     const [page, setPage] = useState(1)
@@ -29,17 +30,18 @@ export default function Network() {
         }
     }, [])
 
+    function navigateToProfile(userId) {
+        navigation.navigate('Profile', {
+            userId
+        })
+    }
     async function loadBlockedFollowedUsers() {
         const usuarioAtual = await AsyncStorage.getItem('user');
-        const response = await api.get(`/users/${usuarioAtual}`, {})
+        const response = await api.get(`/users/${usuarioAtual}`, { headers: { user_id: usuarioAtual } })
         if (response.data) {
-            const blocks = []
-            response.data.blocked.forEach(element => {
-                blocks.push(element._id)
-            });
-            setBlockedUsers(blocks)
+            setBlockedUsers(response.data.user.blocked)
+            setFollowedUsers(response.data.user.followed)
         }
-        // Falta adicionar o array de seguindo no perfil, e carregar estas informações aqui
     }
 
     async function loadUsers() {
@@ -52,6 +54,7 @@ export default function Network() {
         }
 
         try {
+
             const response = await api.get(`/users`, {
                 headers: { search_text: searchText },
                 params: { page }
@@ -110,6 +113,27 @@ export default function Network() {
             }
             if (response.status == 201) {
                 showSucess("Usuário desbloqueado com sucesso")
+            }
+            await loadBlockedFollowedUsers()
+            await reloadUsers()
+        } catch (e) {
+            showError(e)
+        }
+    }
+    async function followUnfollowUser(uId) {
+        try {
+            const usuarioAtual = await AsyncStorage.getItem('user');
+
+            if (uId == usuarioAtual) {
+                showError("Não é possível seguir você mesmo")
+                return;
+            }
+            const response = await api.post(`/users/${uId}/follow`, {}, { headers: { user_id: usuarioAtual } })
+            if (response.status == 204) {
+                showSucess("Usuário seguido com sucesso")
+            }
+            if (response.status == 201) {
+                showSucess("Usuário parou de ser seguido com sucesso")
             }
             await loadBlockedFollowedUsers()
             await reloadUsers()
@@ -188,15 +212,17 @@ export default function Network() {
                         animation="fadeInDown"
                         duration={1000}
                     >
-                        {modoTela === 'todos' || modoTela === 'bloqs' && blockedUsers.includes(user._id) ?
+                        {modoTela === 'todos' || modoTela === 'bloqs' && blockedUsers.includes(user._id) || modoTela == 'follow' && followedUsers.includes(user._id) ?
                             <View style={styles.postHeader}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <Image style={styles.avatar} source={{ uri: user.url ? `${user.url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
-                                        <View style={{ marginLeft: 5 }}>
-                                            <Text style={{ fontSize: 14, color: '#365478', fontWeight: 'bold' }}>{user.name}</Text>
-                                            <Text style={styles.postTag}>{handleLimitBigText(user.tags.toString(','), 20)}</Text>
-                                        </View>
+                                        <TouchableOpacity onPress={() => navigateToProfile(user._id)}>
+                                            <View style={{ marginLeft: 5 }}>
+                                                <Text style={{ fontSize: 14, color: '#365478', fontWeight: 'bold' }}>{user.name}</Text>
+                                                <Text style={styles.postTag}>{handleLimitBigText(user.tags.toString(','), 20)}</Text>
+                                            </View>
+                                        </TouchableOpacity>
                                     </View>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginRight: 25 }}>
@@ -217,16 +243,42 @@ export default function Network() {
                                                     )}>
                                                     <Feather name="slash" size={20} color="#E73751"></Feather>
                                                 </TouchableOpacity>
+                                                {!followedUsers.includes(user._id) ?
+                                                    <View style={{ paddingLeft: 5 }}>
+                                                        <TouchableOpacity onPress={() =>
+                                                            Alert.alert(
+                                                                'Seguir',
+                                                                'Deseja realmente seguir o usuário?',
+                                                                [
+                                                                    { text: 'Não', onPress: () => { return null } },
+                                                                    { text: 'Sim', onPress: () => { followUnfollowUser(user._id) } },
+                                                                ],
+                                                                { cancelable: false }
+                                                            )}>
+                                                            <Feather name="user-plus" size={20} color="#7DCEA0" />
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                    : null}
 
-                                                {/* <TouchableOpacity style={{ paddingLeft: 10 }}>
-                                                    <Feather name="user-minus" size={20} color="#E73751" />
-                                                </TouchableOpacity>
-
-                                                <TouchableOpacity style={{ paddingLeft: 10 }}>
-                                                    <Feather name="user-plus" size={20} color="#7DCEA0" />
-                                                </TouchableOpacity> */}
+                                                {followedUsers.includes(user._id) ?
+                                                    <View style={{ paddingLeft: 5 }}>
+                                                        <TouchableOpacity onPress={() =>
+                                                            Alert.alert(
+                                                                'Seguir',
+                                                                'Deseja realmente parar de seguir o usuário?',
+                                                                [
+                                                                    { text: 'Não', onPress: () => { return null } },
+                                                                    { text: 'Sim', onPress: () => { followUnfollowUser(user._id) } },
+                                                                ],
+                                                                { cancelable: false }
+                                                            )}>
+                                                            <Feather name="user-minus" size={20} color="#7DCEA0" />
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                    : null}
                                             </>
                                             : null}
+
                                         {blockedUsers.includes(user._id) ?
                                             <TouchableOpacity onPress={() =>
                                                 Alert.alert(
