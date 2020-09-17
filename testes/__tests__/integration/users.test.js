@@ -47,14 +47,14 @@ describe('Users_Put', () =>{
 describe('Users_List', () =>{
     //Listar usuário válido
     it('Listar usuário válido e retornar status 200', async () =>{
-        await api.get('/users/5f5c15a0ed84b700175530c5', {}).then(response =>{
+        await api.get('/users/5f5c15a0ed84b700175530c5', { headers: { user_id: "5f5c15a0ed84b700175530c5" } }).then(response =>{
             expect(response.status).toBe(200);
         });
     });
 
     //Listar usuário inválido (id inexistente)
     it('Listar usuário inválido por id usuário ser inexistente e retornar status 400', async () =>{
-        await api.get('/users/1abcd', {}).then(response =>{
+        await api.get('/users/1abcd', { headers: { user_id: "5f5c15a0ed84b700175530c5" } }).then(response =>{
             expect(response.status).toBe(400);
         }).catch(error =>{
             expect(error.response.status).toBe(400);
@@ -99,14 +99,14 @@ describe('Users_All', () =>{
 describe('Users_ListBlocks', () =>{
     //Listar usuários bloqueados
     it('Listar usuários bloqueados válido e retornar status 200', async () =>{
-        await api.get(`/users/5f5c15a0ed84b700175530c5`, {}).then(response =>{
+        await api.get(`/users/5f5c15a0ed84b700175530c5`, { headers: { user_id: "5f5c15a0ed84b700175530c5" }}).then(response =>{
             expect(response.status).toBe(200);
         })
     });
 
     //Listar usuários bloqueados inválido por falta de id existente
     it('Listar usuários bloqueados inválido por ID inexistente e retornar status 400', async () =>{
-        await api.get(`/users/1abc`, {}).then(response =>{
+        await api.get(`/users/1abc`, { headers: { user_id: "5f5c15a0ed84b700175530c5" }}).then(response =>{
             expect(response.status).toBe(400);
         }).catch(error =>{
             expect(error.response.status).toBe(400);
