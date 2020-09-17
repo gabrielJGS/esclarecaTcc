@@ -28,6 +28,8 @@ export default function Profile({ route, navigation }) {
   const [userId, setUserId] = useState(route.params.userId);
   const [loggedUser, setLoggedUser] = useState('');
   const [isLoggedUser, setIsLoggedUser] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
   // const [press, setPress] = useState(false);
   const [type, setType] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -70,25 +72,33 @@ export default function Profile({ route, navigation }) {
   }
 
   async function loadUser(id) {
-    const response = await api.get(`/users/${id}`, {})
-    if (response.data) {
-      setName(response.data.name)
-      setEmail(response.data.email)
-      setTags(response.data.tags)
-      setUserId(response.data._id)
-      if (response.data.url && response.data.url != '') {
-        setAvatar(response.data.url)
-      } else {
-        setAvatar('https://www.colegiodepadua.com.br/img/user.png')
+    try {
+      const usuarioAtual = await AsyncStorage.getItem('user');
+      setLoggedUser(usuarioAtual);
+      const response = await api.get(`/users/${id}`, { headers: { user_id: usuarioAtual } })
+      if (response.data) {
+        setName(response.data.user.name)
+        setEmail(response.data.user.email)
+        setTags(response.data.user.tags)
+        setUserId(response.data.user._id)
+        if (response.data.user.url && response.data.user.url != '') {
+          setAvatar(response.data.user.url)
+        } else {
+          setAvatar('https://www.colegiodepadua.com.br/img/user.png')
+        }
+        setIsBlocked(response.data.isBlocked)
+        setIsFollowed(response.data.isFollowed)
+
       }
-    }
-    const usuarioAtual = await AsyncStorage.getItem('user');
-    setLoggedUser(usuarioAtual);
-    if (usuarioAtual === id) {
-      setIsLoggedUser(true)
-    }
-    else {
-      setIsLoggedUser(false)
+
+      if (usuarioAtual === id) {
+        setIsLoggedUser(true)
+      }
+      else {
+        setIsLoggedUser(false)
+      }
+    } catch (e) {
+      showError(e)
     }
     //Carrega os dados do usuário para caso queira alterar
   }
@@ -118,8 +128,24 @@ export default function Profile({ route, navigation }) {
       } else if (response.status == 201) {
         showSucess("Usuário desbloqueado com sucesso")
       }
-      else if (response.status == 401) {
-        showSucess("Não é possível bloquear você mesmo!")
+      else {
+        showError("Ocorreu um erro ao processar a requisição!")
+      }
+      loadUser(route.params.userId)
+    } catch (e) {
+      showError("Erro: " + e)
+    }
+  }
+
+  async function followUser() {
+    try {
+      const usuarioAtual = await AsyncStorage.getItem('user');
+
+      const response = await api.post(`/users/${route.params.userId}/follow`, {}, { headers: { user_id: usuarioAtual } })
+      if (response.status == 204) {
+        showSucess("Usuário seguido com sucesso")
+      } else if (response.status == 201) {
+        showSucess("Usuário deixou de ser seguido com sucesso")
       }
       else {
         showError("Ocorreu um erro ao processar a requisição!")
@@ -366,27 +392,59 @@ export default function Profile({ route, navigation }) {
           </>
           :
           <>
-            <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-              <TouchableOpacity style={styles.detailsButton} onPress={() =>
-                Alert.alert(
-                  'Bloquear',
-                  'Deseja realmente bloquear o usuário?',
-                  [
-                    { text: 'Não', onPress: () => { return null } },
-                    {
-                      text: 'Sim', onPress: () => { blockUser() }
-                    },
-                  ],
-                  { cancelable: false }
-                )}
-              >
-                <Feather name="slash" size={25} color="#E73751"></Feather>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.detailsButton, { paddingLeft: 20 }]} onPress={() => { }}>
-                <Feather name="user-plus" size={25} color="#7DCEA0"></Feather>
-              </TouchableOpacity>
-            </View>
+            {!isBlocked ?
+              <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+                <TouchableOpacity style={styles.detailsButton} onPress={() =>
+                  Alert.alert(
+                    'Bloquear',
+                    'Deseja realmente bloquear o usuário?',
+                    [
+                      { text: 'Não', onPress: () => { return null } },
+                      {
+                        text: 'Sim', onPress: () => { blockUser() }
+                      },
+                    ],
+                    { cancelable: false }
+                  )}
+                >
+                  <Feather name="slash" size={25} color="#E73751"></Feather>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.detailsButton, { paddingLeft: 20 }]} onPress={() =>
+                  Alert.alert(
+                    `${isFollowed ? 'Deixar de seguir' : 'Seguir'}`,
+                    `Deseja realmente ${isFollowed ? 'deixar de ' : ''}seguir o usuário?`,
+                    [
+                      { text: 'Não', onPress: () => { return null } },
+                      {
+                        text: 'Sim', onPress: () => { followUser() }
+                      },
+                    ],
+                    { cancelable: false }
+                  )}
+                >
+                  <Feather name={isFollowed ? 'user-minus' : 'user-plus'} size={25} color="#7DCEA0"></Feather>
+                </TouchableOpacity>
+              </View>
+              : <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+                <TouchableOpacity style={styles.detailsButton} onPress={() =>
+                  Alert.alert(
+                    'Desbloquear',
+                    'Deseja realmente desbloquear o usuário?',
+                    [
+                      { text: 'Não', onPress: () => { return null } },
+                      {
+                        text: 'Sim', onPress: () => { blockUser() }
+                      },
+                    ],
+                    { cancelable: false }
+                  )}
+                >
+                  <Feather name="check-circle" size={25} color="#7DCEA0"></Feather>
+                </TouchableOpacity>
+              </View>
+            }
           </>
+
         }
         <TouchableOpacity style={styles.detailsButton} onPress={() =>
           Alert.alert(

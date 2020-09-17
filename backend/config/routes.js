@@ -21,6 +21,7 @@ module.exports = app => {
     app.get('/users/:id/posts', app.api.posts.getByUser)//Posts do usuário
     app.get('/users/:id/liked', app.api.posts.getLikesByUser)//Posts curtidos pelo usuário
     app.post('/users/:id/block', app.api.users.blockUser)//Bloquear usuário
+    app.post('/users/:id/follow', app.api.users.followUser)//Seguir usuário
 
     //Posts
     app.route('/posts')

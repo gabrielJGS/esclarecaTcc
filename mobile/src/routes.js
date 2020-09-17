@@ -93,12 +93,12 @@ function CustomDrawerContent(props) {
     async function loadUser() {
         const user = await AsyncStorage.getItem('user')
         if (user) {
-            const response = await api.get(`/users/${user}`)
+            const response = await api.get(`/users/${user}`, { headers: { user_id: user } })
             if (response.data) {
-                setName(response.data.name)
-                setTags(response.data.tags)
-                setId(response.data._id)
-                setAvatar(response.data.url)
+                setName(response.data.user.name)
+                setTags(response.data.user.tags)
+                setId(response.data.user._id)
+                setAvatar(response.data.user.url)
             }
         }
     }
@@ -127,7 +127,7 @@ function CustomDrawerContent(props) {
                                     }}
                                     size={50}
                                 />
-                                <View style={{ marginLeft: 15, flexDirection: 'column', maxWidth: 200}}>
+                                <View style={{ marginLeft: 15, flexDirection: 'column', maxWidth: 200 }}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{userName ? userName : 'Meu perfil'}</Text>
                                     <Text style={{ fontSize: 13, color: '#365478' }}>{userTags ? userTags.toString() : ''}</Text>
                                 </View>
