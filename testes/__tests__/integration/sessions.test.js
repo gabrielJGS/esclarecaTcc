@@ -5,7 +5,7 @@ describe('Authentication_Registro', () => {
     //Registro válido  
     it('Registrar usuário válido e retornar status 204', async () =>{
         await api.post('/signup', {
-            name:"Teste", email:"testedeunidade@gmail.com", password:"123", tags:"VBA, Node"
+            name:"Teste", email:"reidnerTeste@gmail.com", password:"123", tags:"VBA, Node"
         }).then(response =>{
             expect(response.status).toBe(204);
         }).catch(error =>{

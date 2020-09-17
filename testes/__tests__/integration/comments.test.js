@@ -184,7 +184,7 @@ describe('Comen_Del', () =>{
 
     //Deletar comentário válido (ALTERAR VALORES)
     it('Deletar comentário válido e retornar status 204', async () =>{
-        await api.delete(`/posts/5f0ce863b9da0415546e3d66/5f5e3d4c31fdfa1f74eef2a8`, {
+        await api.delete(`/posts/5f0ce863b9da0415546e3d66/5f61727eab02ce273476993d`, {
             headers: { user_id:"5f0ce694a8119330ecc59fa9" }
         }).then(response =>{
             expect(response.status).toBe(204);
@@ -198,7 +198,7 @@ describe('Comen_Del', () =>{
 describe('Comen_Resolv', () =>{
     //Resolver comentário válido (ALTERAR VALORES)
     it('Resolver post válido e retornar status 201', async () =>{
-        await api.post(`/posts/5f0ce863b9da0415546e3d66/5f0ce980b9da0415546e3d67/solve`, {}, {
+        await api.post(`/posts/5f614535f395951cd42e50c7/5f628bc3b002572820a0bb4e/solve`, {}, {
             headers: { user_id:"5f0ce694a8119330ecc59fa9" }
         }).then(response =>{
             expect(response.status).toBe(201);

@@ -80,7 +80,7 @@ describe('Slack_Del', () =>{
 
     //Deletar slack válido
     it('Deletar slack válido e retornar status 204', async () =>{
-        await api.delete(`/slacks/5f5e14b89ac46218e0fe8586`, {
+        await api.delete(`/slacks/5f617505ab02ce2734769940`, {
             headers: { user_id: "5f5c15a0ed84b700175530c5"}
         }).then(response =>{
             expect(response.status).toBe(204);
@@ -294,7 +294,7 @@ describe('Slack_DelMessage', () =>{
 
     //Deletar mensagem válido
     it('Deletar mensagem válido e retornar status 204', async () =>{
-        await api.delete(`/slacks/5f402d44489b622b3c506b55/5f5e14b99ac46218e0fe8588`, {
+        await api.delete(`/slacks/5f402d44489b622b3c506b55/5f629428410aa32b403cb994`, {
             headers: { user_id:"5f35e2e48973d417809ddb70" }
         }).then(response =>{
             expect(response.status).toBe(204);

@@ -330,8 +330,8 @@ describe('POST_DELETE', () =>{
 
     //Excluir post inválido por id usuário não ser o válido
     it('Excluir post inválido por id usuário não ser o mesmo id do usuário cadastrado no post e retornar status 401', async () =>{
-        await api.delete(`/posts/5f55906ab07b400017b9778d`, {
-            headers: { user_id:"5f4ed9968c83250017344f09" }
+        await api.delete(`/posts/5f614534f395951cd42e50c5`, {
+            headers: { user_id:"5f35e2e48973d417809ddb70" }
         }).then(response =>{
             expect(response.status).toBe(401);
         }).catch(error =>{
@@ -341,8 +341,8 @@ describe('POST_DELETE', () =>{
 
     //Excluir post válido (TROCAR VALORES)
     it('Excluir post válido e retornar status 204', async () =>{
-        await api.delete(`/posts/5f55906ab07b400017b9778d`, {
-            headers: { user_id:"5f558f0fb07b400017b9778c" }
+        await api.delete(`/posts/5f614534f395951cd42e50c5`, {
+            headers: { user_id:"5f0ce694a8119330ecc59fa9" }
         }).then(response =>{
             expect(response.status).toBe(204);
         }).catch(error =>{
@@ -354,7 +354,7 @@ describe('POST_DELETE', () =>{
 //TOTAL DE POSTS get total
 describe('POST_TOTAL', () =>{
     //Retornar total de posts dúvida
-    it('Quantidade Total de post válido de dúvida e retornar status 200', async () =>{
+    it('Retornar Quantidade Total de post válido de dúvida e retornar status 200', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -369,7 +369,7 @@ describe('POST_TOTAL', () =>{
     });
     
     //Retornar total de posts conteúdo
-    it('Quantidade Total post válido de conteúdo e retornar status 200', async () =>{
+    it('Retornar Quantidade Total post válido de conteúdo e retornar status 200', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -384,7 +384,7 @@ describe('POST_TOTAL', () =>{
     });
 
     //Retornar total pesquisa de posts dúvida
-    it('Quantidade Total post válido com pesquisa de dúvida e retornar status 200', async () =>{
+    it('Retornar Quantidade Total post válido com pesquisa de dúvida e retornar status 200', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -399,7 +399,7 @@ describe('POST_TOTAL', () =>{
     });
     
     //Retornar total de posts conteúdo
-    it('Retronar quantidade total post válido com pesquisa de conteúdo e retornar status 200', async () =>{
+    it('Retornar quantidade total post válido com pesquisa de conteúdo e retornar status 200', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"5f0ce694a8119330ecc59fa9", 
@@ -414,7 +414,7 @@ describe('POST_TOTAL', () =>{
     });
 
     //Retornar total de posts invalido id usuário
-    it('Retronar quantidade total post inválido por id usuário ser inválido e retornar status 400', async () =>{
+    it('Retornar quantidade total post inválido por id usuário ser inválido e retornar status 400', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"1abc", 
@@ -429,7 +429,7 @@ describe('POST_TOTAL', () =>{
     });
 
     //Retornar total de posts invalido falta de parametro type
-    it('Retronar quantidade total post inválido por falta de parâmetro "Type" ser inválido e retornar status 400', async () =>{
+    it('Retornar quantidade total post inválido por falta de parâmetro "Type" ser inválido e retornar status 400', async () =>{
         await api.head('/posts', { 
             headers: { 
                 user_id:"1abc",
