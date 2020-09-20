@@ -1,6 +1,16 @@
 const bcrypt = require('bcrypt-nodejs')
 const Users = require('../models/Users');
 const { hostIp } = require('../.env')
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'appesclareca@gmail.com',
+        pass: 'esclareca2020'
+    }
+})
 
 module.exports = app => {
     const obterHash = (password, callback) => {
@@ -216,5 +226,38 @@ module.exports = app => {
             res.status(204).send()
         }
     }
-    return { save, update, patch, profile, upload, list, blockUser, followUser, index }
+
+    const forgotPassword = async (req, res) => {
+        const email = req.body.email.trim().toLowerCase();
+        crypto.randomBytes(3, async (err,buffer)=>{
+            if(err){
+                console.log(err);
+            }
+            const token = buffer.toString("hex");
+            const userExist = await Users.findOne({ email })
+            if (!userExist) {
+                return res.status(400).json(`${email} inexistente!`)
+            } else {
+                obterHash(token.trim().toLowerCase(), hash => {
+                    userExist.password = hash
+                    console.log(hash)
+                    userExist.save().then((savedUser)=>{
+                        transporter.sendMail({
+                            to: email,
+                            from: 'appesclareca@gmail.com',
+                            subject: 'Esqueceu a senha',
+                            html: `
+                                <p>Olá ${userExist.name}, você esqueceu sua senha?</p>
+                                <h5>Esta é a sua senha temporária: ${token}</h5>
+                                <p>Altere sua senha em seu perfil após o login.</p>
+                            ` 
+                        })
+                        res.status(200).json({message: "Verifique seu e-mail e faça o login com a sua senha!"})
+                    })
+                })
+            } 
+        })
+    }
+
+    return { save, update, patch, profile, upload, list, blockUser, followUser, index, forgotPassword }
 };

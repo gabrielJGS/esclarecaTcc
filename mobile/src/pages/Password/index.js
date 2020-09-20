@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import * as Animatable from 'react-native-animatable'
 
 import styles from './styles'
-import { showError } from '../../common'
+import { showError, showSucess } from '../../common'
 import api from '../../services/api'
 
 export default function Password(){
@@ -17,13 +17,24 @@ export default function Password(){
     }, [])
 
     async function handleForgetPassword() {
-        try {
-            const response = await api.post('/forget', {
-                email
-            });
-            showSucess("Senha enviada para o email " + email)
-        } catch (e) {
-            showError(e)
+        if(email){
+            try {
+                const response = await api.post('/forget', {
+                    email
+                });
+                if(response.status == 200){
+                    showSucess(`Verifique o email ${email} e faça o login com a sua nova senha!`)
+                    navigation.goBack()
+                }
+                else{
+
+                }
+            } catch (e) {
+                showError("Email não cadastrado, tente novamente.")
+            }
+        }
+        else {
+            showError("Digite o email!")
         }
     }
 
