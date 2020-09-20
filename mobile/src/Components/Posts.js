@@ -140,7 +140,7 @@ export default function Posts(props) {
                                 <View style={styles.postHeader}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <View style={[styles.postTitulo, { flex: 2, maxWidth: 200 }]}>
-                                            <Image style={styles.avatar} source={{ uri: post.user.url ? `${post.user.url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                                            <Image style={styles.avatar} source={{ uri: post.user.url ? post.user.url.includes('s3') ? `${post.user.url}?${new Date().getTime()}` : post.user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                             <TouchableOpacity onPress={() => navigateToPost(post)}>
                                                 <Text style={styles.postTitle}>{post.title}</Text>
                                             </TouchableOpacity>

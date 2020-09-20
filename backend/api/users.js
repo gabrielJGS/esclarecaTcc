@@ -11,7 +11,7 @@ module.exports = app => {
     const save = async (req, res) => {
         const email = req.body.email.trim().toLowerCase()
         const tags = req.body.tags.trim().toLowerCase()
-
+        console.log(req.body.avatarUser)
         let { key = "", location: url = "" } = ""
 
         if (req.file) {
@@ -19,6 +19,10 @@ module.exports = app => {
             url = req.file.location;
         }
 
+        if(req.body.avatarUser){
+            url = req.body.avatarUser
+        }
+        
         const userExist = await Users.findOne({ email })
         if (userExist) {
             res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`)

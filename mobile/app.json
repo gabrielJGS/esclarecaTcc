@@ -30,6 +30,9 @@
     "android": {
       "package": "com.esclareca.appmobile",
       "versionCode": 1
-    }
+    },
+    "facebookAppId": "788451035063636",
+    "facebookDisplayName": "Esclareça",
+    "facebookScheme": "fb788451035063636"
   }
 }

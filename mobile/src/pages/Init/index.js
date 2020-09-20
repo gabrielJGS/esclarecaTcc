@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
-import { Image, View, AsyncStorage, KeyboardAvoidingView, Text, Platform, TextInput, TouchableOpacity, StatusBar } from "react-native";
+import { Image, View, AsyncStorage, Text, TouchableOpacity, StatusBar } from "react-native";
 import api from '../../services/api'
 
 import logo from '../../assets/logo.png'; // Nessa página poderia usar uma logo maior
@@ -10,13 +10,29 @@ import googleIcon from '../../assets/google.png';
 import styles from './styles'
 import * as Animatable from 'react-native-animatable'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import LinearGradient from 'react-native-linear-gradient';
+import * as Facebook from 'expo-facebook';
+import * as Google from 'expo-google-app-auth'
+import { AuthContext } from '../../context'
+import { showError, showSucess } from '../../common'
+import { set } from 'react-native-reanimated';
 
 export default function Init(){
     const navigation = useNavigation()
+    const { singIn } = React.useContext(AuthContext);
+    const [user, setUser] = useState(null)
+    const [emailUser, setEmailUser] = useState('');
+    const [nameUser, setNameUser] = useState('');
+    const [passUser, setPassUser] = useState('');
+    const [avatarUser, setAvatarUser] = useState('');
     
     async function navigateToLogin() {
         navigation.navigate('Login');
+    }
+
+    async function navigateToTags() {
+        navigation.navigate('Tags',{
+            user
+        });
     }
 
     useEffect(() => {
@@ -26,6 +42,97 @@ export default function Init(){
             }
         })
     }, [])
+
+    async function FacebooklogIn() {
+        try {
+          await Facebook.initializeAsync('788451035063636');
+          const {
+            type,
+            token,
+            expires,
+            permissions,
+            declinedPermissions,
+          } = await Facebook.logInWithReadPermissionsAsync('788451035063636',{
+            permissions: ['public_profile','email'],
+          });
+          if (type === 'success') {
+            // Get the user's name using Facebook's Graph API
+            const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,picture.height(500)`);
+            console.log(response.data)
+            const data = await response.json();
+            if(data){
+                setUser(data);
+                setEmailUser(user.email);
+                setPassUser(user.id);
+                setNameUser(user.name);
+                setAvatarUser(user.picture.data.url)
+            }
+            
+            try {
+                //LOGIN
+                const response = await api.post('/signin', {
+                    email: emailUser, password: passUser
+                });
+                const login = await response.data;
+                try {
+                    await AsyncStorage.setItem('user', login.id.toString());
+                    await AsyncStorage.setItem('userName', login.name.toString());
+                    await AsyncStorage.setItem('userTags', login.tags.toString());
+                    singIn();
+                } catch (x) {
+                    showError(x)
+                }
+            } catch (e) {
+                navigateToTags(user);
+            }
+            //
+          } else {
+            // type === 'cancel'
+          }
+        } catch ({ message }) {
+          alert(`Facebook Login Error: ${message}`);
+        }
+    }
+
+    async function GoogleLogIn(){
+        try {
+            const result = await Google.logInAsync({
+                androidClientId: '366556546753-3da9s6fs4erjut74c3p7usmullq2ep4f.apps.googleusercontent.com',
+                iosClientId: '366556546753-nfk1ao48565161rmicqg85ivc9gab100.apps.googleusercontent.com',
+                scopes: ['profile', 'email'],
+              });
+            
+            if (result.type === 'success') {
+                setUser(result.user);
+                setEmailUser(user.email);
+                setPassUser(user.id);
+
+                try {
+                    //LOGIN
+                    const response = await api.post('/signin', {
+                        email: emailUser, password: passUser
+                    });
+                    const login = await response.data;
+                    try {
+                        await AsyncStorage.setItem('user', login.id.toString());
+                        await AsyncStorage.setItem('userName', login.name.toString());
+                        await AsyncStorage.setItem('userTags', login.tags.toString());
+                        singIn();
+                    } catch (x) {
+                        showError(x)
+                    }
+                } catch (e) {
+                    navigateToTags(user);
+                }
+                //
+            }        
+            else {
+                
+            }      
+        } catch (e) {
+        return { error: true };
+        }
+    }
 
     return(
         <View style={styles.Container}>
@@ -48,11 +155,11 @@ export default function Init(){
                 </View>
                 <View style={styles.Button}>
                     <View style={{alignContent:'center',flexDirection:'column',justifyContent:'center'}}>
-                        <TouchableOpacity style={styles.Google}>
+                        <TouchableOpacity style={styles.Google} onPress={GoogleLogIn}>
                             <Image style={{width:25, height:25}} source={googleIcon} />
                             <Text style={styles.GoogleF}>Login com Google</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.Facebook}>
+                        <TouchableOpacity style={styles.Facebook} onPress={FacebooklogIn}>
                         <Image style={{width:25, height:25}} source={facebookIcon} />
                             <Text style={styles.FacebookF}>Login com Facebook</Text>
                         </TouchableOpacity>

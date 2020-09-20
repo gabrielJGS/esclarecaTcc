@@ -216,7 +216,7 @@ export default function Network() {
                             <View style={styles.postHeader}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Image style={styles.avatar} source={{ uri: user.url ? `${user.url}?${new Date().getTime()}` : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                                        <Image style={styles.avatar} source={{ uri: user.url ? user.url.includes('s3') ? `${user.url}?${new Date().getTime()}` : user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                         <TouchableOpacity onPress={() => navigateToProfile(user._id)}>
                                             <View style={{ marginLeft: 5 }}>
                                                 <Text style={{ fontSize: 14, color: '#365478', fontWeight: 'bold' }}>{user.name}</Text>

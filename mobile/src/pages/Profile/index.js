@@ -81,6 +81,7 @@ export default function Profile({ route, navigation }) {
         setEmail(response.data.user.email)
         setTags(response.data.user.tags)
         setUserId(response.data.user._id)
+        setPassword(response.data.user.password)
         if (response.data.user.url && response.data.user.url != '') {
           setAvatar(response.data.user.url)
         } else {
@@ -482,7 +483,7 @@ export default function Profile({ route, navigation }) {
           )
           : null}
       >
-        <Image style={styles.avatar} source={{ uri: isUploadingImage ? avatar.uri : `${avatar}?${new Date().getTime()}` }} />
+        <Image style={styles.avatar} source={{ uri: isUploadingImage ? avatar.uri : avatar.includes('s3') ? `${avatar}?${new Date().getTime()}` : avatar }} />
       </TouchableOpacity>
       <View style={styles.body}>
         <View style={styles.perfilName}>

@@ -23,7 +23,8 @@ import Ranking from './pages/Ranking'
 import HomeSlack from './pages/HomeSlack';
 import SlackPage from './pages/SlackPage';
 import Network from './pages/Network';
-import Password from './pages/Password'
+import Password from './pages/Password';
+import Tags from './pages/Tags';
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -39,6 +40,7 @@ const AuthStack = () => (
         <HomeStack.Screen name="Login" component={Login}></HomeStack.Screen>
         <HomeStack.Screen name="Password" component={Password}></HomeStack.Screen>
         <HomeStack.Screen name="Register" component={Register}></HomeStack.Screen>
+        <HomeStack.Screen name="Tags" component={Tags}></HomeStack.Screen>
     </HomeStack.Navigator>
 )
 
@@ -122,7 +124,10 @@ function CustomDrawerContent(props) {
                                     rounded
                                     source={{
                                         uri: avatar
-                                            ? `${avatar}?${new Date().getTime()}`
+                                            ? avatar.includes('s3') ? 
+                                                `${avatar}?${new Date().getTime()}`
+                                                :
+                                                avatar
                                             : 'https://www.colegiodepadua.com.br/img/user.png',
                                     }}
                                     size={50}
