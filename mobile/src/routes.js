@@ -25,6 +25,7 @@ import SlackPage from './pages/SlackPage';
 import Network from './pages/Network';
 import Password from './pages/Password';
 import Tags from './pages/Tags';
+import ResetPass from './pages/ResetPass';
 
 const AppStack = createStackNavigator()
 const App2Stack = createStackNavigator()
@@ -41,6 +42,7 @@ const AuthStack = () => (
         <HomeStack.Screen name="Password" component={Password}></HomeStack.Screen>
         <HomeStack.Screen name="Register" component={Register}></HomeStack.Screen>
         <HomeStack.Screen name="Tags" component={Tags}></HomeStack.Screen>
+        <HomeStack.Screen name="ResetPass" component={ResetPass}></HomeStack.Screen>
     </HomeStack.Navigator>
 )
 

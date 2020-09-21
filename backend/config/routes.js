@@ -23,6 +23,7 @@ module.exports = app => {
     app.post('/users/:id/block', app.api.users.blockUser)//Bloquear usuário
     app.post('/users/:id/follow', app.api.users.followUser)//Seguir usuário
     app.post('/forget', app.api.users.forgotPassword)//esqueceu a senha
+    app.post('/resetPass', app.api.users.resetPassword)//resetar senha
 
     //Posts
     app.route('/posts')

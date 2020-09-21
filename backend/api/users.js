@@ -240,7 +240,6 @@ module.exports = app => {
             } else {
                 obterHash(token.trim().toLowerCase(), hash => {
                     userExist.password = hash
-                    console.log(hash)
                     userExist.save().then((savedUser)=>{
                         transporter.sendMail({
                             to: email,
@@ -248,8 +247,8 @@ module.exports = app => {
                             subject: 'Esqueceu a senha',
                             html: `
                                 <p>Olá ${userExist.name}, você esqueceu sua senha?</p>
-                                <h5>Esta é a sua senha temporária: ${token}</h5>
-                                <p>Altere sua senha em seu perfil após o login.</p>
+                                <h5>Esta é o seu código: ${token}</h5>
+                                <p>Volte para o aplicativo e insira-o no campo destinada para prosseguir! :)</p>
                             ` 
                         })
                         res.status(200).json({message: "Verifique seu e-mail e faça o login com a sua senha!"})
@@ -259,5 +258,29 @@ module.exports = app => {
         })
     }
 
-    return { save, update, patch, profile, upload, list, blockUser, followUser, index, forgotPassword }
+    const resetPassword = async (req, res) => {
+        const email = req.body.email.trim().toLowerCase();
+        const hash = req.body.hash.trim().toLowerCase()
+        const newPass = req.body.newPass.trim().toLowerCase();
+
+        const userExist = await Users.findOne({ email })
+        if (!userExist) {
+            return res.status(400).json(`${email} inexistente!`)
+        } else {
+            bcrypt.compare(hash, userExist.password, (err, isMatch) => {
+                if (err || !isMatch) {
+                    res.status(401).send('Código informálido inválido ou expirado.')
+                    return
+                }
+                obterHash(newPass, cod => {
+                    userExist.password = cod
+                    userExist.save().then((savedUser)=>{
+                        res.status(200).json({message: "Senha alterada com sucesso!"})
+                    })
+                })
+            })
+        }
+    }
+
+    return { save, update, patch, profile, upload, list, blockUser, followUser, index, forgotPassword, resetPassword }
 };

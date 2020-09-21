@@ -16,6 +16,12 @@ export default function Password(){
 
     }, [])
 
+    function navigateToResetpass() {
+        navigation.navigate('ResetPass', {
+            email
+        })
+    }
+
     async function handleForgetPassword() {
         if(email){
             try {
@@ -23,8 +29,8 @@ export default function Password(){
                     email
                 });
                 if(response.status == 200){
-                    showSucess(`Verifique o email ${email} e faça o login com a sua nova senha!`)
-                    navigation.goBack()
+                    showSucess(`Verifique o email ${email} e siga as instruções.`)
+                    navigateToResetpass();
                 }
                 else{
 
