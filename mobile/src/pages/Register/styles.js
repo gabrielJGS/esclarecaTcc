@@ -107,7 +107,7 @@ export default StyleSheet.create({
         marginHorizontal:hp('5%'),
         paddingHorizontal:hp('2%'), 
         marginTop:hp('5%'), flex:1, 
-        marginBottom:hp('10%'),
+        maxHeight:hp('70%'),
         borderRadius:10
     }
 });
