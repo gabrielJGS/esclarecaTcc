@@ -247,8 +247,8 @@ module.exports = app => {
                             subject: 'Esqueceu a senha',
                             html: `
                                 <p>Olá ${userExist.name}, você esqueceu sua senha?</p>
-                                <h5>Esta é o seu código: ${token}</h5>
-                                <p>Volte para o aplicativo e insira-o no campo destinada para prosseguir! :)</p>
+                                <h5>Este é o seu código: ${token}</h5>
+                                <p>Volte para o aplicativo e insira-o no campo destinado para prosseguir! :)</p>
                             ` 
                         })
                         res.status(200).json({message: "Verifique seu e-mail e faça o login com a sua senha!"})

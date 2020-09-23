@@ -57,33 +57,29 @@ export default function Init(){
           });
           if (type === 'success') {
             // Get the user's name using Facebook's Graph API
+            let data
             const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,picture.height(500)`);
-            console.log(response.data)
-            const data = await response.json();
-            if(data){
-                setUser(data);
-                setEmailUser(user.email);
-                setPassUser(user.id);
-                setNameUser(user.name);
-                setAvatarUser(user.picture.data.url)
+            try{
+                data = await response.json();
+                console.log(data)
             }
-            
+            catch{
+
+            }
             try {
                 //LOGIN
                 const response = await api.post('/signin', {
-                    email: emailUser, password: passUser
+                    email: data.email, password: data.id
                 });
                 const login = await response.data;
-                try {
-                    await AsyncStorage.setItem('user', login.id.toString());
-                    await AsyncStorage.setItem('userName', login.name.toString());
-                    await AsyncStorage.setItem('userTags', login.tags.toString());
-                    singIn();
-                } catch (x) {
-                    showError(x)
-                }
+                
+                await AsyncStorage.setItem('user', login.id.toString());
+                await AsyncStorage.setItem('userName', login.name.toString());
+                await AsyncStorage.setItem('userTags', login.tags.toString());
+                singIn();
+                
             } catch (e) {
-                navigateToTags(user);
+                navigateToTags(data);
             }
             //
           } else {
@@ -101,30 +97,22 @@ export default function Init(){
                 iosClientId: '366556546753-nfk1ao48565161rmicqg85ivc9gab100.apps.googleusercontent.com',
                 scopes: ['profile', 'email'],
               });
-            
+              
             if (result.type === 'success') {
-                setUser(result.user);
-                setEmailUser(user.email);
-                setPassUser(user.id);
-
+                //setUser(result.user);
                 try {
                     //LOGIN
                     const response = await api.post('/signin', {
-                        email: emailUser, password: passUser
+                        email: result.user.email, password: result.user.id
                     });
                     const login = await response.data;
-                    try {
-                        await AsyncStorage.setItem('user', login.id.toString());
-                        await AsyncStorage.setItem('userName', login.name.toString());
-                        await AsyncStorage.setItem('userTags', login.tags.toString());
-                        singIn();
-                    } catch (x) {
-                        showError(x)
-                    }
+                    await AsyncStorage.setItem('user', login.id.toString());
+                    await AsyncStorage.setItem('userName', login.name.toString());
+                    await AsyncStorage.setItem('userTags', login.tags.toString());
+                    singIn();
                 } catch (e) {
-                    navigateToTags(user);
+                    navigateToTags(result.user);
                 }
-                //
             }        
             else {
                 
