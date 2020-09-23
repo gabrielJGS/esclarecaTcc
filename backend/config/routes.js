@@ -32,9 +32,6 @@ module.exports = app => {
         .post(app.api.posts.save)
         .head(app.api.posts.getTotalPosts)
 
-    //Busca dos posts
-    app.post('/posts/search', app.api.posts.searchPost)//Posts do usuário
-
     app.route('/post/:post')//get de único post
         // .all(app.config.passport.authenticate())
         .get(app.api.posts.getOne)
