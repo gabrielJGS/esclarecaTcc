@@ -48,10 +48,6 @@ export default function Home() {
         }
     }, [type])
 
-    const onLoadMore = useCallback(() => {
-        loadPosts();
-    })
-
     function showModal() {
         setModalVisible(!modalVisible)
     }
@@ -64,6 +60,7 @@ export default function Home() {
         if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
+        //Trocar isso para retornar no get /posts
         const user_id = await AsyncStorage.getItem('user')//Fazer esse puto entrar no estado
         const getTotal = await api.head('/posts', { headers: { user_id, type, search_text: searchText, searchSolved, searchFavorite, search_type: searchType } })
         setTotal(getTotal.headers['x-total-count'])
@@ -234,7 +231,7 @@ export default function Home() {
                 </View>
             </View>
 
-            <Posts posts={posts} reloadPosts={reloadPosts} refreshing={refreshing} onEndReached={onLoadMore}
+            <Posts posts={posts} reloadPosts={reloadPosts} refreshing={refreshing} loadPosts={loadPosts}
                 searchSolved={searchSolved} searchFavorite={searchFavorite} loading={loading} navigation={navigation} type={type}
             />
 
@@ -259,6 +256,6 @@ export default function Home() {
                     <Feather name="plus" size={25} color="white"></Feather>
                 </Animatable.View>
             </TouchableOpacity>
-        </View >
+        </View>
     );
 }

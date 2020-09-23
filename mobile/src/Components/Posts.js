@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, ActivityIndicator, AsyncStorage } from 'react-native';
-import { Feather, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
+import { Feather, FontAwesome } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
 import { showError, handleLimitBigText, handleDate } from '../common'
 import api from '../services/api'
@@ -115,6 +115,9 @@ export default function Posts(props) {
             </View>
         );
     };
+    const onLoadMore = useCallback(() => {
+        props.loadPosts();
+    })
 
     return (
         <View style={styles.Body}>
@@ -125,8 +128,8 @@ export default function Posts(props) {
                     keyExtractor={post => String(post._id)}
                     refreshing={props.refreshing}
                     onRefresh={props.reloadPosts}
-                    onEndReached={props.onLoadMore}
-                    onEndReachedThreshold={0.2}
+                    onEndReached={onLoadMore}
+                    onEndReachedThreshold={0.5}
                     ListFooterComponent={renderFooter}
                     showsVerticalScrollIndicator={false}
                     removeClippedSubviews={false}
