@@ -526,7 +526,7 @@ export default function Profile({ route, navigation }) {
         </View>
       </Animatable.View>
 
-      <Posts posts={posts} reloadPosts={reloadPosts} refreshing={refreshing} onEndReached={loadPosts}
+      <Posts posts={posts} reloadPosts={reloadPosts} refreshing={refreshing} loadPosts={loadPosts}
         searchSolved={false} searchFavorite={false} loading={loading} navigation={navigation}
       />
 
