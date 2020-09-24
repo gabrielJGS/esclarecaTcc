@@ -66,6 +66,9 @@ export default function NewPost({ route, navigation }) {
                 value={title}
                 onChangeText={setTitle}
                 numberOfLines={2}
+                returnKeyType = { "next" }
+                onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                blurOnSubmit={false}
               />
               <Text style={styles.label}>Descrição d{type == false ? 'a dúvida' : 'o conteúdo'}</Text>
               <TextInput
@@ -75,6 +78,10 @@ export default function NewPost({ route, navigation }) {
                 placeholder={"Descreva qual "+(type==false?"à sua dúvida":"ao seu conteúdo")}
                 value={desc}
                 onChangeText={setDesc}
+                returnKeyType = { "next" }
+                onSubmitEditing={() => { this.thirdTextInput.focus(); }}
+                blurOnSubmit={false}
+                ref={(input) => { this.secondTextInput = input; }}
               />
               <Text style={styles.label}>Tags</Text>
               <TextInput
@@ -86,6 +93,8 @@ export default function NewPost({ route, navigation }) {
                 value={tags}
                 onChangeText={setTags}
                 numberOfLines={2}
+                returnKeyType="done"
+                ref={(input) => { this.thirdTextInput = input; }}
               />
               <Text style={styles.label}>Anexo</Text>
               <TouchableOpacity style={styles.anexo}>
@@ -125,6 +134,9 @@ export default function NewPost({ route, navigation }) {
                   value={title}
                   onChangeText={setTitle}
                   numberOfLines={2}
+                  returnKeyType = { "next" }
+                  onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                  blurOnSubmit={false}
                 />
                 <Text style={styles.label}>Tags</Text>
                 <TextInput
@@ -136,6 +148,8 @@ export default function NewPost({ route, navigation }) {
                   value={tags}
                   onChangeText={setTags}
                   numberOfLines={2}
+                  returnKeyType = { 'done' }
+                  ref={(input) => { this.secondTextInput = input; }}
                 />
               </View>
             </View>

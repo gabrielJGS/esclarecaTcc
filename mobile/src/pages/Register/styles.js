@@ -51,6 +51,30 @@ export default StyleSheet.create({
         marginBottom: hp('2%'),
         borderRadius: 5,
     },
+    input2: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#B2BABB',
+        backgroundColor: 'white',
+        paddingHorizontal: 20,
+        fontSize: hp('1.8%'),
+        color: '#707B7C',
+        height: hp('4.5%'),
+        marginBottom: hp('2%'),
+        borderRadius: 5,
+        width:130
+    },
+    input3: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#B2BABB',
+        backgroundColor: 'white',
+        paddingHorizontal: 20,
+        fontSize: hp('1.8%'),
+        color: '#707B7C',
+        height: hp('4.5%'),
+        marginBottom: hp('2%'),
+        borderRadius: 5,
+        width:160
+    },
     button: {
         height: hp('5%'),
         width:wp('50%'),
@@ -107,7 +131,7 @@ export default StyleSheet.create({
         marginHorizontal:hp('5%'),
         paddingHorizontal:hp('2%'), 
         marginTop:hp('5%'), flex:1, 
-        marginBottom:hp('10%'),
+        maxHeight:hp('70%'),
         borderRadius:10
     }
 });

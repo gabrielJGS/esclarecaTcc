@@ -42,60 +42,35 @@ export default function Password() {
     }
   }
 
-  return (
-    <KeyboardAvoidingView behavior="" style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Feather name="chevron-left" size={20} color="#FFC300"></Feather>
-        </TouchableOpacity>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text
-            style={{
-              fontWeight: "bold",
-              color: "white",
-              fontSize: 20,
-              marginRight: 5,
-            }}
-          >
-            Esqueci a senha
-          </Text>
-        </View>
-      </View>
-      <View style={styles.forms}>
-        <Text style={styles.label1}>Digite seu e-mail</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Insira seu e-mail"
-          placeholderTextColor="#999"
-          autoCapitalize="words"
-          autoCorrect={false}
-          value={email}
-          onChangeText={setEmail}
-          returnKeyType="done"
-        />
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-          onPress={handleForgetPassword}
-        >
-          <Text style={styles.label}>Enviar</Text>
-          <Feather
-            name="chevron-right"
-            size={20}
-            style={{ top: 1, left: 2 }}
-            color="#FFC300"
-          ></Feather>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
-  );
+    return(
+        <KeyboardAvoidingView behavior="" style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress ={() => navigation.goBack()}>
+                    <Feather name="chevron-left" size={20} color="#FFC300"></Feather>
+                </TouchableOpacity>
+                <View style={{flexDirection:'row', alignItems:'center',justifyContent:'center'}}>
+                    <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20, marginRight:5 }}>Esqueci a senha</Text>
+                </View>
+            </View>
+            <View style={styles.forms}>
+                <Text style={styles.label1}>Digite seu e-mail</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Insira seu e-mail"
+                    placeholderTextColor="#999"
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                    value={email}
+                    onChangeText={setEmail}
+                    returnKeyType="send"
+                    onSubmitEditing={() => { handleForgetPassword() }}
+                    blurOnSubmit={false}
+                />
+                <TouchableOpacity style={{flexDirection:'row', alignItems:'center', justifyContent: 'space-between'}} onPress ={handleForgetPassword}>
+                    <Text style={styles.label}>Enviar</Text>
+                    <Feather name="chevron-right" size={20} style={{top:1,left:2}} color="#FFC300"></Feather>
+                </TouchableOpacity>
+            </View>
+        </KeyboardAvoidingView>
+    )
 }

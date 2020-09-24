@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     borderRadius:10,
     marginHorizontal:50,
     marginVertical:'50%',
-    height:hp('20%')
+    //height:hp('20%')
   },
   label1: {
       fontWeight: 'bold',

@@ -81,60 +81,58 @@ export default function Login() {
     navigation.navigate("Password");
   }
 
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.select({
-        ios: "padding",
-        android: null,
-      })}
-      style={styles.container}
-    >
-      <StatusBar
-        barStyle="light-content"
-        translucent={false}
-        backgroundColor={"#365478"}
-      />
-      <View style={styles.header}>
-        <Animatable.Image
-          animation="fadeInUpBig"
-          duration={0}
-          source={logo}
-          style={styles.img}
-          resizeMode="stretch"
-        />
-      </View>
-      <Animatable.View style={styles.form} animation="fadeInUpBig">
-        <Text style={styles.text}>Entre com sua conta</Text>
-        <Text style={styles.label}>E-MAIL</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Seu e-mail"
-          placeholderTextColor="#999"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={email}
-          onChangeText={setEmail}
-        />
-        <Text style={styles.label}>SENHA</Text>
-        <TextInput
-          style={styles.input2}
-          placeholder="Sua senha"
-          placeholderTextColor="#999"
-          secureTextEntry={true}
-          password={true}
-          autoCapitalize="words"
-          autoCorrect={false}
-          value={senha}
-          onChangeText={setSenha}
-          returnKeyType="done"
-        />
-        <TouchableOpacity
-          onPress={navigateToPassword}
-          style={{ marginBottom: 0 }}
-        >
-          <Text style={{ color: "#e8423f" }}>Esqueci a senha</Text>
-        </TouchableOpacity>
+    return (
+        <KeyboardAvoidingView behavior={Platform.select({
+            ios: 'padding',
+            android: null,
+        })} style={styles.container}>
+            <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />
+            <View style={styles.header}>
+                <Animatable.Image
+                    animation="fadeInUpBig"
+                    duration={0}
+                    source={logo}
+                    style={styles.img}
+                    resizeMode="stretch"
+                />
+            </View>
+            <Animatable.View
+                style={styles.form}
+                animation="fadeInUpBig">
+                <Text style={styles.text}>Entre com sua conta</Text>
+                <Text style={styles.label}>E-MAIL</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Seu e-mail"
+                    placeholderTextColor="#999"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    value={email}
+                    onChangeText={setEmail}
+                    returnKeyType = { "next" }
+                    onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                    blurOnSubmit={false}
+                />
+                <Text style={styles.label}>SENHA</Text>
+                <TextInput
+                    style={styles.input2}
+                    placeholder="Sua senha"
+                    placeholderTextColor="#999"
+                    secureTextEntry={true}
+                    password={true}
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                    value={senha}
+                    onChangeText={setSenha}
+                    returnKeyType="done"
+                    onSubmitEditing={() => { handleSubmit() }}
+                    blurOnSubmit={false}
+                    ref={(input) => { this.secondTextInput = input; }}
+                />
+                <TouchableOpacity onPress={navigateToPassword} style={{ marginBottom: 0 }}>
+                    <Text style={{ color: '#e8423f' }}>Esqueci a senha</Text>
+                </TouchableOpacity>
 
         <View style={styles.btn}>
           <TouchableOpacity onPress={handleSubmit} style={styles.button}>

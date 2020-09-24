@@ -322,9 +322,10 @@ export default function Home() {
           autoCorrect={false}
           value={searchText}
           onChangeText={setSearchText}
-          multiline={true}
           numberOfLines={2}
-          returnKeyType="done"
+          returnKeyType="search"
+          onSubmitEditing={() => { reloadPosts() }}
+          blurOnSubmit={false}
         />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <TouchableOpacity onPress={reloadPosts}>
