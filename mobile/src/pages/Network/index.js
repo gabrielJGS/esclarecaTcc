@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Alert, FlatList, ActivityIndicator, TextInput, Image, AsyncStorage } from 'react-native';
-import { Feather, FontAwesome, SimpleLineIcons } from '@expo/vector-icons'
+import { Feather, FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import * as Animatable from 'react-native-animatable'
 
@@ -216,7 +216,7 @@ export default function Network() {
                             <View style={styles.postHeader}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Image style={styles.avatar} source={{ uri: user.url ? user.url.includes('s3') ? `${user.url}?${new Date().getTime()}` : user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                                        <Image style={styles.avatar} source={{ uri: user.url ? user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                         <TouchableOpacity onPress={() => navigateToProfile(user._id)}>
                                             <View style={{ marginLeft: 5 }}>
                                                 <Text style={{ fontSize: 14, color: '#365478', fontWeight: 'bold' }}>{user.name}</Text>

@@ -229,7 +229,7 @@ export default function PostPage({ route, navigation }) {
                 </View>
                 <View style={styles.DuvidaCorpo}>
                     <TouchableOpacity onPress={() => navigateToProfile(post.user._id)}>
-                        <Image style={styles.avatar} source={{ uri: post.user.url ? post.user.url.includes('s3') ? `${post.user.url}?${new Date().getTime()}` : post.user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                        <Image style={styles.avatar} source={{ uri: post.user.url ? post.user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                     </TouchableOpacity>
                     <View style={{ paddingLeft: 10 }}>
                         <TouchableOpacity onPress={() => navigateToProfile(post.user._id)}>
@@ -336,7 +336,7 @@ export default function PostPage({ route, navigation }) {
                                 <View style={styles.postHeader}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <TouchableOpacity style={styles.postTitulo} onPress={() => navigateToProfile(comment.user._id)}>
-                                            <Image style={styles.avatar} source={{ uri: comment.user.url ? comment.user.url.includes('s3') ? `${comment.user.url}?${new Date().getTime()}` : comment.user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                                            <Image style={styles.avatar} source={{ uri: comment.user.url ? comment.user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                             <Text style={styles.postTitle}>{comment.user.name}</Text>
                                         </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
