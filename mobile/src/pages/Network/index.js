@@ -171,9 +171,11 @@ export default function Network() {
                     autoCorrect={false}
                     value={searchText}
                     onChangeText={setSearchText}
-                    multiline={true}
+                    //multiline={true}
                     numberOfLines={2}
-                    returnKeyType="done"
+                    returnKeyType="search"
+                    onSubmitEditing={() => { reloadUsers() }}
+                    blurOnSubmit={false}
                 />
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
                     <TouchableOpacity onPress={reloadUsers}>

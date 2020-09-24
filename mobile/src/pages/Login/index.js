@@ -102,6 +102,9 @@ export default function Login() {
                     autoCorrect={false}
                     value={email}
                     onChangeText={setEmail}
+                    returnKeyType = { "next" }
+                    onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                    blurOnSubmit={false}
                 />
                 <Text style={styles.label}>SENHA</Text>
                 <TextInput
@@ -115,6 +118,9 @@ export default function Login() {
                     value={senha}
                     onChangeText={setSenha}
                     returnKeyType="done"
+                    onSubmitEditing={() => { handleSubmit() }}
+                    blurOnSubmit={false}
+                    ref={(input) => { this.secondTextInput = input; }}
                 />
                 <TouchableOpacity onPress={navigateToPassword} style={{ marginBottom: 0 }}>
                     <Text style={{ color: '#e8423f' }}>Esqueci a senha</Text>

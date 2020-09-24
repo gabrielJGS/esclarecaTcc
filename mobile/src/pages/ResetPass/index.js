@@ -68,7 +68,9 @@ export default function ResetPass({route,navigation}){
                     autoCorrect={false}
                     value={hash}
                     onChangeText={setHash}
-                    returnKeyType="done"
+                    returnKeyType = { "next" }
+                    onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                    blurOnSubmit={false}
                 />
                 <Text style={styles.label2}>Digite a nova senha:</Text>
                 <TextInput
@@ -81,6 +83,9 @@ export default function ResetPass({route,navigation}){
                     value={newPass}
                     onChangeText={setNewPass}
                     returnKeyType="done"
+                    onSubmitEditing={() => { handleResetPass() }}
+                    blurOnSubmit={false}
+                    ref={(input) => { this.secondTextInput = input; }}
                 />
                 <TouchableOpacity style={{flexDirection:'row', alignItems:'center', justifyContent: 'space-between'}} onPress ={handleResetPass}>
                     <Text style={styles.label}>Salvar</Text>

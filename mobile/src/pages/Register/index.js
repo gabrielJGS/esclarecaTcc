@@ -21,6 +21,7 @@ export default function Register() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPass, setConfirmPass] = useState('');
     const [tags, setTags] = useState('');
     //const [file, setFile] = useState(null);
     const [avatar, setAvatar] = useState('https://www.colegiodepadua.com.br/img/user.png');
@@ -29,44 +30,66 @@ export default function Register() {
 
     //Inserir tratamento para caso tente inserir vazio
     async function handleSubmit() {
-        try {
-            const response = await api.post('/signup', {
-                name, email, password, tags
-            })
+        if(email && name && password && confirmPass && tags){
+            if(password === confirmPass){
+                let patternMail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                if(patternMail.test(email)){
+                    let patternPass = /^(?=.*\d)(?=.*[a-z])[0-9a-z]{6,}$/
+                    if(patternPass.test(password)){
+                        try {
+                            const response = await api.post('/signup', {
+                                name, email, password, tags
+                            })
 
-            if (response.status == 204) {
-                showSucess("Usuário cadastrado com sucesso")
-                //navigation.goBack()
-                try {
-                    const response = await api.post('/signin', {
-                        email, password: password
-                    });
-                    const user = response.data;
-                    try {
-                        await AsyncStorage.setItem('user', user.id.toString());
-                        await AsyncStorage.setItem('userName', user.name.toString());
-                        await AsyncStorage.setItem('userTags', user.tags.toString());
-                        if (avatar != 'https://www.colegiodepadua.com.br/img/user.png') {
-                            try {
-                                handleSubmitPhoto(user.id)
+                            if (response.status == 204) {
+                                showSucess("Usuário cadastrado com sucesso")
+                                //navigation.goBack()
+                                try {
+                                    const response = await api.post('/signin', {
+                                        email, password: password
+                                    });
+                                    const user = response.data;
+                                    try {
+                                        await AsyncStorage.setItem('user', user.id.toString());
+                                        await AsyncStorage.setItem('userName', user.name.toString());
+                                        await AsyncStorage.setItem('userTags', user.tags.toString());
+                                        if (avatar != 'https://www.colegiodepadua.com.br/img/user.png') {
+                                            try {
+                                                handleSubmitPhoto(user.id)
+                                            }
+                                            catch (k) {
+                                                showError(x)
+                                            }
+                                        }
+                                        singIn();
+                                    } catch (x) {
+                                        showError(x)
+                                    }
+                                } catch (e) {
+                                    showError("Error:\n" + e)
+                                }
+                            } else {
+                                showError("Erro")
                             }
-                            catch (k) {
-                                showError(x)
-                            }
+
+                        } catch (e) {
+                            showError(e)
                         }
-                        singIn();
-                    } catch (x) {
-                        showError(x)
                     }
-                } catch (e) {
-                    showError("Error:\n" + e)
+                    else{
+                        showError("Ajuste sua senha para que tenha pelo menos 1 número e 6 caracteres! :)")
+                    }
                 }
-            } else {
-                showError("Erro")
+                else{
+                    showError("Poxa, seu email está inválido. Insira-o novamente! :D")
+                }
             }
-
-        } catch (e) {
-            showError(e)
+            else{
+                showError('Hmmm... suas senhas não são compatíveis. Insira novamente! ;)')
+            }
+        }
+        else {
+            showError('Parece que existem campos em branco. Insira-os para continuarmos! ;)')
         }
     }
 
@@ -138,7 +161,9 @@ export default function Register() {
                             autoCorrect={false}
                             value={name}
                             onChangeText={setName}
-                            returnKeyType="done"
+                            returnKeyType = { "next" }
+                            onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                            blurOnSubmit={false}
                         />
                         <Text style={styles.label}>E-mail</Text>
                         <TextInput
@@ -150,21 +175,49 @@ export default function Register() {
                             autoCorrect={false}
                             value={email}
                             onChangeText={setEmail}
-                            returnKeyType="done"
+                            returnKeyType = { "next" }
+                            onSubmitEditing={() => { this.thirdTextInput.focus(); }}
+                            blurOnSubmit={false}
+                            ref={(input) => { this.secondTextInput = input; }}
                         />
-                        <Text style={styles.label}>Senha</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Sua senha"
-                            placeholderTextColor="#999"
-                            secureTextEntry={true}
-                            password={true}
-                            autoCapitalize="words"
-                            autoCorrect={false}
-                            value={password}
-                            onChangeText={setPassword}
-                            returnKeyType="done"
-                        />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
+                                <Text style={styles.label}>Senha</Text>
+                                <TextInput
+                                    style={styles.input2}
+                                    placeholder="Sua senha"
+                                    placeholderTextColor="#999"
+                                    secureTextEntry={true}
+                                    password={true}
+                                    autoCapitalize="words"
+                                    autoCorrect={false}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    returnKeyType = { "next" }
+                                    onSubmitEditing={() => { this.fourthTextInput.focus(); }}
+                                    blurOnSubmit={false}
+                                    ref={(input) => { this.thirdTextInput = input; }}
+                                />
+                            </View>
+                            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
+                                <Text style={styles.label}>Insira novamente</Text>
+                                <TextInput
+                                    style={styles.input3}
+                                    placeholder="Confirme sua senha"
+                                    placeholderTextColor="#999"
+                                    secureTextEntry={true}
+                                    password={true}
+                                    autoCapitalize="words"
+                                    autoCorrect={false}
+                                    value={confirmPass}
+                                    onChangeText={setConfirmPass}
+                                    returnKeyType = { "next" }
+                                    onSubmitEditing={() => { this.fivethTextInput.focus(); }}
+                                    blurOnSubmit={false}
+                                    ref={(input) => { this.fourthTextInput = input; }}
+                                />
+                            </View>
+                        </View>
                         <Text style={styles.label}>Tags <Text style={{color:'#999', fontSize:12, fontWeight:'normal'}}>(assuntos do seu interesse)</Text></Text>
                         <TextInput
                             style={styles.input}
@@ -174,7 +227,10 @@ export default function Register() {
                             autoCorrect={false}
                             value={tags}
                             onChangeText={setTags}
-                            returnKeyType="go"
+                            returnKeyType="done"
+                            onSubmitEditing={() => { handleSubmit() }}
+                            blurOnSubmit={false}
+                            ref={(input) => { this.fivethTextInput = input; }}
                         />
                         <View style={{alignItems:'center', marginRight:5}}>
                             <TouchableOpacity onPress={handleSubmit} style={styles.button}>

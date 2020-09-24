@@ -323,7 +323,9 @@ export default function Profile({ route, navigation }) {
                       value={name}
                       onChangeText={setName}
                       numberOfLines={2}
-                      returnKeyType="next"
+                      returnKeyType = { "next" }
+                      onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                      blurOnSubmit={false}
                     />
                     <Text style={styles.modalSubtitle}>Email</Text>
                     <TextInput
@@ -335,7 +337,10 @@ export default function Profile({ route, navigation }) {
                       value={email}
                       onChangeText={setEmail}
                       numberOfLines={2}
-                      returnKeyType="next"
+                      returnKeyType = { "next" }
+                      onSubmitEditing={() => { this.thirdTextInput.focus(); }}
+                      blurOnSubmit={false}
+                      ref={(input) => { this.secondTextInput = input; }}
                     />
                     <Text style={styles.modalSubtitle}>Tags</Text>
                     <TextInput
@@ -347,7 +352,10 @@ export default function Profile({ route, navigation }) {
                       value={tags.toString()}
                       onChangeText={setTags}
                       numberOfLines={2}
-                      returnKeyType="next"
+                      returnKeyType = { "next" }
+                      onSubmitEditing={() => { this.fourthTextInput.focus(); }}
+                      blurOnSubmit={false}
+                      ref={(input) => { this.thirdTextInput = input; }}
                     />
                     <Text style={styles.modalSubtitle}>Senha</Text>
                     <TextInput
@@ -361,7 +369,10 @@ export default function Profile({ route, navigation }) {
                       value={password}
                       onChangeText={setPassword}
                       numberOfLines={2}
+                      returnKeyType = { "done" }
                       onSubmitEditing={handleModal}
+                      blurOnSubmit={false}
+                      ref={(input) => { this.fourthTextInput = input; }}
                     />
                   </View>
                   <View style={styles.buttonView}>

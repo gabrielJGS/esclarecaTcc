@@ -92,6 +92,8 @@ export default function Tags({ route, navigation }){
                     value={tags}
                     onChangeText={setTags}
                     returnKeyType="done"
+                    onSubmitEditing={() => { handleSubmit() }}
+                    blurOnSubmit={false}
                 />
                 <TouchableOpacity style={{flexDirection:'row', alignItems:'center', justifyContent: 'space-between'}} onPress ={handleSubmit}>
                     <Text style={styles.label}>Finalizar</Text>

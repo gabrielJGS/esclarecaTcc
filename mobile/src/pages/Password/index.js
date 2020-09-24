@@ -64,7 +64,9 @@ export default function Password(){
                     autoCorrect={false}
                     value={email}
                     onChangeText={setEmail}
-                    returnKeyType="done"
+                    returnKeyType="send"
+                    onSubmitEditing={() => { handleForgetPassword() }}
+                    blurOnSubmit={false}
                 />
                 <TouchableOpacity style={{flexDirection:'row', alignItems:'center', justifyContent: 'space-between'}} onPress ={handleForgetPassword}>
                     <Text style={styles.label}>Enviar</Text>

@@ -241,7 +241,9 @@ export default function HomeSlack(props) {
                                             value={nomeModal}
                                             onChangeText={setNomeModal}
                                             numberOfLines={2}
-                                            returnKeyType="done"
+                                            returnKeyType = { "next" }
+                                            onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                                            blurOnSubmit={false}
                                         />
                                     </View>
                                     <View style={styles.viewInput}>
@@ -255,7 +257,8 @@ export default function HomeSlack(props) {
                                             value={tagModal}
                                             onChangeText={setTagModal}
                                             numberOfLines={2}
-                                            returnKeyType="done"
+                                            returnKeyType = { "done" }
+                                            ref={(input) => { this.secondTextInput = input; }}
                                         />
                                     </View>
                                     <View style={styles.viewInput}>
@@ -328,7 +331,9 @@ export default function HomeSlack(props) {
                     value={searchText}
                     onChangeText={setSearchText}
                     numberOfLines={2}
-                    returnKeyType="done"
+                    returnKeyType="search"
+                    onSubmitEditing={() => { reloadSlacks() }}
+                    blurOnSubmit={false}
                 />
                 <TouchableOpacity onPress={() => reloadSlacks()}>
                     <Feather name="search" size={18} color="#FFC300" style={{ marginTop: 2 }} />
