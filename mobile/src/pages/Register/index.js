@@ -130,9 +130,6 @@ export default function Register() {
         }
     }
 
-    function handleCancel() {
-        navigation.goBack()
-    }
     return (
         <KeyboardAvoidingView behavior="" style={styles.container}>
             <StatusBar barStyle="light-content" translucent={false} backgroundColor={'#365478'} />

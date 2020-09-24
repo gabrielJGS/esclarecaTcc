@@ -1,48 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, KeyboardAvoidingView, Alert, FlatList, ActivityIndicator,TextInput, Image} from 'react-native';
-import { Feather, FontAwesome,SimpleLineIcons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
-import * as Animatable from 'react-native-animatable'
+import React, { useState } from "react";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  TextInput,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-import styles from './styles'
-import { showError, showSucess } from '../../common'
-import api from '../../services/api'
+import styles from "./styles";
+import { showError, showSucess } from "../../common";
+import api from "../../services/api";
 
-export default function Password(){
-    const navigation = useNavigation()
-    const [email, setEmail] = useState('')
+export default function Password() {
+  const navigation = useNavigation();
+  const [email, setEmail] = useState("");
 
-    useEffect(() => {
+  function navigateToResetpass() {
+    navigation.navigate("ResetPass", {
+      email,
+    });
+  }
 
-    }, [])
-
-    function navigateToResetpass() {
-        navigation.navigate('ResetPass', {
-            email
-        })
-    }
-
-    async function handleForgetPassword() {
-        if(email){
-            try {
-                const response = await api.post('/forget', {
-                    email
-                });
-                if(response.status == 200){
-                    showSucess(`Verifique o email ${email} e siga as instruções.`)
-                    navigateToResetpass();
-                }
-                else{
-
-                }
-            } catch (e) {
-                showError("Email não cadastrado, tente novamente.")
-            }
+  async function handleForgetPassword() {
+    if (email) {
+      try {
+        const response = await api.post("/forget", {
+          email,
+        });
+        if (response.status == 200) {
+          showSucess(`Verifique o email ${email} e siga as instruções.`);
+          navigateToResetpass();
+        } else {
         }
-        else {
-            showError("Digite o email!")
-        }
+      } catch (e) {
+        showError("Email não cadastrado, tente novamente.");
+      }
+    } else {
+      showError("Digite o email!");
     }
+  }
 
     return(
         <KeyboardAvoidingView behavior="" style={styles.container}>

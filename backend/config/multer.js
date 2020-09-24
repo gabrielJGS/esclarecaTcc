@@ -33,10 +33,9 @@ const storageTypes = {
             crypto.randomBytes(16, (err, hash) => {
                 if (err) {
                     cb(err);
-
                 }
-                // const fileName = `${hash.toString('hex')}-${file.originalname}`;
-                const fileName = `${req.params.id}`;
+                const fileName = `${hash.toString('hex')}-${file.originalname}`;
+                // const fileName = `${req.params.id}`;
                 cb(null, fileName);
             });
         }
@@ -63,5 +62,5 @@ module.exports = {
         else {
             cb(new Error('Invalid file type.'));
         }
-    },
+    }
 };

@@ -13,8 +13,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth'
 import { AuthContext } from '../../context'
-import { showError, showSucess } from '../../common'
-import { set } from 'react-native-reanimated';
+import { showError } from '../../common'
 
 export default function Init(){
     const navigation = useNavigation()

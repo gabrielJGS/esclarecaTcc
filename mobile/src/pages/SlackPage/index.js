@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, AsyncStorage, Alert, TextInput, FlatList, ActivityIndicator, Image } from 'react-native';
-import { Feather, Ionicons, Foundation } from '@expo/vector-icons'
+import { Feather, Foundation } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
 
 import { showError, showSucess, handleDate } from '../../common'
@@ -170,7 +170,7 @@ export default function SlackPage({ route, navigation }) {
                                         <View style={styles.postHeader}>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                                 {message.user.url ?
-                                                    <Image style={styles.avatar} source={{ uri: message.user.url ? message.user.url.includes('s3') ? `${message.user.url}?${new Date().getTime()}` : message.user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
+                                                    <Image style={styles.avatar} source={{ uri: message.user.url ? message.user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                                     : <Feather name="camera" size={30} color='#D8D9DB' />}
                                                 <TouchableOpacity onPress={() => navigateToProfile(message.user._id)}>
                                                     <Text style={styles.postTitle}>{message.user ? message.user.name : ''}</Text>
