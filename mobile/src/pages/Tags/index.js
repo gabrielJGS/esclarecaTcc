@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, KeyboardAvoidingView,AsyncStorage, Alert, FlatList, ActivityIndicator,TextInput, Image} from 'react-native';
-import { Feather, FontAwesome,SimpleLineIcons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
-import * as Animatable from 'react-native-animatable'
+import { Text, View, TouchableOpacity, KeyboardAvoidingView,AsyncStorage, TextInput} from 'react-native';
+import { Feather } from '@expo/vector-icons'
 
 import styles from './styles'
 import { showError, showSucess } from '../../common'

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity,Alert, FlatList, ActivityIndicator, Modal, TouchableWithoutFeedback} from 'react-native';
+import { Text, View, TouchableOpacity, FlatList, ActivityIndicator, Modal, TouchableWithoutFeedback} from 'react-native';
 import { Feather, MaterialCommunityIcons,SimpleLineIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import * as Animatable from 'react-native-animatable'

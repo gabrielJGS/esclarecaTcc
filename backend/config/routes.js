@@ -9,11 +9,12 @@ module.exports = app => {
     //Perfil
     app.route('/users/:id')
         .get(app.api.users.profile)
-        .put(multer(multerConfig).single('file'), app.api.users.update)
+        .put(app.api.users.update)
         .patch(app.api.users.patch)
 
     //Enviar a foto de perfil
     app.post('/users/:id/photo', multer(multerConfig).single('file'), app.api.users.upload)
+    
     //ranking
     app.get('/ranking', app.api.users.list)
 

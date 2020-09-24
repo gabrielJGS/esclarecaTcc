@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-//import { useNavigation } from '@react-navigation/native'
 
-import { SafeAreaView, View, TextInput, TouchableOpacity, AsyncStorage, Text, Image, ScrollView } from 'react-native';
+import { SafeAreaView, View, TextInput, TouchableOpacity, AsyncStorage, Text, ScrollView } from 'react-native';
 import { Ionicons, Feather } from "@expo/vector-icons"
 
 import api from '../../services/api'
@@ -11,8 +10,6 @@ import styles from './styles'
 import { showError, showSucess } from '../../common'
 
 export default function NewPost({ route, navigation }) {
-  //const navigation = useNavigation()
-
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [tags, setTags] = useState('');
