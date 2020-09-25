@@ -1,9 +1,10 @@
 const multer = require('multer');
-const multerConfig = require('../config/multer');
+const multerConfigProfile = require('../config/multerProfile');
+const multerConfigPost = require('../config/multerPost');
 
 module.exports = app => {
     //Login/Cadastro
-    app.post('/signup', multer(multerConfig).single('file'), app.api.users.save)
+    app.post('/signup', multer(multerConfigProfile).single('file'), app.api.users.save)
     app.post('/signin', app.api.auth.signin)
 
     //Perfil
@@ -13,7 +14,7 @@ module.exports = app => {
         .patch(app.api.users.patch)
 
     //Enviar a foto de perfil
-    app.post('/users/:id/photo', multer(multerConfig).single('file'), app.api.users.upload)
+    app.post('/users/:id/photo', multer(multerConfigProfile).single('file'), app.api.users.upload)
     
     //ranking
     app.get('/ranking', app.api.users.list)
@@ -33,9 +34,10 @@ module.exports = app => {
         .post(app.api.posts.save)
         .head(app.api.posts.getTotalPosts)
 
-    app.route('/post/:post')//get de único post
-        // .all(app.config.passport.authenticate())
-        .get(app.api.posts.getOne)
+    app.get('/post/:post',app.api.posts.getOne)//get de único post
+
+    //Anexar no post
+    app.post('/posts/:post/file', multer(multerConfigPost).single('file'), app.api.posts.upload)
 
     //Dar like no post
     app.post('/posts/:post/like', app.api.posts.like)

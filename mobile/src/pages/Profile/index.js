@@ -285,7 +285,6 @@ export default function Profile({ route, navigation }) {
         `/users/${route.params.userId}/photo`,
         data
       );
-      console.log(response.status)
       if (response.status == 201) {
         showSucess("Foto alterada com sucesso");
         setIsUploadingImage(false);
