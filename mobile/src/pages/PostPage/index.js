@@ -241,13 +241,13 @@ export default function PostPage({ route, navigation }) {
     let result = await DocumentPicker.getDocumentAsync({});
 
     if (!result.cancelled) {
-      if (fileIndex == 1) {
+      if (fileIndex == 0) {
         setIsUploadingFile(1);
       }
-      if (fileIndex == 2) {
+      if (fileIndex == 1) {
         setIsUploadingFile(2);
       }
-      setUploadProgress(0)
+      setUploadProgress(0);
       handleUploadFile(result, fileIndex);
     }
   }
@@ -256,7 +256,7 @@ export default function PostPage({ route, navigation }) {
       var percentCompleted = Math.round(
         (progressEvent.loaded * 100) / progressEvent.total
       );
-      setUploadProgress(percentCompleted)
+      setUploadProgress(percentCompleted);
     },
   };
   async function handleUploadFile(result, fileIndex) {
@@ -264,18 +264,24 @@ export default function PostPage({ route, navigation }) {
     let filename = localUri.split("/").pop();
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
+
     try {
+      const user_id = await AsyncStorage.getItem("user");
       const data = new FormData();
       data.append("file", { uri: localUri, name: filename, type });
-      const response = await api.post(`/posts/${post._id}/file`, data, config);
+      const response = await api.post(
+        `/posts/${post._id}/file`,
+        data,
+        { headers: { user_id, file_num: fileIndex } },
+        config
+      );
       if (response.status == 201) {
         showSucess("Arquivo enviado sucesso");
-        setIsUploadingFile(fileIndex);
         // await loadUser(route.params.userId);
         // await reloadPosts();
         // ATUALIZAR O ARQUIVO DEMONTSRADO NA TELA
-        setUploadProgress(0)
-        setIsUploadingFile(0)
+        setUploadProgress(0);
+        setIsUploadingFile(0);
       } else {
         showError(response);
       }
@@ -353,7 +359,7 @@ export default function PostPage({ route, navigation }) {
               >
                 Anexos
               </Text>
-              <TouchableOpacity onPress={() => handlePickFile(1)}>
+              <TouchableOpacity onPress={() => handlePickFile(0)}>
                 <View style={{ paddingLeft: 10 }}>
                   <Feather name="file" size={20} color="#FFC300"></Feather>
                   <Text>
@@ -361,7 +367,7 @@ export default function PostPage({ route, navigation }) {
                   </Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handlePickFile(2)}>
+              <TouchableOpacity onPress={() => handlePickFile(1)}>
                 <View style={{ paddingLeft: 10 }}>
                   <Feather name="file" size={20} color="#FFC300"></Feather>
                   <Text>
