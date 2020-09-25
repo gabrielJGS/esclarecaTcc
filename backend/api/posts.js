@@ -454,12 +454,24 @@ module.exports = (app) => {
 
   const upload = async (req, res) => {
     const { post } = req.params;
-    const { file_num = 0 } = req.headers;
+    const { file_num = 0, user_id } = req.headers;
     let { key = "", location: url = "" } = "";
+    
+    const user = await Users.findById(user_id).catch((err) =>
+      res.status(400).json(err)
+    ); //Caso o id seja inválido vai cair aqui
+    if (!user) {
+      return res.status(401).send("Usuário inválido");
+    }
     if (req.file) {
       // console.log(req.file);
       try {
         const postToUpdate = Posts.findById(post).then((p) => {
+          if (p.user._id != user_id) {
+            return res
+              .status(401)
+              .send(`Usuário ${user_id} não autorizado a deletar o post.`);
+          }
           if (p.files[file_num] != undefined) {
             const keyUrl = p.files[file_num].split("/");
             var s3 = new aws.S3({
