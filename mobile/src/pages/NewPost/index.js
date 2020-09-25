@@ -96,10 +96,6 @@ export default function NewPost({ route, navigation }) {
                 returnKeyType="done"
                 ref={(input) => { this.thirdTextInput = input; }}
               />
-              <Text style={styles.label}>Anexo</Text>
-              <TouchableOpacity style={styles.anexo}>
-                <Ionicons name="md-attach" size={32} color='#D8D9DB'></Ionicons>
-              </TouchableOpacity>
             </View>
           </>
         :
@@ -116,13 +112,6 @@ export default function NewPost({ route, navigation }) {
                   onChangeText={setDesc}
                 />
               </View>
-
-              <View>
-                <TouchableOpacity style={styles.anexo}>
-                  <Ionicons name="md-attach" size={32} color='#D8D9DB'></Ionicons>
-                </TouchableOpacity>
-              </View>
-
               <View style={{paddingHorizontal:30,marginTop:40}}>
                 <Text style={styles.label}>Título do Conteúdo</Text>
                 <TextInput

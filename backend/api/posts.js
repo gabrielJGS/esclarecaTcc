@@ -4,6 +4,14 @@ const mongoose = require("mongoose");
 const Users = require("../models/Users");
 const Posts = require("../models/Posts");
 
+const aws = require("aws-sdk");
+const {
+  storageOption,
+  s3Config_bucket,
+  s3Config_accessKeyId,
+  s3Config_secretAccessKey,
+} = require("../.env");
+
 module.exports = (app) => {
   const getOne = async (req, res) => {
     const { post } = req.params;
@@ -360,6 +368,7 @@ module.exports = (app) => {
       type,
       closed: false,
       user: user_id,
+      files: [],
     }).catch((err) => res.status(400).json(err));
     if (user.ranking === NaN || user.ranking === undefined) {
       value = 5;
@@ -443,6 +452,46 @@ module.exports = (app) => {
     }
   };
 
+  const upload = async (req, res) => {
+    const { post } = req.params;
+    const { file_num = 0 } = req.headers;
+    let { key = "", location: url = "" } = "";
+    if (req.file) {
+      // console.log(req.file);
+      try {
+        const postToUpdate = Posts.findById(post).then((p) => {
+          if (p.files[file_num] != undefined) {
+            const keyUrl = p.files[file_num].split("/");
+            var s3 = new aws.S3({
+              accessKeyId: s3Config_accessKeyId,
+              secretAccessKey: s3Config_secretAccessKey,
+            });
+            var params = {
+              Bucket: s3Config_bucket,
+              Key: `posts/${keyUrl[4]}`,
+            };
+            s3.deleteObject(params, function (err, data) {
+              if (err) console.log(err, err.stack);
+              // error
+              else console.log(); // deleted
+            });
+          }
+          url = req.file.location;
+          if (url == null) {
+            url = `http:${hostIp}:3333/files/${key}`;
+          }
+          p.files.splice(file_num, 1, url);
+          p.save().catch((err) => res.status(400).json(err));
+        });
+      } catch (e) {
+        console.log(e); // deleted
+      }
+      return res.status(201).send();
+    } else {
+      return res.status(204).send("Nenhum arquivo enviado");
+    }
+  };
+
   return {
     index,
     save,
@@ -452,5 +501,6 @@ module.exports = (app) => {
     like,
     getByUser,
     getLikesByUser,
+    upload,
   };
 };

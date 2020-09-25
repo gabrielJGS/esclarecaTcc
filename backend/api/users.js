@@ -129,6 +129,7 @@ module.exports = (app) => {
       return res.status(204).send("Nenhum arquivo enviado");
     }
   };
+  
   const patch = (req, res) => {
     const { id } = req.params;
     const tags = req.body.tags.trim().toLowerCase();
