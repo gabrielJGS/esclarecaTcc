@@ -3,7 +3,7 @@ const path = require('path');
 const crypto = require('crypto');
 const multerS3 = require('multer-s3');
 const aws = require('aws-sdk');
-const { storageOption, s3Config_bucket, s3Config_accessKeyId, s3Config_secretAccessKey } = require('../.env')
+const { storageOption, s3Config_bucketPost, s3Config_accessKeyId, s3Config_secretAccessKey } = require('../.env')
 
 
 const storageTypes = {
@@ -26,7 +26,7 @@ const storageTypes = {
             accessKeyId: s3Config_accessKeyId,
             secretAccessKey: s3Config_secretAccessKey,
         }),
-        bucket: s3Config_bucket,
+        bucket: s3Config_bucketPost,
         contentType: multerS3.AUTO_CONTENT_TYPE,
         acl: 'public-read',
         key: (req, file, cb) => {
@@ -34,7 +34,7 @@ const storageTypes = {
                 if (err) {
                     cb(err);
                 }
-                const fileName = `posts/${hash.toString('hex')}-${file.originalname}`;
+                const fileName = `${hash.toString('hex')}-${file.originalname}`;
                 cb(null, fileName);
             });
         }

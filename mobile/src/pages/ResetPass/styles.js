@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     borderRadius:10,
     marginHorizontal:50,
     marginVertical:'50%',
-    //height:hp('20%')
+    height:hp('20%')
   },
   label1: {
       fontWeight: 'bold',
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     fontSize: hp('1.8%'),
     color: '#707B7C',
-    height: hp('4%'),
+    height: hp('3%'),
     marginBottom: hp('1%'),
     borderRadius: 5,
     paddingHorizontal:60,
