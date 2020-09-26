@@ -12,7 +12,8 @@ import {
   Alert,
   Image,
 } from "react-native";
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import * as WebBrowser from 'expo-web-browser';
 
 import api from "../../services/api";
 
@@ -35,8 +36,8 @@ export default function PostPage({ route, navigation }) {
   const [press, setPress] = useState(false);
 
   const [files, setFiles] = useState(); //No post
-  const [file1, setFile1] = useState(); //Local
-  const [file2, setFile2] = useState(); //Local
+  const [file1, setFile1] = useState(null); //Local
+  const [file2, setFile2] = useState(null); //Local
   const [isUploadingFile, setIsUploadingFile] = useState(0); //Controla se esta fazendo upload
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -49,7 +50,15 @@ export default function PostPage({ route, navigation }) {
         setUserIsPostOwner(true);
       }
     }
-  }, []);
+    if(post.files){
+      if(post.files[0]){
+        setFile1(post.files[0])
+      }
+      if(post.files[1]){
+        setFile2(post.files[1])
+      }
+    }
+  }, [route.params.post]);
 
   useEffect(() => {
     rePost();
@@ -299,6 +308,14 @@ export default function PostPage({ route, navigation }) {
     );
   };
 
+  async function openFile1(file_ur){
+    await WebBrowser.openBrowserAsync(file_ur);
+  }
+
+  async function openFile2(file_ur){
+    await WebBrowser.openBrowserAsync(file_ur);
+  }
+
   return (
     //reidner 26/04
     <View style={styles.container}>
@@ -357,24 +374,109 @@ export default function PostPage({ route, navigation }) {
               <Text
                 style={{ color: "white", fontSize: 15, fontWeight: "bold" }}
               >
-                Anexos
+                {userIsPostOwner ? "Enviar anexos:" : "Anexos:"}
               </Text>
-              <TouchableOpacity onPress={() => handlePickFile(0)}>
-                <View style={{ paddingLeft: 10 }}>
-                  <Feather name="file" size={20} color="#FFC300"></Feather>
-                  <Text>
-                    {isUploadingFile == 1 ? `%${uploadProgress}` : null}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handlePickFile(1)}>
-                <View style={{ paddingLeft: 10 }}>
-                  <Feather name="file" size={20} color="#FFC300"></Feather>
-                  <Text>
-                    {isUploadingFile == 2 ? `%${uploadProgress}` : null}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              {userIsPostOwner ? (
+                <>
+                  {file1 ? (
+                    <>
+                      <TouchableOpacity onPress={() => Alert.alert(
+                          'Escolha a opção:',
+                          'Deseja enviar um novo arquivo ou visualizar o existente?',
+                          [
+                            {text: 'Enviar novo', onPress: () => handlePickFile(0)},
+                            {text: 'Visualizar', onPress: () => openFile1(post.files[0])},
+                          ],
+                          { cancelable: false }
+                        )}
+                        >
+                        <View style={{ paddingLeft: 10, top:15, alignItems:'center' }}>
+                          <Ionicons name="ios-attach" size={20} color="#FFC300"></Ionicons>
+                          <Text style={{color:"#7DCEA0", fontSize:12}}>
+                            {isUploadingFile == 1 ? `%${uploadProgress}` : "Anexo 1"}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  ):(
+                    <>
+                      <TouchableOpacity onPress={() => handlePickFile(0)}>
+                        <View style={{ paddingLeft: 10, top:15, alignItems:'center' }}>
+                          <Ionicons name="ios-attach" size={20} color="#FFC300"></Ionicons>
+                          <Text style={{color:"#7DCEA0", fontSize:12}}>
+                            {isUploadingFile == 1 ? `%${uploadProgress}` : "Anexo 1"}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                  {file2 ? (
+                    <>
+                      <TouchableOpacity onPress={() => Alert.alert(
+                          'Escolha a opção:',
+                          'Deseja ver o arquivo ou inserir um novo?',
+                          [
+                            {text: 'Enviar novo', onPress: () => handlePickFile(1)},
+                            {text: 'Visualizar', onPress: () => openFile1(post.files[1])},
+                          ],
+                          { cancelable: false }
+                        )}
+                      >
+                        <View style={{ paddingLeft: 10, top:15, alignItems:'center' }}>
+                          <Ionicons name="ios-attach" size={20} color="#FFC300"></Ionicons>
+                          <Text style={{color:"#7DCEA0", fontSize:12}}>
+                            {isUploadingFile == 2 ? `%${uploadProgress}` : "Anexo 2"}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  ):(
+                    <>
+                      <TouchableOpacity onPress={() => handlePickFile(1)}>
+                        <View style={{ paddingLeft: 10, top:15, alignItems:'center' }}>
+                          <Ionicons name="ios-attach" size={20} color="#FFC300"></Ionicons>
+                          <Text style={{color:"#7DCEA0", fontSize:12}}>
+                            {isUploadingFile == 2 ? `%${uploadProgress}` : "Anexo 2"}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </>
+              ):(
+                <>
+                  {file1 ? (
+                      <>
+                        <TouchableOpacity onPress={() => openFile1(post.files[0])}>
+                          <View style={{ paddingLeft: 10, top:15, alignItems:'center' }}>
+                            <Ionicons name="ios-attach" size={20} color="#FFC300"></Ionicons>
+                            <Text style={{color:"#7DCEA0", fontSize:12}}>
+                              Anexo 1
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </>
+                  ):(
+                    <>
+                    </>
+                  )}
+                  {file2 ? (
+                      <>
+                        <TouchableOpacity onPress={() => openFile2(post.files[1])}>
+                          <View style={{ paddingLeft: 10, top:15, alignItems:'center' }}>
+                          <Ionicons name="ios-attach" size={20} color="#FFC300"></Ionicons>
+                            <Text style={{color:"#7DCEA0", fontSize:12}}>
+                              Anexo 2
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </>
+                  ):(
+                    <>
+                    </>
+                  )}
+                </>
+              )}
             </View>
           </View>
         </View>
