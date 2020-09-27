@@ -197,6 +197,22 @@ export default function PostPage({ route, navigation }) {
     }
   }
 
+  async function ReportPost() {
+    const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
+    try {
+      const response = await api.post(
+        `/posts/${post._id}/report`,
+        {},
+        {
+          headers: { user_id },
+        }
+      );
+      showSucess("Post reportado. Equipe Esclareça agradece seu feedback! ;)");
+    } catch (e) {
+      showError(e);
+    }
+  }
+
   async function handleLikeComment(commId) {
     const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
     try {
@@ -552,7 +568,7 @@ export default function PostPage({ route, navigation }) {
                   onPress={() =>
                     Alert.alert(
                       "Reportar",
-                      "Deseja reportar essa dúvida por possuir conteúdo ofensivo ou inapropriado?",
+                      "Deseja reportar esse post por possuir conteúdo ofensivo ou inapropriado?",
                       [
                         {
                           text: "Não",
@@ -562,12 +578,7 @@ export default function PostPage({ route, navigation }) {
                         },
                         {
                           text: "Sim",
-                          onPress: () => {
-                            Alert.alert(
-                              "Equipe Esclareça",
-                              "Obrigado pelo seu feedback!"
-                            );
-                          },
+                          onPress: () => {ReportPost()},
                         },
                       ],
                       { cancelable: false }

@@ -1,11 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, FlatList, ActivityIndicator, Modal, TouchableWithoutFeedback} from 'react-native';
-import { Feather, MaterialCommunityIcons,SimpleLineIcons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
+import React, { 
+    useState, 
+} from 'react';
+import { 
+    Text, 
+    View, 
+    TouchableOpacity, 
+    FlatList, 
+    ActivityIndicator, 
+    Modal, 
+    TouchableWithoutFeedback
+} from 'react-native';
+import { 
+    Feather, 
+    MaterialCommunityIcons,
+    SimpleLineIcons 
+} from '@expo/vector-icons'
+import { 
+    useNavigation
+} from '@react-navigation/native'
 import * as Animatable from 'react-native-animatable'
+import {
+    AdMobBanner,
+} from 'expo-ads-admob';
 
 import styles from './styles'
-import { showError } from '../../common'
+import { 
+    showError 
+} from '../../common'
 import api from '../../services/api'
 
 export default function Ranking(){
@@ -125,6 +146,13 @@ export default function Ranking(){
                     )}>
                 </FlatList>
             </Animatable.View>
+            <AdMobBanner
+                bannerSize="banner"
+                adUnitID="ca-app-pub-6671400449354043/9787917658"
+                servePersonalizedAds
+                onDidFailToReceiveAdWithError={(err) => console.log(err)}
+                style={{alignItems:'center'}}
+            />
         </View>
     )
 }

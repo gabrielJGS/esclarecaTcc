@@ -41,6 +41,9 @@ module.exports = app => {
 
     //Dar like no post
     app.post('/posts/:post/like', app.api.posts.like)
+    
+    //Reportar
+    app.post('/posts/:post/report', app.api.posts.report)
 
     //Comentários
     app.route('/posts/:post')
