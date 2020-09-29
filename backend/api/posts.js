@@ -3,14 +3,25 @@ const mongoose = require("mongoose");
 
 const Users = require("../models/Users");
 const Posts = require("../models/Posts");
-
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 const aws = require("aws-sdk");
 const {
   storageOption,
   s3Config_bucket,
   s3Config_accessKeyId,
   s3Config_secretAccessKey,
+  userMail,
+  passMail,
 } = require("../.env");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: userMail,
+    pass: passMail,
+  },
+});
 
 module.exports = (app) => {
   const getOne = async (req, res) => {
@@ -504,6 +515,45 @@ module.exports = (app) => {
     }
   };
 
+  const report = async (req, res) => {
+    const { post } = req.params;
+    const { user_id } = req.headers;
+
+    const user = await Users.findById(user_id).catch((err) =>
+      res.status(400).json(err)
+    ); //Caso o id seja inválido vai cair aqui
+    if (!user) {
+      return res.status(401).send("Usuário inválido");
+    }
+    else{
+      const postToBeReport = await Posts.findById(post).catch((err) => {
+        return res.status(400).json(err);
+      }); //Caso o id seja inválido vai cair aqui
+      const userToBeReport = await Users.findById(postToBeReport.user).catch((err) => {
+        return res.status(400).json(err);
+      }); //Caso o id seja inválido vai cair aqui
+      transporter.sendMail({
+        to: userToBeReport.email,
+        from: userMail,
+        cc:userMail,
+        subject: "Postagem reportada!",
+        html: `
+                  <p>Olá ${userToBeReport.name}, parece que o seu post <b>"${postToBeReport.title}"</b> foi reportado por outro usuário que identificou informações que vão contra as regras de uso do aplicativo.</p>
+                  <h4>Equipe Esclareça solicita que retorne ao aplicativo e verifique as informações dessa postagem.</h4>
+                  <p>As boas práticas de uso e de conteúdo devem sempre permanecer para garantir o bom proveito do app! :)</p>
+                  </br>
+                  <h4>Equipe Esclareça agradece a compreensão!</h4>
+                  <a href="https://docs.google.com/uc?export=download&id=1N5NnNwp_jhIVKIo8m4Ih8bfDOJ_uKWId">Leia aqui nossos termos de uso!</a>
+                  </br>
+                  <a href="https://docs.google.com/uc?export=download&id=16z5VqvJivEabAFiOSTVzB2tdiW_FqZkN">Leia aqui nossos termos de privacidade!</a>
+              `,
+      });
+      res.status(200).json({
+        message: "Post reportado",
+      });
+    }
+  }
+
   return {
     index,
     save,
@@ -514,5 +564,6 @@ module.exports = (app) => {
     getByUser,
     getLikesByUser,
     upload,
+    report,
   };
 };

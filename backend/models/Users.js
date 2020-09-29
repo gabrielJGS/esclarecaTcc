@@ -42,8 +42,8 @@ const UserSchema = new mongoose.Schema({
     followed: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
-    }]
-    //userPhoto: { Schema.Types.Mixed }
+    }],
+    pushToken: String,
 });
 
 UserSchema.pre("save", function () {

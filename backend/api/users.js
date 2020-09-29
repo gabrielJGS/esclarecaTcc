@@ -9,13 +9,15 @@ const {
   s3Config_bucket,
   s3Config_accessKeyId,
   s3Config_secretAccessKey,
+  userMail,
+  passMail,
 } = require("../.env");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "appesclareca@gmail.com",
-    pass: "esclareca2020",
+    user: userMail,
+    pass: passMail,
   },
 });
 
@@ -297,7 +299,7 @@ module.exports = (app) => {
           userExist.save().then((savedUser) => {
             transporter.sendMail({
               to: email,
-              from: "appesclareca@gmail.com",
+              from: userMail,
               subject: "Esqueceu a senha",
               html: `
                                 <p>Olá ${userExist.name}, você esqueceu sua senha?</p>
@@ -338,6 +340,16 @@ module.exports = (app) => {
     }
   };
 
+  const pushTokenPass = async (req, res) => {
+    const token = req.body.token;
+    const userExist = req.body.user;
+    user = Users.findByIdAndUpdate(userExist, {
+      pushToken: token,
+    })
+      .then((_) => res.status(204).send())
+      .catch((err) => res.status(500).json(err));
+  };
+
   return {
     save,
     update,
@@ -350,5 +362,6 @@ module.exports = (app) => {
     index,
     forgotPassword,
     resetPassword,
+    pushTokenPass,
   };
 };

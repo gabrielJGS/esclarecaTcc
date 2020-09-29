@@ -14,6 +14,7 @@ import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth'
 import { AuthContext } from '../../context'
 import { showError } from '../../common'
+import UserPermission from '../../UserPermissions';
 
 export default function Init(){
     const navigation = useNavigation()
@@ -40,6 +41,8 @@ export default function Init(){
                 navigation.navigate('Home');
             }
         })
+        UserPermission.getCameraPermission();
+        UserPermission.registerForPushNotifications();
     }, [])
 
     async function FacebooklogIn() {
