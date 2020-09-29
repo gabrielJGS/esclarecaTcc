@@ -35,10 +35,14 @@
       "versionCode": 1,
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-6671400449354043~2318645269"
-      }
+      },
+      "useNextNotificationsApi": true
     },
     "facebookAppId": "788451035063636",
     "facebookDisplayName": "Esclareça",
-    "facebookScheme": "fb788451035063636"
+    "facebookScheme": "fb788451035063636",
+    "notification": {
+      "icon": "./assets/icon.png"
+    }
   }
 }

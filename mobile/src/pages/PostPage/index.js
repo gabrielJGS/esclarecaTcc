@@ -16,6 +16,14 @@ import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as WebBrowser from 'expo-web-browser';
 
 import api from "../../services/api";
+import * as Notifications from 'expo-notifications';
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 import styles from "./styles";
 import * as Animatable from "react-native-animatable";
@@ -98,6 +106,7 @@ export default function PostPage({ route, navigation }) {
           showSucess("Comentário cadastrado com sucesso");
           setCommentText("");
           setPress(!press);
+          //sendPushNotification(post.user.pushToken)
         } else {
           showError("Ocorreu um erro");
         }
@@ -106,6 +115,28 @@ export default function PostPage({ route, navigation }) {
       }
     }
   }
+
+  async function sendPushNotification(expoPushToken) {
+    const username = await AsyncStorage.getItem("userName");
+    const message = {
+      to: 'ExponentPushToken[z5d3gwOStqhteOGkL_zYO3]',
+      sound: 'default',
+      title: 'Novo comentário',
+      body: username + " enviou um comentário em teu post.",
+      data: { data: 'goes here' },
+    };
+  
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+  }
+
   async function loadComments() {
     if (loading) {
       //Impede que uma busca aconteça enquanto uma requisição já foi feita

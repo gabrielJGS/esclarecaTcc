@@ -340,6 +340,16 @@ module.exports = (app) => {
     }
   };
 
+  const pushTokenPass = async (req, res) => {
+    const token = req.body.token;
+    const userExist = req.body.user;
+    user = Users.findByIdAndUpdate(userExist, {
+      pushToken: token,
+    })
+      .then((_) => res.status(204).send())
+      .catch((err) => res.status(500).json(err));
+  };
+
   return {
     save,
     update,
@@ -352,5 +362,6 @@ module.exports = (app) => {
     index,
     forgotPassword,
     resetPassword,
+    pushTokenPass,
   };
 };

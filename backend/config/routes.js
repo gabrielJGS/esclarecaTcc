@@ -26,6 +26,7 @@ module.exports = app => {
     app.post('/users/:id/follow', app.api.users.followUser)//Seguir usuário
     app.post('/forget', app.api.users.forgotPassword)//esqueceu a senha
     app.post('/resetPass', app.api.users.resetPassword)//resetar senha
+    app.post('/pushToken', app.api.users.pushTokenPass)//salvar token push
 
     //Posts
     app.route('/posts')
