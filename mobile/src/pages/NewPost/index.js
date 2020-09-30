@@ -24,9 +24,9 @@ export default function NewPost({ route, navigation }) {
       }, {
         headers: { user_id, type }
       })
-      if (post.status == 204) {
+      if (post.status == 201) {
         showSucess(`${type == false ? 'Dúvida' : 'Conteúdo'} cadastrad${type == false ? 'a' : 'o'} com sucesso`)
-        navigation.goBack()
+        navigateToPost(post.data)
       } else {
         showError("Ocorreu um erro")
       }
@@ -36,6 +36,11 @@ export default function NewPost({ route, navigation }) {
     }
   }
 
+  function navigateToPost(post) {
+    navigation.navigate("PostPage", {
+      post,
+    });
+  }
   function handleCancel() {
     navigation.goBack()
   }

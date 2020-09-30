@@ -19,24 +19,26 @@
 //     }
 // });
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const PostsSchema = new mongoose.Schema({
-    title: String,
-    desc: String,
-    postedIn: Date,
-    tags: [String],
-    type: Boolean,
-    solved: Boolean,
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Users'
+  title: String,
+  desc: String,
+  postedIn: Date,
+  tags: [String],
+  type: Boolean,
+  solved: Boolean,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
+  },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
     },
-    likes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Users'
-    }],
-    files:[String]
+  ],
+  files: [{ name: String, format: String, url: String }],
 });
 
-module.exports = mongoose.model('Posts', PostsSchema);
+module.exports = mongoose.model("Posts", PostsSchema);

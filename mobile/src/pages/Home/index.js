@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   View,
@@ -25,6 +25,7 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
+  const [adCount, setAdCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -71,7 +72,7 @@ export default function Home() {
       return;
     }
 
-    if (total > 0 && posts.length == total) {
+    if (total > 0 && posts.length-adCount == total) {
       //Impede que faça a requisição caso a qtd máxima já tenha sido atingida
       return;
     }
@@ -89,11 +90,16 @@ export default function Home() {
         },
         params: { page },
       });
-
-      setPosts([...posts, ...response.data[0].paginatedResults]);
+      const results = [
+        ...posts,
+        ...response.data[0].paginatedResults,
+        { ad: true, _id: adCount },
+      ];
+      setPosts(results);
       if (response.data[0].paginatedResults.length > 0) {
         setTotal(response.data[0].totalCount[0].count);
         setPage(page + 1);
+        setAdCount(adCount + 1);
       }
     } catch (e) {
       showError(e);
@@ -119,12 +125,17 @@ export default function Home() {
         },
         params: { page: 1 },
       });
-      setPosts(response.data[0].paginatedResults);
+      const results = [
+        ...response.data[0].paginatedResults,
+        { ad: true, _id: adCount },
+      ];
+      setPosts(results);
+      // setPosts(response.data[0].paginatedResults);
       if (response.data[0].paginatedResults.length > 0) {
         setTotal(response.data[0].totalCount[0].count);
         setPage(2);
+        setAdCount(1);
       }
-      
     } catch (e) {
       showError(e);
     }
@@ -324,7 +335,9 @@ export default function Home() {
           onChangeText={setSearchText}
           numberOfLines={2}
           returnKeyType="search"
-          onSubmitEditing={() => { reloadPosts() }}
+          onSubmitEditing={() => {
+            reloadPosts();
+          }}
           blurOnSubmit={false}
         />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -346,7 +359,6 @@ export default function Home() {
           </TouchableOpacity>
         </View>
       </View>
-
       <Posts
         posts={posts}
         reloadPosts={reloadPosts}

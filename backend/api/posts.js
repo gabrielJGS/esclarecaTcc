@@ -7,8 +7,7 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const aws = require("aws-sdk");
 const {
-  storageOption,
-  s3Config_bucket,
+  s3Config_bucketPost,
   s3Config_accessKeyId,
   s3Config_secretAccessKey,
   userMail,
@@ -387,7 +386,7 @@ module.exports = (app) => {
       value = user.ranking + 5;
     }
     const result = await Users.findByIdAndUpdate(user_id, { ranking: value });
-    return res.status(204).send();
+    return res.status(201).json(post);
   };
 
   const remove = async (req, res) => {
@@ -467,7 +466,7 @@ module.exports = (app) => {
     const { post } = req.params;
     const { file_num = 0, user_id } = req.headers;
     let { key = "", location: url = "" } = "";
-    
+
     const user = await Users.findById(user_id).catch((err) =>
       res.status(400).json(err)
     ); //Caso o id seja inválido vai cair aqui
@@ -475,23 +474,24 @@ module.exports = (app) => {
       return res.status(401).send("Usuário inválido");
     }
     if (req.file) {
-      // console.log(req.file);
+      console.log(req.file);
       try {
         const postToUpdate = Posts.findById(post).then((p) => {
           if (p.user._id != user_id) {
             return res
               .status(401)
-              .send(`Usuário ${user_id} não autorizado a deletar o post.`);
+              .send(`Usuário ${user_id} não autorizado a anexar ao post.`);
           }
           if (p.files[file_num] != undefined) {
-            const keyUrl = p.files[file_num].split("/");
+            const keyUrl = p.files[file_num].url.split("/");
+            console.log(keyUrl)
             var s3 = new aws.S3({
               accessKeyId: s3Config_accessKeyId,
               secretAccessKey: s3Config_secretAccessKey,
             });
             var params = {
-              Bucket: s3Config_bucket,
-              Key: `posts/${keyUrl[4]}`,
+              Bucket: s3Config_bucketPost,
+              Key: `${keyUrl[3]}`,
             };
             s3.deleteObject(params, function (err, data) {
               if (err) console.log(err, err.stack);
@@ -499,11 +499,16 @@ module.exports = (app) => {
               else console.log(); // deleted
             });
           }
+          arq = {
+            name: req.file.originalname,
+            format: req.file.mimetype.split('/')[1],
+            url: req.file.location,
+          };
           url = req.file.location;
           if (url == null) {
             url = `http:${hostIp}:3333/files/${key}`;
           }
-          p.files.splice(file_num, 1, url);
+          p.files.splice(file_num, 1, arq);
           p.save().catch((err) => res.status(400).json(err));
         });
       } catch (e) {
@@ -524,18 +529,19 @@ module.exports = (app) => {
     ); //Caso o id seja inválido vai cair aqui
     if (!user) {
       return res.status(401).send("Usuário inválido");
-    }
-    else{
+    } else {
       const postToBeReport = await Posts.findById(post).catch((err) => {
         return res.status(400).json(err);
       }); //Caso o id seja inválido vai cair aqui
-      const userToBeReport = await Users.findById(postToBeReport.user).catch((err) => {
-        return res.status(400).json(err);
-      }); //Caso o id seja inválido vai cair aqui
+      const userToBeReport = await Users.findById(postToBeReport.user).catch(
+        (err) => {
+          return res.status(400).json(err);
+        }
+      ); //Caso o id seja inválido vai cair aqui
       transporter.sendMail({
         to: userToBeReport.email,
         from: userMail,
-        cc:userMail,
+        cc: userMail,
         subject: "Postagem reportada!",
         html: `
                   <p>Olá ${userToBeReport.name}, parece que o seu post <b>"${postToBeReport.title}"</b> foi reportado por outro usuário que identificou informações que vão contra as regras de uso do aplicativo.</p>
@@ -552,7 +558,7 @@ module.exports = (app) => {
         message: "Post reportado",
       });
     }
-  }
+  };
 
   return {
     index,
