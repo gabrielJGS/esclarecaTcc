@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -57,6 +57,15 @@ export default function Home() {
       await reloadPosts();
     }
   }, [type]);
+
+  useFocusEffect(
+    useCallback(() => {
+      reload();
+      async function reload() {
+        await reloadPosts();
+      }
+    }, [])
+  );
 
   function showModal() {
     setModalVisible(!modalVisible);
