@@ -206,6 +206,7 @@ export default function PostPage({ route, navigation }) {
       const response = await api.delete(`/posts/${post._id}`, {
         headers: { user_id },
       });
+      showSucess("Post excluído com sucesso!")
       navigateToHome();
     } catch (e) {
       showError(e);
