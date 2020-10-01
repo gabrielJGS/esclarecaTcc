@@ -408,20 +408,18 @@ module.exports = (app) => {
 
     if (postToBeRemoved.user == user_id) {
       //Se é o dono post deleta
-      const del = await Posts.remove({_id: postToBeRemoved._id}).then(p=>{
-        console.log(p)
-        if (user.ranking === NaN || user.ranking === undefined) {
-          value = 0;
-        } else {
-          value = user.ranking - 5;
-        }
-        const result = await Users.findByIdAndUpdate(user_id, {
-          ranking: value,
-        }).catch((err) => {
-          return res.status(400).json(err);
-        });
-        return res.status(204).send();
+      await Posts.deleteOne(postToBeRemoved);
+      if (user.ranking === NaN || user.ranking === undefined) {
+        value = 0;
+      } else {
+        value = user.ranking - 5;
+      }
+      const result = await Users.findByIdAndUpdate(user_id, {
+        ranking: value,
+      }).catch((err) => {
+        return res.status(400).json(err);
       });
+      return res.status(204).send();
     } else {
       //Se não, não tem permissão
       return res
