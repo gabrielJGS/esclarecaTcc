@@ -33,13 +33,13 @@ module.exports = (app) => {
     console.log(req.body.avatarUser);
     let { key = "", location: url = "" } = "";
 
-    if (req.file) {
-      key = req.file.key;
-      url = req.file.location;
-    }
-
     if (req.body.avatarUser) {
       url = req.body.avatarUser;
+    } else {
+      if (req.file) {
+        key = req.file.key;
+        url = req.file.location;
+      }
     }
 
     const userExist = await Users.findOne({ email });
@@ -79,8 +79,6 @@ module.exports = (app) => {
       const email = req.body.email.trim().toLowerCase();
       const tags = req.body.tags.trim().toLowerCase();
       obterHash(req.body.password.trim().toLowerCase(), (hash) => {
-        const password = hash;
-
         user = Users.findByIdAndUpdate(id, {
           name: req.body.name,
           email,
@@ -102,36 +100,34 @@ module.exports = (app) => {
 
       try {
         user = Users.findById(id).then((u) => {
-            var s3 = new aws.S3({
-                accessKeyId: s3Config_accessKeyId,
-                secretAccessKey: s3Config_secretAccessKey,
-              });
-              var params = { Bucket: s3Config_bucket, Key: u.key };
-              s3.deleteObject(params, function (err, data) {
-                if (err) console.log(err, err.stack);
-                // error
-                else console.log(); // deleted
-              });       
-              key = req.file.key;
-              url = req.file.location;
-              if (url == null) {
-                url = `http:${hostIp}:3333/files/${key}`;
-              }
-              u.key = key;
-              u.url = url;
-              u.save().catch((err) => res.status(400).json(err));
-            });
-
+          var s3 = new aws.S3({
+            accessKeyId: s3Config_accessKeyId,
+            secretAccessKey: s3Config_secretAccessKey,
+          });
+          var params = { Bucket: s3Config_bucket, Key: u.key };
+          s3.deleteObject(params, function (err, data) {
+            if (err) console.log(err, err.stack);
+            // error
+            else console.log(); // deleted
+          });
+          key = req.file.key;
+          url = req.file.location;
+          if (url == null) {
+            url = `http:${hostIp}:3333/files/${key}`;
+          }
+          u.key = key;
+          u.url = url;
+          u.save().catch((err) => res.status(400).json(err));
+        });
       } catch (e) {
         console.log(e); // deleted
       }
       return res.status(201).send();
-   
     } else {
       return res.status(204).send("Nenhum arquivo enviado");
     }
   };
-  
+
   const patch = (req, res) => {
     const { id } = req.params;
     const tags = req.body.tags.trim().toLowerCase();

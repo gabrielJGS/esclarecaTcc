@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     borderBottomColor:'#365478',
     height:70,
     alignItems:'center',
-    height:hp('10%'),
+    minHeight:hp('10%'),
   },
   forms:{
     justifyContent: 'center',
@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
     backgroundColor:'white', 
     borderRadius:10,
     marginHorizontal:50,
-    marginVertical:'50%',
-    height:hp('20%')
+    marginTop:'50%',
+    minHeight:hp('20%')
   },
   label1: {
       fontWeight: 'bold',
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     fontSize: hp('1.8%'),
     color: '#707B7C',
-    height: hp('4.5%'),
+    minHeight: hp('4.5%'),
     marginBottom: hp('2%'),
     borderRadius: 5,
     paddingHorizontal:50

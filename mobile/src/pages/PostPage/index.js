@@ -414,16 +414,16 @@ export default function PostPage({ route, navigation }) {
             </ScrollView>
             <View
               style={{
-                flexDirection: "column",
+                flexDirection: "row",
                 paddingTop: 10,
-                alignItems: "flex-end",
+                alignItems: 'center',
               }}
             >
               <View
                 style={{
                   flexDirection: "row",
-                  // paddingTop: 10,
-                  // alignItems: "flex-end",
+                   paddingTop: 12,
+                   alignItems: "center",
                 }}
               >
                 <Text
@@ -433,203 +433,211 @@ export default function PostPage({ route, navigation }) {
                   {userIsPostOwner ? "Enviar anexos:" : "Anexos:"}
                 </Text>
               </View>
-              {userIsPostOwner ? (
-                <>
-                  {file1 ? (
-                    <>
-                      <TouchableOpacity
-                        onPress={() =>
-                          Alert.alert(
-                            "Escolha a opção:",
-                            "Deseja enviar um novo arquivo ou visualizar o existente?",
-                            [
-                              {
-                                text: "Enviar novo",
-                                onPress: () => handlePickFile(0),
-                              },
-                              {
-                                text: "Visualizar",
-                                onPress: () => openFile1(post.files[0].url),
-                              },
-                            ],
-                            { cancelable: false }
-                          )
-                        }
-                      >
-                        <View
-                          style={{
-                            paddingLeft: 10,
-                            top: 15,
-                            alignItems: "center",
-                          }}
+              <View style={{flexDirection:'column'}}>
+                {userIsPostOwner ? (
+                  <>
+                    {file1 ? (
+                      <>
+                        <TouchableOpacity
+                          onPress={() =>
+                            Alert.alert(
+                              "Escolha a opção:",
+                              "Deseja enviar um novo arquivo ou visualizar o existente?",
+                              [
+                                {
+                                  text: "Enviar novo",
+                                  onPress: () => handlePickFile(0),
+                                },
+                                {
+                                  text: "Visualizar",
+                                  onPress: () => openFile1(post.files[0].url),
+                                },
+                              ],
+                              { cancelable: false }
+                            )
+                          }
                         >
-                          <Ionicons
-                            name="ios-attach"
-                            size={20}
-                            color="#FFC300"
-                          ></Ionicons>
-                          <Text style={{ color: "#7DCEA0", fontSize: 12 }}>
-                            {isUploadingFile == 1
-                              ? `%${uploadProgress}`
-                              : post.files[0]
-                              ? post.files[0].name
-                              : "Anexo 1"}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </>
-                  ) : (
-                    <>
-                      <TouchableOpacity onPress={() => handlePickFile(0)}>
-                        <View
-                          style={{
-                            paddingLeft: 10,
-                            top: 15,
-                            alignItems: "center",
-                          }}
+                          <View
+                            style={{
+                              paddingLeft: 10,
+                              top: 10,
+                              alignItems: "center",
+                              flexDirection: "row"
+                            }}
+                          >
+                            <Ionicons
+                              name="ios-attach"
+                              size={20}
+                              color="#FFC300"
+                            ></Ionicons>
+                            <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
+                              {isUploadingFile == 1
+                                ? `%${uploadProgress}`
+                                : post.files[0]
+                                ? post.files[0].name
+                                : "Anexo 1"}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </>
+                    ) : (
+                      <>
+                        <TouchableOpacity onPress={() => handlePickFile(0)}>
+                          <View
+                            style={{
+                              paddingLeft: 10,
+                              top: 10,
+                              alignItems: "center",
+                              flexDirection: "row"
+                            }}
+                          >
+                            <Ionicons
+                              name="ios-attach"
+                              size={20}
+                              color="#FFC300"
+                            ></Ionicons>
+                            <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
+                              {isUploadingFile == 1
+                                ? `%${uploadProgress}`
+                                : post.files[0]
+                                ? post.files[0].name
+                                : "Anexo 1"}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                    {file2 ? (
+                      <>
+                        <TouchableOpacity
+                          onPress={() =>
+                            Alert.alert(
+                              "Escolha a opção:",
+                              "Deseja ver o arquivo ou inserir um novo?",
+                              [
+                                {
+                                  text: "Enviar novo",
+                                  onPress: () => handlePickFile(1),
+                                },
+                                {
+                                  text: "Visualizar",
+                                  onPress: () => openFile1(post.files[1].url),
+                                },
+                              ],
+                              { cancelable: false }
+                            )
+                          }
                         >
-                          <Ionicons
-                            name="ios-attach"
-                            size={20}
-                            color="#FFC300"
-                          ></Ionicons>
-                          <Text style={{ color: "#7DCEA0", fontSize: 12 }}>
-                            {isUploadingFile == 1
-                              ? `%${uploadProgress}`
-                              : post.files[0]
-                              ? post.files[0].name
-                              : "Anexo 1"}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </>
-                  )}
-                  {file2 ? (
-                    <>
-                      <TouchableOpacity
-                        onPress={() =>
-                          Alert.alert(
-                            "Escolha a opção:",
-                            "Deseja ver o arquivo ou inserir um novo?",
-                            [
-                              {
-                                text: "Enviar novo",
-                                onPress: () => handlePickFile(1),
-                              },
-                              {
-                                text: "Visualizar",
-                                onPress: () => openFile1(post.files[1].url),
-                              },
-                            ],
-                            { cancelable: false }
-                          )
-                        }
-                      >
-                        <View
-                          style={{
-                            paddingLeft: 10,
-                            top: 15,
-                            alignItems: "center",
-                          }}
+                          <View
+                            style={{
+                              paddingLeft: 10,
+                              top: 15,
+                              alignItems: "center",
+                              flexDirection: "row"
+                            }}
+                          >
+                            <Ionicons
+                              name="ios-attach"
+                              size={20}
+                              color="#FFC300"
+                            ></Ionicons>
+                            <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
+                              {isUploadingFile == 2
+                                ? `%${uploadProgress}`
+                                : post.files[1]
+                                ? post.files[1].name
+                                : "Anexo 2"}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </>
+                    ) : (
+                      <>
+                        <TouchableOpacity onPress={() => handlePickFile(1)}>
+                          <View
+                            style={{
+                              paddingLeft: 10,
+                              top: 15,
+                              alignItems: "center",
+                              flexDirection: "row"
+                            }}
+                          >
+                            <Ionicons
+                              name="ios-attach"
+                              size={20}
+                              color="#FFC300"
+                            ></Ionicons>
+                            <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
+                              {isUploadingFile == 2
+                                ? `%${uploadProgress}`
+                                : post.files[1]
+                                ? post.files[1].name
+                                : "Anexo 2"}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {file1 ? (
+                      <>
+                        <TouchableOpacity
+                          onPress={() => openFile1(post.files[0].url)}
                         >
-                          <Ionicons
-                            name="ios-attach"
-                            size={20}
-                            color="#FFC300"
-                          ></Ionicons>
-                          <Text style={{ color: "#7DCEA0", fontSize: 12 }}>
-                            {isUploadingFile == 2
-                              ? `%${uploadProgress}`
-                              : post.files[1]
-                              ? post.files[1].name
-                              : "Anexo 2"}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </>
-                  ) : (
-                    <>
-                      <TouchableOpacity onPress={() => handlePickFile(1)}>
-                        <View
-                          style={{
-                            paddingLeft: 10,
-                            top: 15,
-                            alignItems: "center",
-                          }}
+                          <View
+                            style={{
+                              paddingLeft: 10,
+                              top: 10,
+                              alignItems: 'center',
+                              flexDirection: "row"
+                            }}
+                          >
+                            <Ionicons
+                              name="ios-attach"
+                              size={20}
+                              color="#FFC300"
+                            ></Ionicons>
+                            <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
+                              {post.files[0] ? post.files[0].name : "Anexo 1"}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {file2 ? (
+                      <>
+                        <TouchableOpacity
+                          onPress={() => openFile2(post.files[1].url)}
                         >
-                          <Ionicons
-                            name="ios-attach"
-                            size={20}
-                            color="#FFC300"
-                          ></Ionicons>
-                          <Text style={{ color: "#7DCEA0", fontSize: 12 }}>
-                            {isUploadingFile == 2
-                              ? `%${uploadProgress}`
-                              : post.files[1]
-                              ? post.files[1].name
-                              : "Anexo 2"}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  {file1 ? (
-                    <>
-                      <TouchableOpacity
-                        onPress={() => openFile1(post.files[0].url)}
-                      >
-                        <View
-                          style={{
-                            paddingLeft: 10,
-                            top: 15,
-                            alignItems: "center",
-                          }}
-                        >
-                          <Ionicons
-                            name="ios-attach"
-                            size={20}
-                            color="#FFC300"
-                          ></Ionicons>
-                          <Text style={{ color: "#7DCEA0", fontSize: 12 }}>
-                            {post.files[0] ? post.files[0].name : "Anexo 1"}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                  {file2 ? (
-                    <>
-                      <TouchableOpacity
-                        onPress={() => openFile2(post.files[1].url)}
-                      >
-                        <View
-                          style={{
-                            paddingLeft: 10,
-                            top: 15,
-                            alignItems: "center",
-                          }}
-                        >
-                          <Ionicons
-                            name="ios-attach"
-                            size={20}
-                            color="#FFC300"
-                          ></Ionicons>
-                          <Text style={{ color: "#7DCEA0", fontSize: 12 }}>
-                            {post.files[1] ? post.files[1].name : "Anexo 2"}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </>
-              )}
+                          <View
+                            style={{
+                              paddingLeft: 10,
+                              top: 15,
+                              alignItems: "center",
+                              flexDirection: "row"
+                            }}
+                          >
+                            <Ionicons
+                              name="ios-attach"
+                              size={20}
+                              color="#FFC300"
+                            ></Ionicons>
+                            <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
+                              {post.files[1] ? post.files[1].name : "Anexo 2"}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </>
+                )}
+              </View>
             </View>
           </View>
         </View>
