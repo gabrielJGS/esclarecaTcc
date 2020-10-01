@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigation, useFocusEffect  } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -81,7 +81,7 @@ export default function Home() {
       return;
     }
 
-    if (total > 0 && posts.length-adCount == total) {
+    if (total > 0 && (posts.length - adCount) == total) {
       //Impede que faça a requisição caso a qtd máxima já tenha sido atingida
       return;
     }
@@ -136,7 +136,7 @@ export default function Home() {
       });
       const results = [
         ...response.data[0].paginatedResults,
-        { ad: true, _id: adCount },
+        // { ad: true, _id: adCount },
       ];
       setPosts(results);
       // setPosts(response.data[0].paginatedResults);
