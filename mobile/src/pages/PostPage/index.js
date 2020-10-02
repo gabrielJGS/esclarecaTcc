@@ -296,8 +296,7 @@ export default function PostPage({ route, navigation }) {
 
   async function handlePickFile(fileIndex) {
     let result = await DocumentPicker.getDocumentAsync({});
-
-    if (!result.cancelled) {
+    if (result.type!="cancel") {
       if (fileIndex == 0) {
         setIsUploadingFile(1);
       }
