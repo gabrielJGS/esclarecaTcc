@@ -30,7 +30,6 @@ module.exports = (app) => {
   const save = async (req, res) => {
     const email = req.body.email.trim().toLowerCase();
     const tags = req.body.tags.trim().toLowerCase();
-    console.log(req.body.avatarUser);
     let { key = "", location: url = "" } = "";
 
     if (req.body.avatarUser) {
@@ -64,7 +63,12 @@ module.exports = (app) => {
     }
   };
   const update = (req, res) => {
-    const { id } = req.params;
+    const name = req.body.name.trim();
+    const email = req.body.email.trim().toLowerCase();
+    const tags = req.body.tags.trim().toLowerCase();
+
+    const user = req.user;
+
     let { key = "", location: url = "" } = "";
     if (req.file) {
       key = req.file.key;
@@ -72,15 +76,14 @@ module.exports = (app) => {
       if (url == null) {
         url = `http:${hostIp}:3333/files/${key}`;
       }
-      user = Users.findByIdAndUpdate(id, { key, url })
+      user = Users.findByIdAndUpdate(user.id, { key, url })
         .then((_) => res.status(204).send())
         .catch((err) => res.status(400).json(err));
     } else {
-      const email = req.body.email.trim().toLowerCase();
-      const tags = req.body.tags.trim().toLowerCase();
+
       obterHash(req.body.password.trim().toLowerCase(), (hash) => {
-        user = Users.findByIdAndUpdate(id, {
-          name: req.body.name,
+        user = Users.findOneAndUpdate(user.id, {
+          name,
           email,
           password: hash,
           tags: tags.split(",").map((tag) => tag.trim()),
@@ -92,14 +95,12 @@ module.exports = (app) => {
   };
 
   const upload = async (req, res) => {
-    const { id } = req.params;
+    const user = req.user;
     let { key = "", location: url = "" } = "";
 
     if (req.file) {
-      let user;
-
       try {
-        user = Users.findById(id).then((u) => {
+        userTemp = Users.findById(user.id).then((u) => {
           var s3 = new aws.S3({
             accessKeyId: s3Config_accessKeyId,
             secretAccessKey: s3Config_secretAccessKey,
@@ -129,29 +130,26 @@ module.exports = (app) => {
   };
 
   const patch = (req, res) => {
-    const { id } = req.params;
+    const user = req.user;
     const tags = req.body.tags.trim().toLowerCase();
 
-    user = Users.findByIdAndUpdate(id, {
+    user = Users.findByIdAndUpdate(user.id, {
       tags: tags.split(",").map((tag) => tag.trim()),
     })
       .then((_) => res.status(204).send())
       .catch((err) => res.status(400).json(err));
   };
+  
   const profile = async (req, res) => {
     const { id } = req.params;
-    const { user_id } = req.headers;
-
-    const userLogged = await Users.findById(user_id).catch((err) =>
-      res.status(400).json(err)
-    );
-    if (!userLogged) {
-      return res.status(401).send("Usuário logado inválido");
-    }
+    const userLogged = req.user;
 
     const user = await Users.findById(id).catch((err) =>
       res.status(400).json(err)
     );
+    if(!user){
+      res.status(404).json("Usuário não encontrado!")
+    }
     let response = { user, isBlocked: false, isFollowed: false };
     if (userLogged.blocked.find((u) => u == id)) {
       //Usuário está bloqueado pelo usuário logado
@@ -196,9 +194,9 @@ module.exports = (app) => {
 
   const blockUser = async (req, res) => {
     const { id } = req.params;
-    const { user_id } = req.headers;
+    const user = req.user;
 
-    if (id == user_id) {
+    if (id == user.id) {
       return res.status(400).send("Não é possível bloquear você mesmo");
     }
 
@@ -208,7 +206,7 @@ module.exports = (app) => {
     if (!userToBlock) {
       return res.status(401).send("Usuário a bloquear inválido");
     }
-    const userLogged = await Users.findById(user_id).catch((err) =>
+    const userLogged = await Users.findById(user.id).catch((err) =>
       res.status(400).json(err)
     );
     if (!userLogged) {
@@ -243,9 +241,9 @@ module.exports = (app) => {
 
   const followUser = async (req, res) => {
     const { id } = req.params;
-    const { user_id } = req.headers;
+    const user = req.user;
 
-    if (id == user_id) {
+    if (id == user.id) {
       return res.status(400).send("Não é possível seguir você mesmo");
     }
 
@@ -255,7 +253,7 @@ module.exports = (app) => {
     if (!userToBlock) {
       return res.status(401).send("Usuário a seguir inválido");
     }
-    const userLogged = await Users.findById(user_id).catch((err) =>
+    const userLogged = await Users.findById(user.id).catch((err) =>
       res.status(400).json(err)
     );
     if (!userLogged) {

@@ -8,12 +8,7 @@ const Posts_Comments = require('../models/Posts_Comments');
 module.exports = app => {
     const getTotalComments = async (req, res) => {
         const { post } = req.params;
-
-        const user = await Users.findById(user_id)
-            .catch(err => res.status(400).json(err))
-        if (!user) {
-            return res.status(401).send('Usuário inválido');
-        }
+        const user = req.user;
 
         const postOri = await Posts.findById(post)
             .catch(err => res.status(400).json(err))
@@ -27,17 +22,11 @@ module.exports = app => {
     }
 
     const index = async (req, res) => {
-        const { user_id } = req.headers
         const { post } = req.params;
         //Páginação
         const qtdLoad = 5
         const { page = 1 } = req.query
-
-        const user = await Users.findById(user_id)
-            .catch(err => res.status(400).json(err))
-        if (!user) {
-            return res.status(401).send('Usuário inválido');
-        }
+        const user = req.user;
 
         const postOri = await Posts.findById(post)
             .catch(err => res.status(400).json(err))
@@ -56,7 +45,7 @@ module.exports = app => {
                 {
                     "$addFields": {
                         "didILiked": {
-                            "$in": [mongoose.Types.ObjectId(user_id), "$likes"]
+                            "$in": [mongoose.Types.ObjectId(user.id), "$likes"]
                         }
                     }
                 },
@@ -87,18 +76,14 @@ module.exports = app => {
 
     const save = async (req, res) => {
         //const { filename } = req.file;
-        const { user } = req.headers
         const { message } = req.body
         const { post } = req.params
-        const userExiste = await Users.findById(user)
-            .catch(err => res.status(400).json(err))
-        if (!userExiste) {
-            return res.status(401).send('Usuário inválido');
-        }
+        const user = req.user;
+
         if (!post || !message) {
             return res.status(400).send('Algum campo não foi preenchido');
         }
-        const comment = await Posts_Comments.create({
+        await Posts_Comments.create({
             post,
             user,
             postedIn: momentTz().tz("America/Sao_Paulo").format(),
@@ -112,26 +97,20 @@ module.exports = app => {
         else {
             value = userExiste.ranking + 3
         }
-        const result = await Users.findByIdAndUpdate(user, { ranking: value })
+         await Users.findByIdAndUpdate(user, { ranking: value })
         return res.status(204).send()
 
     }
 
     const remove = async (req, res) => {
         const { post, comm } = req.params
-        const { user_id } = req.headers
-
-        const user = await Users.findById(user_id)
-            .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
-        if (!user) {
-            return res.status(401).send('Usuário inválido');
-        }
+        const user = req.user;
 
         const commentToDelete = await Posts_Comments.findById(comm)
             .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
         if (!commentToDelete) { res.status(400).send("Comentário não encontrado com o id: " + comm) }//Caso o id seja válido mas não exista vai cair aqui
 
-        if (commentToDelete.post._id == post || commentToDelete.user == user_id) {//Se é o post certo e o dono do comentário deleta
+        if (commentToDelete.post._id == post || commentToDelete.user == user.id) {//Se é o post certo e o dono do comentário deleta
             await Posts_Comments.deleteOne(commentToDelete)
                 .catch(err => res.status(400).json(err))
 
@@ -141,31 +120,27 @@ module.exports = app => {
             else {
                 value = user.ranking - 3
             }
-            const result = await Users.findByIdAndUpdate(user, { ranking: value })
+            await Users.findByIdAndUpdate(user.id, { ranking: value })
 
             return res.status(204).send()
         } else {//Se não, não tem permissão
-            res.status(401).send(`Usuário ${user_id} não autorizado a deletar o comentário.`)
+            res.status(401).send(`Usuário ${user.name} não autorizado a deletar o comentário.`)
         }
 
     }
 
     const like = async (req, res) => {
-        const { user_id } = req.headers;
         const { comm } = req.params;
-        const user = await Users.findById(user_id)
-            .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
-        if (!user) {
-            return res.status(401).send('Usuário inválido');
-        }
+        const user = req.user;
+
         const commToUpdate = await Posts_Comments.findById(comm)
             .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
         if (!commToUpdate) {//Caso o id seja válido mas não exista vai cair aqui
             res.status(400).send("Comentário não encontrado com o id: " + req.params.comm)
         } else {
-            if (commToUpdate.likes.find(u => u == user_id)) {//Descurtindo
+            if (commToUpdate.likes.find(u => u == user.id)) {//Descurtindo
 
-                const index = commToUpdate.likes.indexOf(user_id);
+                const index = commToUpdate.likes.indexOf(user.id);
                 if (index > -1) {
                     commToUpdate.likes.splice(index, 1);
                 }
@@ -184,15 +159,8 @@ module.exports = app => {
     }
 
     const solvePost = async (req, res) => {
-        const { user_id } = req.headers;
         const { comm } = req.params;
-
-        //Validação de usuário
-        const user = await Users.findById(user_id)
-            .catch(err => res.status(400).json(err))//Caso o id seja inválido vai cair aqui
-        if (!user) {
-            return res.status(401).send('Usuário inválido');
-        }
+        const user = req.user;
 
         //Busca do comentário
         const commentToUpdate = await Posts_Comments.findById(comm)
@@ -229,7 +197,7 @@ module.exports = app => {
                 else {
                     value = user.ranking + 10
                 }
-                const result = await Users.findByIdAndUpdate(user, { ranking: value })
+                await Users.findByIdAndUpdate(user.id, { ranking: value })
             }
             return res.status(201).send()
         }
