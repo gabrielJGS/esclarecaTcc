@@ -9,17 +9,17 @@ module.exports = app => {
 
     //Perfil
     app.route('/users')
-    .all(app.config.passport.authenticate())
-    .put(app.api.users.update)
-    .patch(app.api.users.patch)
+        .all(app.config.passport.authenticate())
+        .put(app.api.users.update)
+        .patch(app.api.users.patch)
 
     app.route('/users/:id')
         .all(app.config.passport.authenticate())
         .get(app.api.users.profile)
 
     //Enviar a foto de perfil
-    app.post('/users/:id/photo', multer(multerConfigProfile).single('file'), app.api.users.upload)
-    
+    app.post('/users/:id/photo', app.config.passport.authenticate(), multer(multerConfigProfile).single('file'), app.api.users.upload)
+
     //ranking
     app.get('/ranking', app.config.passport.authenticate(), app.api.users.list)
 
@@ -46,7 +46,7 @@ module.exports = app => {
 
     //Dar like no post
     app.post('/posts/:post/like', app.config.passport.authenticate(), app.api.posts.like)
-    
+
     //Reportar
     app.post('/posts/:post/report', app.config.passport.authenticate(), app.api.posts.report)
 
@@ -70,7 +70,7 @@ module.exports = app => {
     app.route('/posts/:post/:comm/solve')
         .all(app.config.passport.authenticate())
         .post(app.api.comments.solvePost)
-        
+
     //Slacks
     app.route('/slacks')
         .all(app.config.passport.authenticate())
@@ -83,5 +83,5 @@ module.exports = app => {
         .all(app.config.passport.authenticate())
         .get(app.api.slacks_messages.index)
         .post(app.api.slacks_messages.save)
-    app.delete('/slacks/:slack/:slack_msg', app.api.slacks_messages.remove)
+    app.delete('/slacks/:slack/:slack_msg', app.config.passport.authenticate(), app.api.slacks_messages.remove)
 }

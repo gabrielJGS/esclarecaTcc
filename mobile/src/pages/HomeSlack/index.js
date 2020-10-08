@@ -57,7 +57,7 @@ export default function HomeSlack(props) {
   }
 
   useEffect(() => {
-    loadSlacks();
+    reloadSlacks();
   }, []);
 
   async function loadSlacks() {
@@ -146,6 +146,7 @@ export default function HomeSlack(props) {
         setPrivadoModal(false);
         setSenhaModal("");
         handleModal();
+        reloadSlacks();
       } else {
         showError("Ocorreu um erro: " + response);
       }

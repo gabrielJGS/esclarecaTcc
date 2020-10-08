@@ -69,6 +69,8 @@ module.exports = (app) => {
   const getByUser = async (req, res) => {
     const { id } = req.params;
     const { type } = req.headers;
+    const userAtual = req.user;
+
     if (id == undefined) {
       return res.status(401).send("Usuário inválido");
     }
@@ -108,7 +110,7 @@ module.exports = (app) => {
       {
         $addFields: {
           didILiked: {
-            $in: [mongoose.Types.ObjectId(user._id), "$likes"],
+            $in: [mongoose.Types.ObjectId(userAtual.id), "$likes"],
           },
           commentsCount: {
             $ifNull: [{ $arrayElemAt: ["$commentsCount.count", 0] }, 0],

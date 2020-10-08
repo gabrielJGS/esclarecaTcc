@@ -97,7 +97,6 @@ module.exports = (app) => {
   const upload = async (req, res) => {
     const user = req.user;
     let { key = "", location: url = "" } = "";
-
     if (req.file) {
       try {
         userTemp = Users.findById(user.id).then((u) => {
@@ -105,12 +104,14 @@ module.exports = (app) => {
             accessKeyId: s3Config_accessKeyId,
             secretAccessKey: s3Config_secretAccessKey,
           });
-          var params = { Bucket: s3Config_bucket, Key: u.key };
-          s3.deleteObject(params, function (err, data) {
-            if (err) console.log(err, err.stack);
-            // error
-            else console.log(); // deleted
-          });
+          if (u.key && u.key != undefined) {
+            var params = { Bucket: s3Config_bucket, Key: u.key };
+            s3.deleteObject(params, function (err, data) {
+              if (err) console.log(err, err.stack);
+              // error
+              else console.log(); // deleted
+            });
+          }
           key = req.file.key;
           url = req.file.location;
           if (url == null) {
@@ -139,7 +140,7 @@ module.exports = (app) => {
       .then((_) => res.status(204).send())
       .catch((err) => res.status(400).json(err));
   };
-  
+
   const profile = async (req, res) => {
     const { id } = req.params;
     const userLogged = req.user;
@@ -147,7 +148,7 @@ module.exports = (app) => {
     const user = await Users.findById(id).catch((err) =>
       res.status(400).json(err)
     );
-    if(!user){
+    if (!user) {
       res.status(404).json("Usuário não encontrado!")
     }
     let response = { user, isBlocked: false, isFollowed: false };

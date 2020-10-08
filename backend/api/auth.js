@@ -24,7 +24,7 @@ module.exports = app => {
                 }
 
                 res.json({
-                    id: user.id,//REMOVER
+                    id: user.id,
                     name: user.name,
                     email: user.email,
                     tags: user.tags,

@@ -70,7 +70,7 @@ module.exports = app => {
             message: slack_msg
         })
             .catch(err => res.status(400).json(err))
-        const result = await Users.findByIdAndUpdate(user.id, { ranking: userExiste.ranking + 3 })
+        await Users.findByIdAndUpdate(user.id, { ranking: user.ranking + 3 })
         res.status(204).send()
     }
     const remove = async (req, res) => {
@@ -88,12 +88,11 @@ module.exports = app => {
         if (!messageToRemove) {
             res.status(400).send("Mensagem não encontrada com o id: " + slack_msg)
         }
-
         if (messageToRemove.slack == slack && (messageToRemove.user == user.id || slackOri.user == user.id)) {
-            await Slacks_Messages.remove(messageToRemove)
+            await Slacks_Messages.deleteOne(messageToRemove)
                 .catch(err => res.status(400).json(err))
 
-            const result = await Users.findByIdAndUpdate(user.id, { ranking: userExiste.ranking - 3 })
+            await Users.findByIdAndUpdate(user.id, { ranking: user.ranking - 3 })
             res.status(204).send()
         }
         else {//Se não, não tem permissão

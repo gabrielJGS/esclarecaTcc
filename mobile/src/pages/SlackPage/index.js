@@ -16,14 +16,17 @@ export default function SlackPage({ route, navigation }) {
 
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
 
     useEffect(() => {
+        console.log(user)
         reloadMessages()
         loadUser()
         async function loadUser() {
-            setUser(await AsyncStorage.getItem('user'))
+            const u = await AsyncStorage.getItem('user')
+            setUser(u)
+            console.log(u)
         }
     }, [])
 
@@ -107,6 +110,7 @@ export default function SlackPage({ route, navigation }) {
         } catch (e) {
             showError(e)
         }
+        setLoading(false)
         setRefreshing(false)
     }
 

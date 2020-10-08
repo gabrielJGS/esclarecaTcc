@@ -85,21 +85,20 @@ module.exports = app => {
         }
         await Posts_Comments.create({
             post,
-            user,
+            user: user.id,
             postedIn: momentTz().tz("America/Sao_Paulo").format(),
             message,
             solvedPost: false,
         })
             .catch(err => res.status(400).json(err))
-        if (userExiste.ranking === NaN || userExiste.ranking === undefined) {
+        if (user.ranking === NaN || user.ranking === undefined) {
             value = 3
         }
         else {
-            value = userExiste.ranking + 3
+            value = user.ranking + 3
         }
-         await Users.findByIdAndUpdate(user, { ranking: value })
+        await Users.findByIdAndUpdate(user.id, { ranking: value })
         return res.status(204).send()
-
     }
 
     const remove = async (req, res) => {

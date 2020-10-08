@@ -58,14 +58,6 @@ export default function PostPage({ route, navigation }) {
         setUserIsPostOwner(true);
       }
     }
-    if (post.files) {
-      if (post.files[0]) {
-        setFile1(post.files[0]);
-      }
-      if (post.files[1]) {
-        setFile2(post.files[1]);
-      }
-    }
   }, [route.params.post]);
 
   useEffect(() => {
@@ -170,6 +162,14 @@ export default function PostPage({ route, navigation }) {
       const response = await api.get(`/post/${post._id}`, {
         headers: { user_id },
       });
+      if (response.data.files) {
+        if (response.data.files[0]) {
+          setFile1(response.data.files[0]);
+        }
+        if (response.data.files[1]) {
+          setFile2(response.data.files[1]);
+        }
+      }
       setPost(response.data[0]);
     } catch (e) {
       showError("Aconteceu um erro: \n" + e);
@@ -229,7 +229,7 @@ export default function PostPage({ route, navigation }) {
     }
   }
 
-  async function ReportPost() {
+  async function reportPost() {
     const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
     try {
       const response = await api.post(
@@ -320,11 +320,10 @@ export default function PostPage({ route, navigation }) {
     let filename = localUri.split("/").pop();
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
-
     try {
       const user_id = await AsyncStorage.getItem("user");
       const data = new FormData();
-      data.append("file", { uri: localUri, name: filename, type });
+      data.append("file", { uri: localUri, name: result.name, type });
       const response = await api.post(
         `/posts/${post._id}/file`,
         data,
@@ -335,7 +334,7 @@ export default function PostPage({ route, navigation }) {
         showSucess("Arquivo enviado sucesso");
         // await loadUser(route.params.userId);
         // await reloadPosts();
-        // ATUALIZAR O ARQUIVO DEMONTSRADO NA TELA
+        setPress(!press)
         setUploadProgress(0);
         setIsUploadingFile(0);
       } else {
@@ -452,7 +451,7 @@ export default function PostPage({ route, navigation }) {
                                   onPress: () => openFile1(post.files[0].url),
                                 },
                               ],
-                              { cancelable: false }
+                              { cancelable: true }
                             )
                           }
                         >
@@ -723,7 +722,7 @@ export default function PostPage({ route, navigation }) {
                         {
                           text: "Sim",
                           onPress: () => {
-                            ReportPost();
+                            reportPost();
                           },
                         },
                       ],
