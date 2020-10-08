@@ -38,7 +38,7 @@ const PostsSchema = new mongoose.Schema({
       ref: "Users",
     },
   ],
-  files: [{ name: String, format: String, url: String }],
+  files: [{ name: String, format: String, url: String, date: Date }],
 });
 
 module.exports = mongoose.model("Posts", PostsSchema);

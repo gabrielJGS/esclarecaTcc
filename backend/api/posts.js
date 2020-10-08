@@ -457,6 +457,7 @@ module.exports = (app) => {
             name: req.file.originalname,
             format: req.file.mimetype.split("/")[1],
             url: req.file.location,
+            date: momentTz().tz("America/Sao_Paulo").format()
           };
           url = req.file.location;
           if (url == null) {
