@@ -238,7 +238,6 @@ module.exports = (app) => {
     let { search_text } = req.headers;
     search_text = search_text.trim();
     const typeSearch = type == "false" ? false : true;
-
     //Páginação
     const qtdLoad = 5;
     const { page = 1 } = req.query;
@@ -246,9 +245,11 @@ module.exports = (app) => {
     const user = req.user;
 
     //Montagem dos filtros
+    const followed = user.followed
+    followed.push(user.id)
     let match = {
       type: typeSearch,
-      user: { $nin: user.blocked },
+      user: { $nin: user.blocked }
     };
 
     if (search_type === "" || search_text === "") {
@@ -266,10 +267,9 @@ module.exports = (app) => {
         }
       }
     }
-
     const posts = await Posts.aggregate([
       {
-        $match: { $or: [match, { user: { $in: user.followed } }] },
+        $match: { $or: [match, { $and: [{ user: { $in: followed }, type: typeSearch }] }] },
       },
       { $sort: { postedIn: -1 } },
       {

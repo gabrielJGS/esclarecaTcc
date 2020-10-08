@@ -16,13 +16,11 @@ export default function NewPost({ route, navigation }) {
   const [type, setType] = useState(route.params.type)
 
   async function handleSubmit() {
-    const user_id = await AsyncStorage.getItem('user');
-
     try {
       const post = await api.post(`/posts`, {
         title, desc, tags
       }, {
-        headers: { user_id, type }
+        headers: { type }
       })
       if (post.status == 201) {
         showSucess(`${type == false ? 'Dúvida' : 'Conteúdo'} cadastrad${type == false ? 'a' : 'o'} com sucesso`)
