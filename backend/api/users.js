@@ -29,7 +29,7 @@ module.exports = (app) => {
   };
   const save = async (req, res) => {
     const email = req.body.email.trim().toLowerCase();
-    const tags = req.body.tags.trim().toLowerCase();
+    const tags = req.body.tags.trim();
     let { key = "", location: url = "" } = "";
 
     if (req.body.avatarUser) {
@@ -46,11 +46,11 @@ module.exports = (app) => {
       res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`);
     } else {
       obterHash(req.body.password.trim().toLowerCase(), (hash) => {
-        const user = Users.create({
+        Users.create({
           name: req.body.name,
           email,
           password: hash,
-          tags: tags.split(",").map((tag) => tag.trim()),
+          tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
           key,
           url,
           ranking: 0,
@@ -65,7 +65,7 @@ module.exports = (app) => {
   const update = (req, res) => {
     const name = req.body.name.trim();
     const email = req.body.email.trim().toLowerCase();
-    const tags = req.body.tags.trim().toLowerCase();
+    const tags = req.body.tags.trim();
 
     const user = req.user;
 
@@ -76,17 +76,16 @@ module.exports = (app) => {
       if (url == null) {
         url = `http:${hostIp}:3333/files/${key}`;
       }
-      user = Users.findByIdAndUpdate(user.id, { key, url })
+      Users.findByIdAndUpdate(user.id, { key, url })
         .then((_) => res.status(204).send())
         .catch((err) => res.status(400).json(err));
     } else {
-
       obterHash(req.body.password.trim().toLowerCase(), (hash) => {
-        user = Users.findOneAndUpdate(user.id, {
+        Users.findOneAndUpdate(user.id, {
           name,
           email,
           password: hash,
-          tags: tags.split(",").map((tag) => tag.trim()),
+          tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
         })
           .then((_) => res.status(204).send())
           .catch((err) => res.status(500).json(err));
@@ -135,7 +134,7 @@ module.exports = (app) => {
     const tags = req.body.tags.trim().toLowerCase();
 
     user = Users.findByIdAndUpdate(user.id, {
-      tags: tags.split(",").map((tag) => tag.trim()),
+      tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
     })
       .then((_) => res.status(204).send())
       .catch((err) => res.status(400).json(err));

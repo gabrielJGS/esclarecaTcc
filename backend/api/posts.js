@@ -333,8 +333,6 @@ module.exports = (app) => {
     const { type } = req.headers;
     title.trim();
     desc.trim();
-    tags.trim();
-
     const user = req.user;
 
     const valid = !title || !desc || !tags || type != true || type != false;
@@ -348,7 +346,7 @@ module.exports = (app) => {
       title,
       desc,
       postedIn: momentTz().tz("America/Sao_Paulo").format(),
-      tags: tags.split(",").map((tag) => tag.trim()),
+      tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
       type,
       closed: false,
       user: user.id,

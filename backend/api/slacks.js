@@ -69,7 +69,7 @@ module.exports = app => {
         }
 
         nome.trim()
-        tag.trim()
+        tag.trim().toLowerCase()
         senha ? senha.trim() : senha
 
         const slack = await Slacks.create({

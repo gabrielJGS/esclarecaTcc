@@ -12,16 +12,10 @@ module.exports = app => {
         .all(app.config.passport.authenticate())
         .put(app.api.users.update)
         .patch(app.api.users.patch)
-
-    app.route('/users/:id')
-        .all(app.config.passport.authenticate())
-        .get(app.api.users.profile)
+    app.get('/users/:id', app.config.passport.authenticate(), app.api.users.profile)
 
     //Enviar a foto de perfil
     app.post('/users/:id/photo', app.config.passport.authenticate(), multer(multerConfigProfile).single('file'), app.api.users.upload)
-
-    //ranking
-    app.get('/ranking', app.config.passport.authenticate(), app.api.users.list)
 
     app.get('/users', app.config.passport.authenticate(), app.api.users.index)//Pesquisar usuário
     app.get('/users/:id/posts', app.config.passport.authenticate(), app.api.posts.getByUser)//Posts do usuário
@@ -31,6 +25,9 @@ module.exports = app => {
     app.post('/forget', app.api.users.forgotPassword)//esqueceu a senha
     app.post('/resetPass', app.api.users.resetPassword)//resetar senha
     app.post('/pushToken', app.api.users.pushTokenPass)//salvar token push
+
+    //ranking
+    app.get('/ranking', app.config.passport.authenticate(), app.api.users.list)
 
     //Posts
     app.route('/posts')
