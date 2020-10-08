@@ -77,11 +77,13 @@ export default StyleSheet.create({
     GoogleF:{
         color:'black',
         fontWeight:'bold',
-        fontSize:hp('2%')
+        fontSize:hp('2%'),
+        marginRight:50
     },
     FacebookF:{
         color:'white',
         fontWeight:'bold',
-        fontSize:hp('2%')
+        fontSize:hp('2%'),
+        marginRight:40
     }
 })

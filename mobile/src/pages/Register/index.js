@@ -177,44 +177,38 @@ export default function Register() {
                             blurOnSubmit={false}
                             ref={(input) => { this.secondTextInput = input; }}
                         />
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
-                                <Text style={styles.label}>Senha</Text>
-                                <TextInput
-                                    style={styles.input2}
-                                    placeholder="Sua senha"
-                                    placeholderTextColor="#999"
-                                    secureTextEntry={true}
-                                    password={true}
-                                    autoCapitalize="words"
-                                    autoCorrect={false}
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    returnKeyType = { "next" }
-                                    onSubmitEditing={() => { this.fourthTextInput.focus(); }}
-                                    blurOnSubmit={false}
-                                    ref={(input) => { this.thirdTextInput = input; }}
-                                />
-                            </View>
-                            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
-                                <Text style={styles.label}>Insira novamente</Text>
-                                <TextInput
-                                    style={styles.input3}
-                                    placeholder="Confirme sua senha"
-                                    placeholderTextColor="#999"
-                                    secureTextEntry={true}
-                                    password={true}
-                                    autoCapitalize="words"
-                                    autoCorrect={false}
-                                    value={confirmPass}
-                                    onChangeText={setConfirmPass}
-                                    returnKeyType = { "next" }
-                                    onSubmitEditing={() => { this.fivethTextInput.focus(); }}
-                                    blurOnSubmit={false}
-                                    ref={(input) => { this.fourthTextInput = input; }}
-                                />
-                            </View>
-                        </View>
+                        <Text style={styles.label}>Senha</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Sua senha"
+                            placeholderTextColor="#999"
+                            secureTextEntry={true}
+                            password={true}
+                            autoCapitalize="words"
+                            autoCorrect={false}
+                            value={password}
+                            onChangeText={setPassword}
+                            returnKeyType = { "next" }
+                            onSubmitEditing={() => { this.fourthTextInput.focus(); }}
+                            blurOnSubmit={false}
+                            ref={(input) => { this.thirdTextInput = input; }}
+                        />
+                        <Text style={styles.label}>Insira novamente</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Confirme sua senha"
+                            placeholderTextColor="#999"
+                            secureTextEntry={true}
+                            password={true}
+                            autoCapitalize="words"
+                            autoCorrect={false}
+                            value={confirmPass}
+                            onChangeText={setConfirmPass}
+                            returnKeyType = { "next" }
+                            onSubmitEditing={() => { this.fivethTextInput.focus(); }}
+                            blurOnSubmit={false}
+                            ref={(input) => { this.fourthTextInput = input; }}
+                        />
                         <Text style={styles.label}>Tags <Text style={{color:'#999', fontSize:12, fontWeight:'normal'}}>(assuntos do seu interesse)</Text></Text>
                         <TextInput
                             style={styles.input}
