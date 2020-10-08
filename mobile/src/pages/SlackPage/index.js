@@ -16,17 +16,14 @@ export default function SlackPage({ route, navigation }) {
 
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
 
     useEffect(() => {
-        console.log(user)
         reloadMessages()
         loadUser()
         async function loadUser() {
-            const u = await AsyncStorage.getItem('user')
-            setUser(u)
-            console.log(u)
+            setUser(await AsyncStorage.getItem('user'))
         }
     }, [])
 
@@ -140,7 +137,7 @@ export default function SlackPage({ route, navigation }) {
     };
 
     return (
-        user == null ? renderFooter :
+        user == null ? null :
             < View style={styles.container} >
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
