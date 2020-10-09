@@ -166,11 +166,11 @@ export default function Init() {
           >
             <TouchableOpacity style={styles.Google} onPress={GoogleLogIn}>
               <Image style={{ width: 25, height: 25 }} source={googleIcon} />
-              <Text style={styles.GoogleF}>Login com Google</Text>
+              <Text style={styles.GoogleF}> Google</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.Facebook} onPress={FacebooklogIn}>
               <Image style={{ width: 25, height: 25 }} source={facebookIcon} />
-              <Text style={styles.FacebookF}>Login com Facebook</Text>
+              <Text style={styles.FacebookF}> Facebook</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={navigateToLogin} style={styles.Register}>
