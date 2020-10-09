@@ -107,6 +107,7 @@ export default function SlackPage({ route, navigation }) {
         } catch (e) {
             showError(e)
         }
+        setLoading(false)
         setRefreshing(false)
     }
 
@@ -136,7 +137,7 @@ export default function SlackPage({ route, navigation }) {
     };
 
     return (
-        user == null ? renderFooter :
+        user == null ? null :
             < View style={styles.container} >
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>

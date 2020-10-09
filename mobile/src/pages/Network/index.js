@@ -464,7 +464,7 @@ export default function Network() {
                       <TouchableOpacity
                         onPress={() =>
                           Alert.alert(
-                            "Bloquear",
+                            "Desbloquear",
                             "Deseja realmente desbloquear o usuário?",
                             [
                               {

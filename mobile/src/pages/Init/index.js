@@ -70,7 +70,7 @@ export default function Init() {
         try {
           data = await response.json();
           console.log(data);
-        } catch {}
+        } catch { }
         try {
           //LOGIN
           const response = await api.post("/signin", {
@@ -78,8 +78,8 @@ export default function Init() {
             password: data.id,
           });
           const login = await response.data;
-
-          await AsyncStorage.setItem("user", login.id.toString());
+          await AsyncStorage.setItem("token", login.token.toString());
+          // await AsyncStorage.setItem("user", login.id.toString());
           await AsyncStorage.setItem("userName", login.name.toString());
           await AsyncStorage.setItem("userTags", login.tags.toString());
           singIn();
@@ -119,14 +119,9 @@ export default function Init() {
           password: googleRequest.user.id,
         });
         await AsyncStorage.setItem("user", loginRequest.data.id.toString());
-        await AsyncStorage.setItem(
-          "userName",
-          loginRequest.data.name.toString()
-        );
-        await AsyncStorage.setItem(
-          "userTags",
-          loginRequest.data.tags.toString()
-        );
+        await AsyncStorage.setItem("token", loginRequest.data.token.toString());
+        await AsyncStorage.setItem("userName", loginRequest.data.name.toString());
+        await AsyncStorage.setItem("userTags", loginRequest.data.tags.toString());
         singIn();
       } catch (e) {
         console.log("Erro " + e);
