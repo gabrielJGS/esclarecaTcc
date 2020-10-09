@@ -127,7 +127,7 @@ export default function Profile({ route, navigation }) {
       showError("Confirme ou digite sua nova senha!");
       return;
     }
-    const response = await api.put(`/users/${route.params.userId}`, {
+    const response = await api.put(`/users`, {
       name,
       email,
       tags: tags.toString(","),

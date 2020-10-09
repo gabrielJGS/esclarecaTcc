@@ -25,14 +25,8 @@ const transporter = nodemailer.createTransport({
 module.exports = (app) => {
   const getOne = async (req, res) => {
     const { post } = req.params;
-    const { user_id } = req.headers;
 
-    const user = await Users.findById(user_id).catch((err) =>
-      res.status(400).json(err)
-    );
-    if (!user) {
-      return res.status(401).send("Usuário inválido");
-    }
+    const user = req.user;
 
     const postToBeRemoved = await Posts.findById(post).catch((err) => {
       return res.status(400).json(err);
@@ -47,7 +41,7 @@ module.exports = (app) => {
       {
         $addFields: {
           didILiked: {
-            $in: [mongoose.Types.ObjectId(user._id), "$likes"],
+            $in: [mongoose.Types.ObjectId(user.id), "$likes"],
           },
         },
       },
@@ -75,6 +69,8 @@ module.exports = (app) => {
   const getByUser = async (req, res) => {
     const { id } = req.params;
     const { type } = req.headers;
+    const userAtual = req.user;
+
     if (id == undefined) {
       return res.status(401).send("Usuário inválido");
     }
@@ -114,7 +110,7 @@ module.exports = (app) => {
       {
         $addFields: {
           didILiked: {
-            $in: [mongoose.Types.ObjectId(user._id), "$likes"],
+            $in: [mongoose.Types.ObjectId(userAtual.id), "$likes"],
           },
           commentsCount: {
             $ifNull: [{ $arrayElemAt: ["$commentsCount.count", 0] }, 0],
@@ -219,14 +215,10 @@ module.exports = (app) => {
   };
 
   const getTotalPosts = async (req, res) => {
-    const { user_id, type, search_text } = req.headers;
+    const { type, search_text } = req.headers;
     const typeSearch = type == "false" ? false : true;
-    const user = await Users.findById(user_id).catch((err) =>
-      res.status(400).send(err)
-    );
-    if (!user) {
-      return res.status(401).send("Usuário inválido");
-    }
+    const user = req.user;
+
     if (!type) {
       return res.status(400).send("Campos inválidos");
     }
@@ -242,27 +234,22 @@ module.exports = (app) => {
   };
 
   const index = async (req, res) => {
-    const { user_id, type, search_type } = req.headers;
+    const { type, search_type } = req.headers;
     let { search_text } = req.headers;
     search_text = search_text.trim();
-
     const typeSearch = type == "false" ? false : true;
-
     //Páginação
     const qtdLoad = 5;
     const { page = 1 } = req.query;
 
-    const user = await Users.findById(user_id).catch((err) =>
-      res.status(400).json(err)
-    );
-    if (!user) {
-      return res.status(401).send("Usuário inválido");
-    }
+    const user = req.user;
 
     //Montagem dos filtros
+    const followed = user.followed
+    followed.push(user.id)
     let match = {
       type: typeSearch,
-      user: { $nin: user.blocked },
+      user: { $nin: user.blocked }
     };
 
     if (search_type === "" || search_text === "") {
@@ -280,17 +267,9 @@ module.exports = (app) => {
         }
       }
     }
-    // // Count
-    // const count = await Posts.aggregate([
-    //   { $match: { $or: [match, { user: { $in: user.followed } }] } },
-    // ])
-    //   .count()
-    //   .catch((err) => res.status(400).json(err));
-    // res.header("X-Total-Count", count);
-    // Get
     const posts = await Posts.aggregate([
       {
-        $match: { $or: [match, { user: { $in: user.followed } }] },
+        $match: { $or: [match, { $and: [{ user: { $in: followed }, type: typeSearch }] }] },
       },
       { $sort: { postedIn: -1 } },
       {
@@ -307,7 +286,7 @@ module.exports = (app) => {
       {
         $addFields: {
           didILiked: {
-            $in: [mongoose.Types.ObjectId(user_id), "$likes"],
+            $in: [mongoose.Types.ObjectId(user.id), "$likes"],
           },
           commentsCount: {
             $ifNull: [{ $arrayElemAt: ["$commentsCount.count", 0] }, 0],
@@ -343,7 +322,6 @@ module.exports = (app) => {
           ],
         },
       },
-      // { $lookup: { from: 'users', localField: 'likes', foreignField: '_id', as: 'likes' } },
     ]).catch((err) => res.status(400).json(err));
 
     return res.json(posts);
@@ -352,17 +330,11 @@ module.exports = (app) => {
   const save = async (req, res) => {
     //const { filename } = req.file;
     let { title, desc, tags } = req.body;
-    const { user_id, type } = req.headers;
+    const { type } = req.headers;
     title.trim();
     desc.trim();
-    tags.trim();
+    const user = req.user;
 
-    const user = await Users.findById(user_id).catch((err) =>
-      res.status(400).json(err)
-    );
-    if (!user) {
-      return res.status(400).send("Usuário inválido");
-    }
     const valid = !title || !desc || !tags || type != true || type != false;
     valid == false
       ? res.status(400).send("Algum campo não foi preenchido")
@@ -374,10 +346,10 @@ module.exports = (app) => {
       title,
       desc,
       postedIn: momentTz().tz("America/Sao_Paulo").format(),
-      tags: tags.split(",").map((tag) => tag.trim()),
+      tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
       type,
       closed: false,
-      user: user_id,
+      user: user.id,
       files: [],
     }).catch((err) => res.status(400).json(err));
     if (user.ranking === NaN || user.ranking === undefined) {
@@ -385,19 +357,13 @@ module.exports = (app) => {
     } else {
       value = user.ranking + 5;
     }
-    const result = await Users.findByIdAndUpdate(user_id, { ranking: value });
+    const result = await Users.findByIdAndUpdate(user.id, { ranking: value });
     return res.status(201).json(post);
   };
 
   const remove = async (req, res) => {
-    const { user_id } = req.headers;
     const { post } = req.params;
-    const user = await Users.findById(user_id).catch((err) =>
-      res.status(400).json(err)
-    );
-    if (!user) {
-      return res.status(401).send("Usuário inválido");
-    }
+    const user = req.user;
 
     const postToBeRemoved = await Posts.findById(post).catch((err) => {
       return res.status(400).json(err);
@@ -406,7 +372,7 @@ module.exports = (app) => {
       return res.status(400).send("Post não encontrado com o id: " + post);
     } //Caso o id seja válido mas não exista vai cair aqui
 
-    if (postToBeRemoved.user == user_id) {
+    if (postToBeRemoved.user == user.id) {
       //Se é o dono post deleta
       await Posts.deleteOne(postToBeRemoved);
       if (user.ranking === NaN || user.ranking === undefined) {
@@ -414,7 +380,7 @@ module.exports = (app) => {
       } else {
         value = user.ranking - 5;
       }
-      const result = await Users.findByIdAndUpdate(user_id, {
+      const result = await Users.findByIdAndUpdate(user.id, {
         ranking: value,
       }).catch((err) => {
         return res.status(400).json(err);
@@ -424,19 +390,14 @@ module.exports = (app) => {
       //Se não, não tem permissão
       return res
         .status(401)
-        .send(`Usuário ${user_id} não autorizado a deletar o post.`);
+        .send(`Usuário ${user.name} não autorizado a deletar o post.`);
     }
   };
 
   const like = async (req, res) => {
-    const { user_id } = req.headers;
     const { post } = req.params;
-    const user = await Users.findById(user_id).catch((err) =>
-      res.status(400).json(err)
-    ); //Caso o id seja inválido vai cair aqui
-    if (!user) {
-      return res.status(401).send("Usuário inválido");
-    }
+    const user = req.user;
+
     const postToUpdate = await Posts.findById(post).catch((err) =>
       res.status(400).json(err)
     ); //Caso o id seja inválido vai cair aqui
@@ -444,9 +405,9 @@ module.exports = (app) => {
       //Caso o id seja válido mas não exista vai cair aqui
       res.status(400).send("Post não encontrado com o id: " + req.params);
     } else {
-      if (postToUpdate.likes.find((u) => u == user_id)) {
+      if (postToUpdate.likes.find((u) => u == user.id)) {
         //Descurtindo
-        const index = postToUpdate.likes.indexOf(user_id);
+        const index = postToUpdate.likes.indexOf(user.id);
         if (index > -1) {
           postToUpdate.likes.splice(index, 1);
         }
@@ -464,27 +425,20 @@ module.exports = (app) => {
 
   const upload = async (req, res) => {
     const { post } = req.params;
-    const { file_num = 0, user_id } = req.headers;
+    const { file_num = 0 } = req.headers;
     let { key = "", location: url = "" } = "";
+    const user = req.user;
 
-    const user = await Users.findById(user_id).catch((err) =>
-      res.status(400).json(err)
-    ); //Caso o id seja inválido vai cair aqui
-    if (!user) {
-      return res.status(401).send("Usuário inválido");
-    }
     if (req.file) {
-      console.log(req.file);
       try {
-        const postToUpdate = Posts.findById(post).then((p) => {
-          if (p.user._id != user_id) {
+        Posts.findById(post).then((p) => {
+          if (p.user._id != user.id) {
             return res
               .status(401)
-              .send(`Usuário ${user_id} não autorizado a anexar ao post.`);
+              .send(`Usuário ${user.name} não autorizado a anexar ao post.`);
           }
           if (p.files[file_num] != undefined) {
             const keyUrl = p.files[file_num].url.split("/");
-            console.log(keyUrl)
             var s3 = new aws.S3({
               accessKeyId: s3Config_accessKeyId,
               secretAccessKey: s3Config_secretAccessKey,
@@ -501,8 +455,9 @@ module.exports = (app) => {
           }
           arq = {
             name: req.file.originalname,
-            format: req.file.mimetype.split('/')[1],
+            format: req.file.mimetype.split("/")[1],
             url: req.file.location,
+            date: momentTz().tz("America/Sao_Paulo").format()
           };
           url = req.file.location;
           if (url == null) {
@@ -522,28 +477,21 @@ module.exports = (app) => {
 
   const report = async (req, res) => {
     const { post } = req.params;
-    const { user_id } = req.headers;
 
-    const user = await Users.findById(user_id).catch((err) =>
-      res.status(400).json(err)
-    ); //Caso o id seja inválido vai cair aqui
-    if (!user) {
-      return res.status(401).send("Usuário inválido");
-    } else {
-      const postToBeReport = await Posts.findById(post).catch((err) => {
+    const postToBeReport = await Posts.findById(post).catch((err) => {
+      return res.status(400).json(err);
+    }); //Caso o id seja inválido vai cair aqui
+    const userToBeReport = await Users.findById(postToBeReport.user).catch(
+      (err) => {
         return res.status(400).json(err);
-      }); //Caso o id seja inválido vai cair aqui
-      const userToBeReport = await Users.findById(postToBeReport.user).catch(
-        (err) => {
-          return res.status(400).json(err);
-        }
-      ); //Caso o id seja inválido vai cair aqui
-      transporter.sendMail({
-        to: userToBeReport.email,
-        from: userMail,
-        cc: userMail,
-        subject: "Postagem reportada!",
-        html: `
+      }
+    ); //Caso o id seja inválido vai cair aqui
+    transporter.sendMail({
+      to: userToBeReport.email,
+      from: userMail,
+      cc: userMail,
+      subject: "Postagem reportada!",
+      html: `
                   <p>Olá ${userToBeReport.name}, parece que o seu post <b>"${postToBeReport.title}"</b> foi reportado por outro usuário que identificou informações que vão contra as regras de uso do aplicativo.</p>
                   <h4>Equipe Esclareça solicita que retorne ao aplicativo e verifique as informações dessa postagem.</h4>
                   <p>As boas práticas de uso e de conteúdo devem sempre permanecer para garantir o bom proveito do app! :)</p>
@@ -553,11 +501,10 @@ module.exports = (app) => {
                   </br>
                   <a href="https://docs.google.com/uc?export=download&id=16z5VqvJivEabAFiOSTVzB2tdiW_FqZkN">Leia aqui nossos termos de privacidade!</a>
               `,
-      });
-      res.status(200).json({
-        message: "Post reportado",
-      });
-    }
+    });
+    res.status(200).json({
+      message: "Post reportado",
+    });
   };
 
   return {

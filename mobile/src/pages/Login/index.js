@@ -47,7 +47,8 @@ export default function Login() {
         });
         const user = response.data;
         try {
-          await AsyncStorage.setItem("user", user.id.toString());
+          await AsyncStorage.setItem("token", user.token.toString());
+          // await AsyncStorage.setItem("user", user.id.toString());
           await AsyncStorage.setItem("userName", user.name.toString());
           await AsyncStorage.setItem("userTags", user.tags.toString());
           singIn();
@@ -59,17 +60,6 @@ export default function Login() {
       }
     } else {
       showError("Preencha os campos email e senha.");
-    }
-  }
-
-  async function handleForgetPassword() {
-    try {
-      const response = await api.post("/forget", {
-        email,
-      });
-      showSucess("Senha enviada para o email " + email);
-    } catch (e) {
-      showError(e);
     }
   }
 

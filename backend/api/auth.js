@@ -11,9 +11,6 @@ module.exports = app => {
         const email = req.body.email.trim().toLowerCase()
         const password = req.body.password.trim().toLowerCase()
         const user = await Users.findOne({ email })
-        // const user = await app.db('users')
-        //     .whereRaw("LOWER(email) = LOWER(?)", req.body.email)
-        //     .first()
         if (user) {
             bcrypt.compare(password, user.password, (err, isMatch) => {
                 if (err || !isMatch) {
@@ -27,7 +24,7 @@ module.exports = app => {
                 }
 
                 res.json({
-                    id: user.id,//REMOVER
+                    id: user.id,
                     name: user.name,
                     email: user.email,
                     tags: user.tags,

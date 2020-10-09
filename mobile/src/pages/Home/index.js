@@ -8,6 +8,7 @@ import {
   StatusBar,
   TextInput,
   Modal,
+  Alert,
   TouchableWithoutFeedback,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
@@ -15,10 +16,12 @@ import Posts from "../../Components/Posts";
 import api from "../../services/api";
 import styles from "./styles";
 import * as Animatable from "react-native-animatable";
+import { AuthContext } from "../../context";
 
 import { showError } from "../../common";
 
 export default function Home() {
+  const { singOut } = React.useContext(AuthContext);
   const navigation = useNavigation();
 
   const [type, setType] = useState(false);
@@ -81,18 +84,15 @@ export default function Home() {
       return;
     }
 
-    if (total > 0 && (posts.length - adCount) == total) {
+    if (total > 0 && posts.length - adCount == total) {
       //Impede que faça a requisição caso a qtd máxima já tenha sido atingida
       return;
     }
 
     setLoading(true); //Altera para o loading iniciado
     try {
-      const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
-
       const response = await api.get("/posts", {
         headers: {
-          user_id,
           type,
           search_text: searchText,
           search_type: searchType,
@@ -121,32 +121,47 @@ export default function Home() {
       //Impede que uma busca aconteça enquanto uma requisição já foi feita
       return;
     }
-    const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
     setRefreshing(true); //Altera para o loading iniciado
-
     try {
       const response = await api.get("/posts", {
         headers: {
-          user_id,
           type,
           search_text: searchText,
           search_type: searchType,
         },
         params: { page: 1 },
       });
-      const results = [
-        ...response.data[0].paginatedResults,
-        // { ad: true, _id: adCount },
-      ];
+      const results = [...response.data[0].paginatedResults];
       setPosts(results);
-      // setPosts(response.data[0].paginatedResults);
       if (response.data[0].paginatedResults.length > 0) {
         setTotal(response.data[0].totalCount[0].count);
         setPage(2);
         setAdCount(1);
       }
     } catch (e) {
-      showError(e);
+      // console.log(e.request)
+      if (e.response.status == 401) {
+        Alert.alert(
+          "Seu login expirou!",
+          "Deseja realizar o login novamente?",
+          [
+            {
+              text: "Não",
+              onPress: () => {},
+            },
+            {
+              text: "Sim",
+              onPress: () => {
+                AsyncStorage.clear();
+                singOut();
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      } else {
+        showError(e);
+      }
     }
     setRefreshing(false);
   }
