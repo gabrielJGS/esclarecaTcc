@@ -144,6 +144,7 @@ function CustomDrawerContent(props) {
           <View style={styles.User}>
             <TouchableOpacity
               onPress={() => {
+                setPage('profile')
                 setPress((previousState) => !previousState);
                 props.navigation.navigate("Profile", { userId });
               }}
@@ -173,7 +174,7 @@ function CustomDrawerContent(props) {
                     maxWidth: 200,
                   }}
                 >
-                  <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                  <Text style={{ fontSize: 20, fontWeight: "bold", color:page == "profile" ? "#FFC300" : "black" }}>
                     {userName ? userName : "Meu perfil"}
                   </Text>
                   <Text style={{ fontSize: 13, color: "#365478" }}>

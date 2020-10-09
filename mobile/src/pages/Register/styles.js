@@ -130,8 +130,9 @@ export default StyleSheet.create({
         justifyContent: 'center',alignItems: 'center', backgroundColor:'white', 
         marginHorizontal:hp('5%'),
         paddingHorizontal:hp('2%'), 
-        marginTop:hp('5%'), flex:1, 
-        maxHeight:hp('70%'),
+        marginTop:hp('5%'),
+         flex:1, 
+        maxHeight:hp('80%'),
         borderRadius:10
     }
 });
