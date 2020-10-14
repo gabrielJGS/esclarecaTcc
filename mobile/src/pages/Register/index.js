@@ -46,7 +46,7 @@ export default function Register() {
                                 //navigation.goBack()
                                 try {
                                     const response = await api.post('/signin', {
-                                        email, password: password
+                                        email, password: password, type: 'app'
                                     });
                                     const user = response.data;
                                     try {

@@ -30,6 +30,8 @@ module.exports = (app) => {
   const save = async (req, res) => {
     const email = req.body.email.trim().toLowerCase();
     const tags = req.body.tags.trim();
+    const type = req.body.type;
+
     let { key = "", location: url = "" } = "";
 
     if (req.body.avatarUser) {
@@ -45,21 +47,41 @@ module.exports = (app) => {
     if (userExist) {
       res.status(400).json(`${email} já foi cadastrado\nEsqueceu sua senha?`);
     } else {
-      obterHash(req.body.password.trim().toLowerCase(), (hash) => {
+      if (type == 'app') {
+        obterHash(req.body.password.trim().toLowerCase(), (hash) => {
+          Users.create({
+            name: req.body.name,
+            email,
+            password: hash,
+            tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
+            key,
+            url,
+            ranking: 0,
+            blocked: [],
+            followed: [],
+            idGoogle: '',
+            idFacebook: '',
+          })
+            .then((u) => res.status(204).send(u))
+            .catch((err) => res.status(400).json(err));
+        });
+      } else {
         Users.create({
           name: req.body.name,
           email,
-          password: hash,
+          password: '',
           tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
           key,
           url,
           ranking: 0,
           blocked: [],
           followed: [],
+          idGoogle: type == 'google' ? req.body.idGoogle : '',
+          idFacebook: type == 'facebook' ? req.body.idFacebook : '',
         })
           .then((u) => res.status(204).send(u))
           .catch((err) => res.status(400).json(err));
-      });
+      }
     }
   };
   const update = (req, res) => {
@@ -80,16 +102,28 @@ module.exports = (app) => {
         .then((_) => res.status(204).send())
         .catch((err) => res.status(400).json(err));
     } else {
-      obterHash(req.body.password.trim().toLowerCase(), (hash) => {
-        Users.findOneAndUpdate(user.id, {
+      if (req.body.password.trim()) {
+        obterHash(req.body.password.trim().toLowerCase(), (hash) => {
+          Users.findByIdAndUpdate(user.id, {
+            name,
+            email,
+            password: hash,
+            tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
+          })
+            .then((_) => res.status(204).send())
+            .catch((err) => res.status(500).json(err));
+        });
+      } else {
+        console.log(req.body.password)
+        console.log(tags)
+        Users.findByIdAndUpdate(user.id, {
           name,
           email,
-          password: hash,
           tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
         })
           .then((_) => res.status(204).send())
           .catch((err) => res.status(500).json(err));
-      });
+      }
     }
   };
 
