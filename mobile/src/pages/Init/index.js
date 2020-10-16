@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import {
@@ -20,7 +20,6 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import * as Facebook from "expo-facebook";
 import * as Google from "expo-google-app-auth";
 import { AuthContext } from "../../context";
-import { showError } from "../../common";
 import UserPermission from "../../UserPermissions";
 
 export default function Init() {
@@ -129,7 +128,6 @@ export default function Init() {
         await AsyncStorage.setItem("userTags", loginRequest.data.tags.toString());
         singIn();
       } catch (e) {
-        console.log("Erro " + e);
         navigateToTags(googleRequest.user, 'google');
       }
     } else {

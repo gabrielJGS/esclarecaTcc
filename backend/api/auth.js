@@ -13,15 +13,10 @@ module.exports = app => {
         const idGoogle = req.body.idGoogle
         const idFacebook = req.body.idFacebook
         const type = req.body.type
-
         const user = await Users.findOne({ email })
-        console.log('req')
-        console.log(type)
-        console.log(idGoogle)
-        console.log(idFacebook)
         if (user) {
             if (type == 'app') {
-                if (req.body.password) {
+                if (!password || password == '') {
                     return res.status(400).send('Senha não preenchida')
                 }
                 bcrypt.compare(password, user.password, (err, isMatch) => {
@@ -46,7 +41,7 @@ module.exports = app => {
                         createdAt: user.createdAt
                     })
                 })
-            } else {
+            } else {             
                 if (type == 'google') {
                     if (user.idGoogle == idGoogle) {
                         const payload = {
