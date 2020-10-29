@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const Users = require('../models/Users');
 const Slacks = require('../models/Slacks');
+const Slacks_Messages = require('../models/Slacks_Messages');
 
 module.exports = app => {
     const index = async (req, res) => {
@@ -15,7 +16,7 @@ module.exports = app => {
         res.header('X-Total-Count', count)
         const slacks = await Slacks
             .aggregate([//Condição da esquerda ou user q criou
-                { $match: { $or: [{ tag: { $in: search_text != "" ? searchText.split(',') : user.tags }, user: { $nin: user.blocked } }, { user: mongoose.Types.ObjectId(user.id)}] } },
+                { $match: { $or: [{ tag: { $in: search_text != "" ? searchText.split(',') : user.tags }, user: { $nin: user.blocked } }, { user: mongoose.Types.ObjectId(user.id) }] } },
                 // { $match: { user: mongoose.Types.ObjectId(user.id)} },//Condição da esquerda ou user q criou
                 { $sort: { createdIn: -1 } },
                 {
@@ -90,13 +91,18 @@ module.exports = app => {
 
         const slackRemove = await Slacks.findById(slack)
             .catch(err => { return res.status(400).json(err) })//Caso o id seja inválido vai cair aqui
-
         if (!slackRemove) { return res.status(400).send("Slack não encontrado com o id: " + slack) }//Caso o id seja válido mas não exista vai cair aqui
         if (slackRemove.user == user.id) {//Se é o dono post deleta
-            await Slacks.deleteOne(slackRemove)
-            const result = await Users.findByIdAndUpdate(user.id, { ranking: user.ranking - 5 })
-                .catch(err => { return res.status(400).json(err) })
-            return res.status(204).send()
+            const slacks = await Slacks_Messages.find({ slack: slack }).countDocuments()
+            console.log(slacks)
+            if (slacks == 0) {
+                await Slacks.deleteOne(slackRemove)
+                const result = await Users.findByIdAndUpdate(user.id, { ranking: user.ranking - 5 })
+                    .catch(err => { return res.status(400).json(err) })
+                return res.status(204).send()
+            }
+            return res.status(406).json('O EsclaChat não pode ser excluído enquanto existirem mensagens no mesmo')
+
         } else {//Se não, não tem permissão
             return res.status(401).send(`Usuário ${user.name} não autorizado a deletar o post.`)
         }
