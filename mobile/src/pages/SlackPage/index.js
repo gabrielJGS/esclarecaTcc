@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, TouchableOpacity, AsyncStorage, Alert, TextInput, FlatList, ActivityIndicator, Image } from 'react-native';
 import { Feather, Foundation } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
 
 import { showError, showSucess, handleDate } from '../../common'
 import api from '../../services/api'
+import socket from '../../services/socket'
 
 import styles from './styles'
 
 export default function SlackPage({ route, navigation }) {
     const [user, setUser] = useState(null)
     const [slack, setSlack] = useState(route.params.slack)
-    const [messages, setMessages] = useState()
+    const [last, setLast] = useState()
+    const [messages, setMessages] = useState([])
     const [messageText, setMessageText] = useState('')
 
     const [total, setTotal] = useState(0)
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
+    let lastId
 
     useEffect(() => {
         reloadMessages()
@@ -27,26 +30,38 @@ export default function SlackPage({ route, navigation }) {
         }
     }, [])
 
+    useEffect(() => {
+        socketConnect()
+    }, [])
+    const socketConnect = () => {
+        
+        socket.emit('join', route.params.slack._id)
+        socket.on('newMessage', msg => {
+            onLoadMore()
+        })
+    }
+
     function navigateToProfile(userId) {
+
         navigation.navigate('Profile', {
             userId
         })
     }
-
+    const onLoadMore = useCallback(() => {
+        loadMessages()
+    });
     async function handlePostMessage() {
         if (messageText.trim() !== '') {
             try {
                 const user_id = await AsyncStorage.getItem('user');
                 const response = await api.post(`/slacks/${slack._id}`, {
                     slack_msg: messageText,
-                }, {
-                    headers: { user_id },
                 })
 
                 if (response.status == 204) {
                     showSucess("Comentário cadastrado com sucesso")
                     setMessageText('')
-                    await reloadMessages()
+                    // await reloadMessages()
                 } else {
                     showError("Ocorreu um erro")
                 }
@@ -57,28 +72,35 @@ export default function SlackPage({ route, navigation }) {
         }
     }
 
-    async function loadMessages() {
+    const loadMessages = async () => {
         if (loading) {//Impede que uma busca aconteça enquanto uma requisição já foi feita
             return
         }
 
-        if (total > 0 && messages.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
-            return
-        }
+        // if (total > 0 && messages.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
+        //     return
+        // }
 
         setLoading(true)//Altera para o loading iniciado
         try {
-            const user_id = await AsyncStorage.getItem('user');
-            const response = await api.get(`/slacks/${slack._id}`,
-                {
-                    headers: { user_id },
-                    params: { page }
-                })
+            if (last != undefined) {
+                console.log(last)
+                const response = await api.get(`/slacks/${slack._id}`,
+                    {
+                        headers: {
+                            last_id: last
+                        },
+                        params: { page }
+                    })
 
-            setMessages([...messages, ...response.data])
-            if (response.data.length > 0) {
-                setPage(page + 1)
-                setTotal(response.headers['x-total-count'])
+
+                if (response.data.length > 0) {
+                    // lastId = response.data[response.data.length - 1]._id
+                    setLast(response.data[response.data.length - 1]._id)
+                    setMessages([...messages, ...response.data])
+                    setPage(page + 1)
+                    setTotal(response.headers['x-total-count'])
+                }
             }
         } catch (e) {
             showError(e)
@@ -94,14 +116,15 @@ export default function SlackPage({ route, navigation }) {
         setRefreshing(true)//Altera para o loading iniciado
 
         try {
-            const user_id = await AsyncStorage.getItem('user')
             const response = await api.get(`/slacks/${slack._id}`, {
-                headers: { user_id },
                 params: { page: 1 }
             })
-            setMessages(response.data)
-            if (response.status == 200) {
+
+            if (response.data.length > 0) {
                 setPage(2)
+                setMessages(response.data)
+                // lastId = response.data[response.data.length - 1]._id
+                setLast(response.data[response.data.length - 1]._id)
                 setTotal(response.headers['x-total-count'])
             }
         } catch (e) {
@@ -157,7 +180,7 @@ export default function SlackPage({ route, navigation }) {
                             keyExtractor={message => String(message._id)}
                             onEndReached={loadMessages}
                             onEndReachedThreshold={0.2}
-                            showsVerticalScrollIndicator={false}
+                            showsVerticalScrollIndicator={true}
                             refreshing={refreshing}
                             onRefresh={reloadMessages}
                             ListFooterComponent={renderFooter}
