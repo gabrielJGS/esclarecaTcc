@@ -20,7 +20,6 @@ export default function SlackPage({ route, navigation }) {
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
-    let lastId
 
     useEffect(() => {
         reloadMessages()
@@ -28,18 +27,14 @@ export default function SlackPage({ route, navigation }) {
         async function loadUser() {
             setUser(await AsyncStorage.getItem('user'))
         }
+        socket.emit('join', route.params.slack._id)
     }, [])
 
     useEffect(() => {
-        socketConnect()
-    }, [])
-    const socketConnect = () => {
-        
-        socket.emit('join', route.params.slack._id)
         socket.on('newMessage', msg => {
             onLoadMore()
         })
-    }
+    }, [last])
 
     function navigateToProfile(userId) {
 
@@ -84,7 +79,6 @@ export default function SlackPage({ route, navigation }) {
         setLoading(true)//Altera para o loading iniciado
         try {
             if (last != undefined) {
-                console.log(last)
                 const response = await api.get(`/slacks/${slack._id}`,
                     {
                         headers: {
