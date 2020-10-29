@@ -6,17 +6,17 @@ const Slacks = require('../models/Slacks');
 
 module.exports = app => {
     const index = async (req, res) => {
-        const {  search_text } = req.headers;
+        const { search_text } = req.headers;
         const { page } = req.query;
         const user = req.user;
         const qtdLoad = 10
-
+        const searchText = search_text.trim().toLowerCase()
         const count = await Slacks.find({ tag: { $in: search_text != "" ? search_text.split(',') : user.tags }, user: { $nin: user.blocked } }).countDocuments()
         res.header('X-Total-Count', count)
-
         const slacks = await Slacks
-            .aggregate([
-                { $match: { tag: { $in: search_text != "" ? search_text.split(',') : user.tags }, user: { $nin: user.blocked } } },
+            .aggregate([//Condição da esquerda ou user q criou
+                { $match: { $or: [{ tag: { $in: search_text != "" ? searchText.split(',') : user.tags }, user: { $nin: user.blocked } }, { user: mongoose.Types.ObjectId(user.id)}] } },
+                // { $match: { user: mongoose.Types.ObjectId(user.id)} },//Condição da esquerda ou user q criou
                 { $sort: { createdIn: -1 } },
                 {
                     $lookup: {
@@ -63,7 +63,7 @@ module.exports = app => {
 
         const valid = nome && tag
         valid == false ? res.status(400).send('Algum campo não foi preenchido') : null
-        
+
         if (nome.trim() === '' || tag.trim() === '') {
             return res.status(400).send('Algum campo não foi preenchido');
         }
@@ -87,7 +87,7 @@ module.exports = app => {
     const remove = async (req, res) => {
         const { slack } = req.params;
         const user = req.user;
-       
+
         const slackRemove = await Slacks.findById(slack)
             .catch(err => { return res.status(400).json(err) })//Caso o id seja inválido vai cair aqui
 
