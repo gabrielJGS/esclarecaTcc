@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, AsyncStorage, Alert, TextInput, FlatList,
 import { Feather, Foundation } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
 
-import { showError, showSucess, handleDate } from '../../common'
+import { showError, showSucess, handleDate, handleLimitBigText } from '../../common'
 import api from '../../services/api'
 import socket from '../../services/socket'
 
@@ -31,13 +31,19 @@ export default function SlackPage({ route, navigation }) {
     }, [])
 
     useEffect(() => {
-        socket.on('newMessage', msg => {
-            onLoadMore()
+        socket.on('delMessage', msg => {
+            const filteredMsg = messages.filter((item) => item._id !== msg);
+            setMessages(filteredMsg)
+        })
+    }, [messages])
+
+    useEffect(() => {
+        socket.on('newMessage', async msg => {
+            await loadMessages()
         })
     }, [last])
 
     function navigateToProfile(userId) {
-
         navigation.navigate('Profile', {
             userId
         })
@@ -136,12 +142,11 @@ export default function SlackPage({ route, navigation }) {
             })
 
             if (response.status == 204) {
-                await reloadMessages()
+                // await reloadMessages()
             }
         } catch (e) {
             showError(e)
         }
-
     }
 
     renderFooter = () => {
@@ -191,14 +196,13 @@ export default function SlackPage({ route, navigation }) {
                                                     <Image style={styles.avatar} source={{ uri: message.user.url ? message.user.url : 'https://www.colegiodepadua.com.br/img/user.png' }} />
                                                     : <Feather name="camera" size={30} color='#D8D9DB' />}
                                                 <TouchableOpacity onPress={() => navigateToProfile(message.user._id)}>
-                                                    <Text style={styles.postTitle}>{message.user ? message.user.name : ''}</Text>
+                                                    <Text style={styles.postTitle}>{handleLimitBigText(message.user.name, 20)}</Text>
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                                 <Text style={styles.Nomepost}>{handleDate(message.postedIn)}</Text>
                                                 {user != null && (user == slack.user._id || user == message.user._id) ?
                                                     <>
-
                                                         <TouchableOpacity onPress={() =>
                                                             Alert.alert(
                                                                 'Excluir',

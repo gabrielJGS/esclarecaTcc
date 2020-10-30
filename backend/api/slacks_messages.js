@@ -85,7 +85,6 @@ module.exports = app => {
         })
             .catch(err => res.status(400).json(err))
         app.io.sockets.in(slack).emit('newMessage')
-        // app.io.emit('newMessage')
 
         await Users.findByIdAndUpdate(user.id, { ranking: user.ranking + 3 })
         res.status(204).send()
@@ -108,6 +107,8 @@ module.exports = app => {
         if (messageToRemove.slack == slack && (messageToRemove.user == user.id || slackOri.user == user.id)) {
             await Slacks_Messages.deleteOne(messageToRemove)
                 .catch(err => res.status(400).json(err))
+
+            app.io.sockets.in(slack).emit('delMessage', messageToRemove._id)
 
             await Users.findByIdAndUpdate(user.id, { ranking: user.ranking - 3 })
             res.status(204).send()
