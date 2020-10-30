@@ -167,7 +167,7 @@ export default function HomeSlack(props) {
         showError("Ocorreu um erro: " + response);
       }
     } catch (e) {
-      showError("Ocorreu um erro: " + e);
+      showError(e);
     }
   }
 

@@ -22,7 +22,9 @@ module.exports = app => {
         const count = await Slacks_Messages.find({ slack }).countDocuments()
         res.header('X-Total-Count', count)
         let messages
-        if (last_id == undefined) {
+        console.log(last_id)
+        console.log(last_id == 0)
+        if (last_id == 0) {
             messages = await Slacks_Messages.find({ slack: slackOri._id, user: { $nin: user.blocked } })
                 .populate('user', ['name', 'url'])
                 .sort({ postedIn: 1 })
@@ -85,7 +87,6 @@ module.exports = app => {
         })
             .catch(err => res.status(400).json(err))
         app.io.sockets.in(slack).emit('newMessage')
-        // app.io.emit('newMessage')
 
         await Users.findByIdAndUpdate(user.id, { ranking: user.ranking + 3 })
         res.status(204).send()
@@ -108,6 +109,8 @@ module.exports = app => {
         if (messageToRemove.slack == slack && (messageToRemove.user == user.id || slackOri.user == user.id)) {
             await Slacks_Messages.deleteOne(messageToRemove)
                 .catch(err => res.status(400).json(err))
+
+            app.io.sockets.in(slack).emit('delMessage', messageToRemove._id)
 
             await Users.findByIdAndUpdate(user.id, { ranking: user.ranking - 3 })
             res.status(204).send()
