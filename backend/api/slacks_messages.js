@@ -22,7 +22,9 @@ module.exports = app => {
         const count = await Slacks_Messages.find({ slack }).countDocuments()
         res.header('X-Total-Count', count)
         let messages
-        if (last_id == undefined) {
+        console.log(last_id)
+        console.log(last_id == 0)
+        if (last_id == 0) {
             messages = await Slacks_Messages.find({ slack: slackOri._id, user: { $nin: user.blocked } })
                 .populate('user', ['name', 'url'])
                 .sort({ postedIn: 1 })

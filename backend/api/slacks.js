@@ -94,7 +94,6 @@ module.exports = app => {
         if (!slackRemove) { return res.status(400).send("Slack não encontrado com o id: " + slack) }//Caso o id seja válido mas não exista vai cair aqui
         if (slackRemove.user == user.id) {//Se é o dono post deleta
             const slacks = await Slacks_Messages.find({ slack: slack }).countDocuments()
-            console.log(slacks)
             if (slacks == 0) {
                 await Slacks.deleteOne(slackRemove)
                 const result = await Users.findByIdAndUpdate(user.id, { ranking: user.ranking - 5 })

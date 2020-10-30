@@ -12,7 +12,7 @@ import styles from './styles'
 export default function SlackPage({ route, navigation }) {
     const [user, setUser] = useState(null)
     const [slack, setSlack] = useState(route.params.slack)
-    const [last, setLast] = useState()
+    const [last, setLast] = useState(0)
     const [messages, setMessages] = useState([])
     const [messageText, setMessageText] = useState('')
 
@@ -31,7 +31,7 @@ export default function SlackPage({ route, navigation }) {
     }, [])
 
     useEffect(() => {
-        socket.on('delMessage', msg => {
+        socket.on('delMessage', async msg => {
             const filteredMsg = messages.filter((item) => item._id !== msg);
             setMessages(filteredMsg)
         })
@@ -48,9 +48,6 @@ export default function SlackPage({ route, navigation }) {
             userId
         })
     }
-    const onLoadMore = useCallback(() => {
-        loadMessages()
-    });
     async function handlePostMessage() {
         if (messageText.trim() !== '') {
             try {
@@ -81,26 +78,22 @@ export default function SlackPage({ route, navigation }) {
         // if (total > 0 && messages.length == total) {//Impede que faça a requisição caso a qtd máxima já tenha sido atingida
         //     return
         // }
-
         setLoading(true)//Altera para o loading iniciado
         try {
-            if (last != undefined) {
-                const response = await api.get(`/slacks/${slack._id}`,
-                    {
-                        headers: {
-                            last_id: last
-                        },
-                        params: { page }
-                    })
+            const response = await api.get(`/slacks/${slack._id}`,
+                {
+                    headers: {
+                        last_id: last
+                    },
+                    params: { page }
+                })
 
-
-                if (response.data.length > 0) {
-                    // lastId = response.data[response.data.length - 1]._id
-                    setLast(response.data[response.data.length - 1]._id)
-                    setMessages([...messages, ...response.data])
-                    setPage(page + 1)
-                    setTotal(response.headers['x-total-count'])
-                }
+            if (response.data.length > 0) {
+                // lastId = response.data[response.data.length - 1]._id
+                setLast(response.data[response.data.length - 1]._id)
+                setMessages([...messages, ...response.data])
+                setPage(page + 1)
+                setTotal(response.headers['x-total-count'])
             }
         } catch (e) {
             showError(e)
@@ -117,6 +110,7 @@ export default function SlackPage({ route, navigation }) {
 
         try {
             const response = await api.get(`/slacks/${slack._id}`, {
+                headers: { last_id: last },
                 params: { page: 1 }
             })
 
@@ -210,7 +204,7 @@ export default function SlackPage({ route, navigation }) {
                                                                 [
                                                                     { text: 'Não', onPress: () => { return null } },
                                                                     {
-                                                                        text: 'Sim', onPress: () => { handleDeleteMessage(message._id) }
+                                                                        text: 'Sim', onPress: async () => { await handleDeleteMessage(message._id) }
                                                                     },
                                                                 ],
                                                                 { cancelable: false }

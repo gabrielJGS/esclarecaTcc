@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const sendEmail = require('../config/email')
 const Users = require("../models/Users");
 const Posts = require("../models/Posts");
+const Posts_Comments = require('../models/Posts_Comments');
+
 const aws = require("aws-sdk");
 const {
   s3Config_bucketPost,
@@ -363,18 +365,22 @@ module.exports = (app) => {
 
     if (postToBeRemoved.user == user.id) {
       //Se é o dono post deleta
-      await Posts.deleteOne(postToBeRemoved);
-      if (user.ranking === NaN || user.ranking === undefined) {
-        value = 0;
-      } else {
-        value = user.ranking - 5;
+      const comments = await Posts_Comments.find({ post: post }).countDocuments()
+      if (comments == 0) {
+        await Posts.deleteOne(postToBeRemoved);
+        if (user.ranking === NaN || user.ranking === undefined) {
+          value = 0;
+        } else {
+          value = user.ranking - 5;
+        }
+        const result = await Users.findByIdAndUpdate(user.id, {
+          ranking: value,
+        }).catch((err) => {
+          return res.status(400).json(err);
+        });
+        return res.status(204).send();
       }
-      const result = await Users.findByIdAndUpdate(user.id, {
-        ranking: value,
-      }).catch((err) => {
-        return res.status(400).json(err);
-      });
-      return res.status(204).send();
+      return res.status(406).json('O Post não pode ser excluído enquanto existirem comentários no mesmo')
     } else {
       //Se não, não tem permissão
       return res
