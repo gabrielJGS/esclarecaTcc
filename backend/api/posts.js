@@ -322,22 +322,34 @@ module.exports = (app) => {
     //const { filename } = req.file;
     let { title, desc, tags } = req.body;
     const { type } = req.headers;
-    title.trim();
-    desc.trim();
     const user = req.user;
 
-    const valid = !title || !desc || !tags || type != true || type != false;
-    valid == false
-      ? res.status(400).send("Algum campo não foi preenchido")
-      : null;
-    if (title.trim() === "" || desc.trim() === "") {
-      return res.status(400).send("Algum campo não foi preenchido");
+    const isType = type === 'false' ? false : type === 'true' ? true : null
+    if (!title || title.trim() == '') {
+      return res.status(400).send("Verifique se o título foi preenchido corretamente e tente novamente")
     }
+    if (!desc || desc.trim() == '') {
+      return res.status(400).send("Verifique se a descrição foi preenchida corretamente e tente novamente")
+    }
+    if (!tags || tags.trim() == '') {
+      return res.status(400).send("Verifique se as tags foram preenchidas corretamente e tente novamente")
+    }
+    if (isType == null) {
+      return res.status(400).send("Verifique se o tipo de post foi preenchido corretamente e tente novamente")
+    }
+    let tag = tags.split(',').filter(tag => tag.trim().toLowerCase() != '').map(tag => tag.trim().toLowerCase());
+    if (tag.length == 0) {
+      return res.status(400).send("Verifique se as tags foram preenchidas corretamente e tente novamente")
+    }
+
+    title = title.trim();
+    desc = desc.trim();
+
     const post = await Posts.create({
       title,
       desc,
       postedIn: momentTz().tz("America/Sao_Paulo").format(),
-      tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
+      tags: tag,
       type,
       closed: false,
       user: user.id,
@@ -348,8 +360,8 @@ module.exports = (app) => {
     } else {
       value = user.ranking + 5;
     }
-    const result = await Users.findByIdAndUpdate(user.id, { ranking: value });
-    return res.status(201).json(post);
+    await Users.findByIdAndUpdate(user.id, { ranking: value });
+    return res.status(201).json(post)
   };
 
   const remove = async (req, res) => {

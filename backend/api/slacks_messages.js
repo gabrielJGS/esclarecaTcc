@@ -22,8 +22,6 @@ module.exports = app => {
         const count = await Slacks_Messages.find({ slack }).countDocuments()
         res.header('X-Total-Count', count)
         let messages
-        console.log(last_id)
-        console.log(last_id == 0)
         if (last_id == 0) {
             messages = await Slacks_Messages.find({ slack: slackOri._id, user: { $nin: user.blocked } })
                 .populate('user', ['name', 'url'])
@@ -66,20 +64,23 @@ module.exports = app => {
         return res.json(messages)
     }
     const save = async (req, res) => {
-        const { slack_msg } = req.body
+        let { slack_msg } = req.body
         const { slack } = req.params
         const user = req.user;
 
-        const slackOri = await Slacks.findById(slack)
-            .catch(err => res.status(400).json(err))
-        if (!slackOri) {
-            return res.status(401).send('Slack inválida');
+        // const slackOri = await Slacks.findById(slack)
+        //     .catch(err => res.status(400).json(err))
+        // if (!slackOri) {
+        //     return res.status(401).send('Slack inválida');
+        // }
+        if (!slack) {
+            return res.status(400).send('O EsclaChat não foi preenchido');
         }
-        if (slack_msg.trim() === '') {
+        if (!slack_msg || slack_msg.trim() === '') {
             return res.status(400).send('A mensagem não pode ser vazia');
         }
-
-        const send = await Slacks_Messages.create({
+        slack_msg = slack_msg.trim()
+        await Slacks_Messages.create({
             slack,
             user: user.id,
             postedIn: momentTz().tz("America/Sao_Paulo").format(),

@@ -58,20 +58,19 @@ module.exports = app => {
         return res.json(slacks)
     }
     const save = async (req, res) => {
-        let { nome, tag } = req.body;
-        const { senha } = req.body;
+        let { nome, tag, senha } = req.body;
         const user = req.user;
 
-        const valid = nome && tag
-        valid == false ? res.status(400).send('Algum campo não foi preenchido') : null
-
-        if (nome.trim() === '' || tag.trim() === '') {
-            return res.status(400).send('Algum campo não foi preenchido');
+        if (!nome || nome.trim() == '') {
+            return res.status(400).send("Verifique se o nome foi preenchido corretamente e tente novamente")
+        }
+        if (!tag || tag.trim() == '') {
+            return res.status(400).send("Verifique se a tag foi preenchida corretamente e tente novamente")
         }
 
-        nome.trim()
-        tag.trim().toLowerCase()
-        senha ? senha.trim() : senha
+        nome = nome.trim()
+        tag = tag.trim().toLowerCase()
+        senha = senha ? senha.trim() : ''
 
         const slack = await Slacks.create({
             nome,
@@ -83,7 +82,7 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
         //Soma os pontos ao ranking do usuário
         const result = await Users.findByIdAndUpdate(user.id, { ranking: user.ranking + 5 })
-        return res.status(204).send()
+        return res.status(204).json(slack)
     }
     const remove = async (req, res) => {
         const { slack } = req.params;
