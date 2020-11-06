@@ -82,7 +82,7 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
         //Soma os pontos ao ranking do usuário
         const result = await Users.findByIdAndUpdate(user.id, { ranking: user.ranking + 5 })
-        return res.status(204).json(slack)
+        return res.status(201).json(slack)
     }
     const remove = async (req, res) => {
         const { slack } = req.params;
