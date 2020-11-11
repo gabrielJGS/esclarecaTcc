@@ -30,8 +30,8 @@ const AWS = require('aws-sdk');
 
 const SESConfig = {
     apiVersion: '2010-12-01',
-    accessKeyId: s3Config_accessKeyId,
-    secretAccessKey: s3Config_secretAccessKey,
+    accessKeyId: 'AKIAXK2FYMLRI42CHG2T',
+    secretAccessKey: 'BC6JZ8Oni0ZCVHtp5dnG4COj15errqNEicGJVtjtJhJq',
     region: 'us-east-1'
 };
 
