@@ -2,7 +2,7 @@ Ec2:
 ssh -i "esclareca.pem" ubuntu@ec2-54-162-88-146.compute-1.amazonaws.com
 cd api
 pm2 delete 0
-rm -r esclarecaTcc
+sudo rm -r esclarecaTcc
 git clone https://github.com/EsclarecaApp/esclarecaTcc.git
 cd backend
 npm i
