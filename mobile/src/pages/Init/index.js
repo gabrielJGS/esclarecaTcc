@@ -135,7 +135,7 @@ export default function Init() {
     } catch ({ message }) {
       Alert.alert('login: Error:' + JSON.stringify(message));
     }
-    Alert.alert(JSON.stringify(googleRequest.user))
+    Alert.alert('erro:',JSON.stringify(googleRequest.user))
     if (googleRequest.type === "success") {
       let loginRequest;
       //LOGIN
@@ -144,7 +144,7 @@ export default function Init() {
           email: googleRequest.user.email,
           password: '',
           type: 'google',
-          idGoogle: googleRequest.user.id
+          idGoogle: googleRequest.user.uid
           // idFacebook: data.id
         });
         await AsyncStorage.setItem("user", loginRequest.data.id.toString());
