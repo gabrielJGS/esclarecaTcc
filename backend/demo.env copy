@@ -8,4 +8,6 @@ module.exports = {
     s3Config_bucketPost:'esclareca-file-upload',
     userMail:'appesclareca@gmail.com',
     passMail:'esclareca2020',
+    smtpUser: 'AKIAXK2FYMLRI42CHG2T',
+    smtpPass: 'BC6JZ8Oni0ZCVHtp5dnG4COj15errqNEicGJVtjtJhJq'
 }

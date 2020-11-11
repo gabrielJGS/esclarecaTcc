@@ -34,7 +34,7 @@ export default function Register() {
                     if(patternPass.test(password)){
                         try {
                             const response = await api.post('/signup', {
-                                name, email, password, tags
+                                name, email, password, tags, type: 'app'
                             })
                             if (response.status == 204) {
                                 showSucess("Usuário cadastrado com sucesso")
@@ -44,6 +44,7 @@ export default function Register() {
                                     });
                                     const user = response.data;
                                     try {
+                                        await AsyncStorage.setItem("token", user.token.toString());
                                         await AsyncStorage.setItem('user', user.id.toString());
                                         await AsyncStorage.setItem('userName', user.name.toString());
                                         await AsyncStorage.setItem('userTags', user.tags.toString());
