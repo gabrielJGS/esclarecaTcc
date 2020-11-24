@@ -22,16 +22,13 @@
 //     });
 // }
 const { s3Config_accessKeyId, s3Config_secretAccessKey } = require("../.env");
-const {
-    userMail,
-    passMail,
-} = require("../.env");
+const { userMail } = require("../.env");
 const AWS = require('aws-sdk');
 
 const SESConfig = {
     apiVersion: '2010-12-01',
-    accessKeyId: 'AKIAXK2FYMLRI42CHG2T',
-    secretAccessKey: 'BC6JZ8Oni0ZCVHtp5dnG4COj15errqNEicGJVtjtJhJq',
+    accessKeyId: s3Config_accessKeyId,
+    secretAccessKey: s3Config_secretAccessKey,
     region: 'us-east-1'
 };
 
