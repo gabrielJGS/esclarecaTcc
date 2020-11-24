@@ -42,7 +42,7 @@ export default function Tags({ route, navigation }) {
         tags,
         avatarUser: avatarUser,
         type: route.params.type,
-        idGoogle: route.params.type == 'google' ? tempUser.id : '',
+        idGoogle: route.params.type == 'google' ? tempUser.uid : '',
         idFacebook: route.params.type == 'facebook' ? tempUser.id : ''
       });
       if (response.status == 204) {
@@ -53,7 +53,7 @@ export default function Tags({ route, navigation }) {
             email: tempUser.email,
             password: tempUser.id,
             type: route.params.type,
-            idGoogle: route.params.type == 'google' ? tempUser.id : '',
+            idGoogle: route.params.type == 'google' ? tempUser.uid : '',
             idFacebook: route.params.type == 'facebook' ? tempUser.id : ''
           });
           const user = response.data;
