@@ -11,12 +11,13 @@ module.exports = app => {
         const { page } = req.query;
         const user = req.user;
         const qtdLoad = 10
-        const searchText = search_text.trim().toLowerCase()
-        const count = await Slacks.find({ tag: { $in: search_text != "" ? search_text.split(',') : user.tags }, user: { $nin: user.blocked } }).countDocuments()
+        const searchText = search_text.trim() != '' ? [mongoose.Types.ObjectId(search_text)] : []
+        console.log(searchText)
+        const count = await Slacks.find({ tag: { $in: search_text != "" ? searchText : user.tags }, user: { $nin: user.blocked } }).countDocuments()
         res.header('X-Total-Count', count)
         const slacks = await Slacks
             .aggregate([//Condição da esquerda ou user q criou
-                { $match: { $or: [{ tag: { $in: search_text != "" ? searchText.split(',') : user.tags }, user: { $nin: user.blocked } }, { user: mongoose.Types.ObjectId(user.id) }] } },
+                { $match: { $or: [{ tag: { $in: search_text != "" ? searchText : user.tags }, user: { $nin: user.blocked } }, { user: mongoose.Types.ObjectId(user.id) }] } },
                 // { $match: { user: mongoose.Types.ObjectId(user.id)} },//Condição da esquerda ou user q criou
                 { $sort: { createdIn: -1 } },
                 {
@@ -60,6 +61,7 @@ module.exports = app => {
     const save = async (req, res) => {
         let { nome, tag, senha } = req.body;
         const user = req.user;
+        const tagSelected = [mongoose.Types.ObjectId(tag)]
 
         if (!nome || nome.trim() == '') {
             return res.status(400).send("Verifique se o nome foi preenchido corretamente e tente novamente")
@@ -69,12 +71,11 @@ module.exports = app => {
         }
 
         nome = nome.trim()
-        tag = tag.trim().toLowerCase()
         senha = senha ? senha.trim() : ''
 
         const slack = await Slacks.create({
             nome,
-            tag,
+            tagSelected,
             senha,
             createdIn: momentTz().tz("America/Sao_Paulo").format(),
             user: user.id,

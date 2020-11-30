@@ -153,7 +153,7 @@ export default function Tag_Select(props) {
             uniqueKey="_id"
             selectText="Escolha alguns assuntos..."
             confirmText={"Confirmar"}
-            searchPlaceholderText={"Escolha alguns assuntos para seguir"}
+            searchPlaceholderText={"Escolha alguns assuntos"}
             searchAdornment={s => setSearchText(s)}
             noResultsComponent={
                 <View>
@@ -163,6 +163,7 @@ export default function Tag_Select(props) {
                     </TouchableOpacity>
                 </View>
             }
+            single={props.single ? props.single : false}
             onSelectedItemsChange={(sel) => props.onSelectedItemsChange(sel)}
             selectedItems={props.selectedItems}
             loading={loading}
