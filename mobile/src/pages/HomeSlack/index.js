@@ -469,7 +469,7 @@ export default function HomeSlack(props) {
                       {slack.user ? slack.user.name : ""}
                     </Text>
                     <Text style={styles.Nomepost}>
-                      {slack.tag ? slack.tag[0] : ""}
+                      {slack.tag ? slack.tag[0].name : ""}
                     </Text>
                   </TouchableOpacity>
                   {idU === slack.user._id ? (

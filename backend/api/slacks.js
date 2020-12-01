@@ -12,12 +12,11 @@ module.exports = app => {
         const user = req.user;
         const qtdLoad = 10
         const searchText = search_text.trim() != '' ? [mongoose.Types.ObjectId(search_text)] : []
-        console.log(searchText)
-        const count = await Slacks.find({ tag: { $in: search_text != "" ? searchText : user.tags }, user: { $nin: user.blocked } }).countDocuments()
+        const count = await Slacks.find({ tag: { $in: search_text.trim() != '' ? searchText : user.tags }, user: { $nin: user.blocked } }).countDocuments()
         res.header('X-Total-Count', count)
         const slacks = await Slacks
             .aggregate([//Condição da esquerda ou user q criou
-                { $match: { $or: [{ tag: { $in: search_text != "" ? searchText : user.tags }, user: { $nin: user.blocked } }, { user: mongoose.Types.ObjectId(user.id) }] } },
+                { $match: { $or: [{ tag: { $in: search_text.trim() != '' ? searchText : user.tags }, user: { $nin: user.blocked } }] } },
                 // { $match: { user: mongoose.Types.ObjectId(user.id)} },//Condição da esquerda ou user q criou
                 { $sort: { createdIn: -1 } },
                 {
@@ -52,6 +51,14 @@ module.exports = app => {
                     }
                 },
                 { $unwind: '$user' },
+                {
+                    $lookup: {
+                        from: "tags",
+                        foreignField: "_id",
+                        localField: "tag",
+                        as: "tag"
+                    }
+                },
                 { $skip: (page - 1) * qtdLoad },
                 { $limit: qtdLoad },
             ])
@@ -75,12 +82,13 @@ module.exports = app => {
 
         const slack = await Slacks.create({
             nome,
-            tagSelected,
+            tag: tagSelected,
             senha,
             createdIn: momentTz().tz("America/Sao_Paulo").format(),
             user: user.id,
         })
             .catch(err => res.status(400).json(err))
+        Slacks.populate((slack), { path: "tag" })
         //Soma os pontos ao ranking do usuário
         const result = await Users.findByIdAndUpdate(user.id, { ranking: user.ranking + 5 })
         return res.status(201).json(slack)

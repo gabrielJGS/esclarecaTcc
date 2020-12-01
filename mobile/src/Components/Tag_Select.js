@@ -151,9 +151,9 @@ export default function Tag_Select(props) {
             items={tags}
             IconRenderer={MaterialIcons}
             uniqueKey="_id"
-            selectText="Escolha alguns assuntos..."
+            selectText={props.single ? "Escolha o assunto..." : "Escolha alguns assuntos..."}
             confirmText={"Confirmar"}
-            searchPlaceholderText={"Escolha alguns assuntos"}
+            searchPlaceholderText={props.single ? "Escolha o assunto..." : "Escolha alguns assuntos..."}
             searchAdornment={s => setSearchText(s)}
             noResultsComponent={
                 <View>
