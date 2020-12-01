@@ -94,6 +94,7 @@ const drawerNavigator = () => (
   >
     <drawer.Screen name="Home" component={PostStack}></drawer.Screen>
     <drawer.Screen name="Profile" component={Profile}></drawer.Screen>
+    <HomeStack.Screen name="Tags" component={Tags}></HomeStack.Screen>
     <drawer.Screen name="Preferences" component={Preferences}></drawer.Screen>
     <drawer.Screen name="Ranking" component={Ranking}></drawer.Screen>
     <drawer.Screen name="HomeSlack" component={SlackStack}></drawer.Screen>
@@ -104,7 +105,8 @@ const drawerNavigator = () => (
 //continuar aqui
 function CustomDrawerContent(props) {
   const [userName, setName] = useState("");
-  const [userTags, setTags] = useState("");
+  const [userTags, setUserTags] = useState([]);
+  const [userTagsId, setUserTagsId] = useState([]);
   const [userId, setId] = useState("");
   const [press, setPress] = useState(false);
   const [avatar, setAvatar] = useState(null);
@@ -126,7 +128,8 @@ function CustomDrawerContent(props) {
       });
       if (response.data) {
         setName(response.data.user.name);
-        setTags(response.data.user.tags);
+        setUserTagsId(response.data.user.tags.map((tag) => tag._id));
+        setUserTags(response.data.user.tags.map((tag) => tag.name));
         setId(response.data.user._id);
         setAvatar(response.data.user.url);
       }
@@ -159,11 +162,7 @@ function CustomDrawerContent(props) {
                 <Avatar
                   rounded
                   source={{
-                    uri: avatar
-                      ? avatar.includes("s3")
-                        ? `${avatar}?${new Date().getTime()}`
-                        : avatar
-                      : "https://www.colegiodepadua.com.br/img/user.png",
+                    uri: avatar ? avatar : "https://www.colegiodepadua.com.br/img/user.png",
                   }}
                   size={50}
                 />
@@ -174,7 +173,7 @@ function CustomDrawerContent(props) {
                     maxWidth: 200,
                   }}
                 >
-                  <Text style={{ fontSize: 20, fontWeight: "bold", color:page == "profile" ? "#FFC300" : "black" }}>
+                  <Text style={{ fontSize: 20, fontWeight: "bold", color: page == "profile" ? "#FFC300" : "black" }}>
                     {userName ? userName : "Meu perfil"}
                   </Text>
                   <Text style={{ fontSize: 13, color: "#365478" }}>
@@ -344,13 +343,13 @@ export default function Routes() {
             ></AppStack.Screen>
           </AppStack.Navigator>
         ) : (
-          <App2Stack.Navigator screenOptions={{ headerShown: false }}>
-            <App2Stack.Screen
-              name="Init"
-              component={AuthStack}
-            ></App2Stack.Screen>
-          </App2Stack.Navigator>
-        )}
+            <App2Stack.Navigator screenOptions={{ headerShown: false }}>
+              <App2Stack.Screen
+                name="Init"
+                component={AuthStack}
+              ></App2Stack.Screen>
+            </App2Stack.Navigator>
+          )}
         {/*<AppStack.Navigator screenOptions={{ headerShown: false }}>
                     <AppStack.Screen name="Init" component={Init}></AppStack.Screen>
                     <AppStack.Screen name="Login" component={Login}></AppStack.Screen>

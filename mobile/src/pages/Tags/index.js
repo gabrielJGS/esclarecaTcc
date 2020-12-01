@@ -4,80 +4,57 @@ import {
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
-  AsyncStorage,
-  TextInput,
   Platform,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
+import { AuthContext } from '../../context'
+
 import styles from "./styles";
 import { showError, showSucess } from "../../common";
 import api from "../../services/api";
-import { AuthContext } from "../../context";
+import Tag_Select from "../../Components/Tag_Select";
 
 export default function Tags({ route, navigation }) {
   const { singIn } = React.useContext(AuthContext);
-  const [tags, setTags] = useState("");
-  const tempUser = route.params.user;
-  const [avatarUser, setAvatarUser] = useState("");
+  const userId = route.params.userId;
+  const isRegistering = route.params.isRegistering ? route.params.isRegistering : false;
+  const [selectedItems, setSelectedItems] = useState([])
+  async function onSelectedItemsChange(sele) {
+    setSelectedItems(sele);
+  };
 
   useEffect(() => {
-    try {
-      if (tempUser.photoUrl) {
-        setAvatarUser(tempUser.photoUrl);
-      } else if (tempUser.photoURL) {
-        setAvatarUser(tempUser.photoURL);
+    loadUser()
+    async function loadUser() {
+      try {
+        const response = await api.get(`/users/${userId}`, {
+          headers: { user_id: userId },
+        });
+        if (response.data) {
+          setSelectedItems(response.data.user.tags.map((tag) => tag._id));
+        }
+      } catch (e) {
+        showError(e)
       }
-      else {
-        setAvatarUser(tempUser.picture.data.url);
-      }
-    } catch (e) {
-      console.log(e);
     }
-  }, [route.params.user]);
+  }, [route.params.userId]);
 
   async function handleSubmit() {
-    try {
-      const response = await api.post("/signup", {
-        name: route.params.type == 'google' ? tempUser.displayName : tempUser.name,
-        email: tempUser.email,
-        password: '',
-        tags,
-        avatarUser: avatarUser,
-        type: route.params.type,
-        idGoogle: route.params.type == 'google' ? tempUser.uid : '',
-        idFacebook: route.params.type == 'facebook' ? tempUser.id : ''
-      });
-      if (response.status == 204) {
-        showSucess(`Bem-vindo ${route.params.type == 'google' ? tempUser.displayName : tempUser.name}!`);
-        //navigation.goBack()
-        try {
-          const response = await api.post("/signin", {
-            email: tempUser.email,
-            password: '',
-            type: route.params.type,
-            idGoogle: route.params.type == 'google' ? tempUser.uid : '',
-            idFacebook: route.params.type == 'facebook' ? tempUser.id : ''
-          });
-          const user = response.data;
-          try {
-            await AsyncStorage.setItem("token", user.token.toString());
-            await AsyncStorage.setItem("user", user.id.toString());
-            await AsyncStorage.setItem("userName", user.name.toString());
-            await AsyncStorage.setItem("userTags", user.tags.toString());
-            singIn();
-          } catch (x) {
-            showError(x);
-          }
-        } catch (e) {
-          showError("Error:\n" + e);
-        }
-      } else {
-        showError("Erro");
-      }
-    } catch (e) {
-      showError(e);
+    if (selectedItems.length < 1) {
+      showError("Selecione ao menos uma tag antes de prosseguir")
     }
+    await api.patch('/users', {
+      tags: selectedItems
+    }).then((ok) => {
+      if (isRegistering == true) {
+        showSucess("Cadastro finalizado com sucesso!")
+        singIn()
+      } else {
+        showSucess("Tags alteradas com sucesso!")
+        navigation.goBack()
+      }
+    })
   }
 
   return (
@@ -89,44 +66,6 @@ export default function Tags({ route, navigation }) {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Feather name="chevron-left" size={20} color="#FFC300"></Feather>
         </TouchableOpacity>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text
-            style={{
-              fontWeight: "bold",
-              color: "white",
-              fontSize: 20,
-              marginRight: 5,
-            }}
-          >
-            Quase lá...
-          </Text>
-        </View>
-      </View>
-      <View style={styles.forms}>
-        <Text style={styles.label1}>Feeds com a sua cara!</Text>
-        <Text style={styles.label1}>Digite os assuntos de seu interesse:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Assuntos separados por ' , '"
-          placeholderTextColor="#999"
-          autoCapitalize="words"
-          autoCorrect={false}
-          multiline={true}
-          numberOfLines={7}
-          value={tags}
-          onChangeText={setTags}
-          returnKeyType="done"
-          onSubmitEditing={() => {
-            handleSubmit();
-          }}
-          blurOnSubmit={false}
-        />
         <TouchableOpacity
           style={{
             flexDirection: "row",
@@ -144,6 +83,13 @@ export default function Tags({ route, navigation }) {
           ></Feather>
         </TouchableOpacity>
       </View>
+      <View style={styles.forms}>
+        <Text style={styles.label1}>Feeds com a sua cara!</Text>
+        <Text style={styles.label1}>Escolha os assuntos de seu interesse:</Text>
+        <Tag_Select selectedItems={selectedItems} onSelectedItemsChange={onSelectedItemsChange} />
+      </View>
+
     </KeyboardAvoidingView>
+
   );
 }

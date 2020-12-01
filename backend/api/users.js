@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt-nodejs");
 const Users = require("../models/Users");
+const Tags = require("../models/Tags");
 const { hostIp } = require("../.env");
 const sendEmail = require('../config/email')
 const crypto = require("crypto");
@@ -20,7 +21,7 @@ module.exports = (app) => {
   };
   const save = async (req, res) => {
     const email = req.body.email.trim().toLowerCase();
-    const tags = req.body.tags.trim();
+    const tags = req.body.tags;
     const type = req.body.type;
 
     let { key = "", location: url = "" } = "";
@@ -44,7 +45,7 @@ module.exports = (app) => {
             name: req.body.name,
             email,
             password: hash,
-            tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
+            tags: tags,
             key,
             url,
             ranking: 0,
@@ -61,7 +62,7 @@ module.exports = (app) => {
           name: req.body.name,
           email,
           password: '',
-          tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
+          tags: tags,
           key,
           url,
           ranking: 0,
@@ -154,12 +155,11 @@ module.exports = (app) => {
     }
   };
 
-  const patch = (req, res) => {
+  const patch = async (req, res) => {
     const user = req.user;
-    const tags = req.body.tags.trim().toLowerCase();
-
-    user = Users.findByIdAndUpdate(user.id, {
-      tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
+    const tags = req.body.tags;
+    await Users.findByIdAndUpdate(user.id, {
+      tags: tags
     })
       .then((_) => res.status(204).send())
       .catch((err) => res.status(400).json(err));
@@ -169,9 +169,11 @@ module.exports = (app) => {
     const { id } = req.params;
     const userLogged = req.user;
 
-    const user = await Users.findById(id).catch((err) =>
-      res.status(400).json(err)
-    );
+    const user = await Users.findById(id)
+      .populate("tags")
+      .catch((err) =>
+        res.status(400).json(err)
+      )
     if (!user) {
       res.status(404).json("Usuário não encontrado!")
     }
@@ -210,11 +212,14 @@ module.exports = (app) => {
     const users = await Users.find({
       name: { $regex: `${search_text}`, $options: "i" },
     })
+      .populate("tags", ['name'])
       .sort({ ranking: -1 })
       .skip((page - 1) * qtdLoad)
       .limit(qtdLoad)
+      .then((u) => { res.json(u) })
       .catch((err) => res.status(400).json(err));
-    res.json(users);
+    // console.log(users)
+    // res.json(users);
   };
 
   const blockUser = async (req, res) => {

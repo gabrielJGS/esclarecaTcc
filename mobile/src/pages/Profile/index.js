@@ -37,12 +37,12 @@ export default function Profile({ route, navigation }) {
   //Editar perfil
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState([]);
+  const [tagsId, setTagsId] = useState([]);
   const [password, setPassword] = useState("");
 
   //Usuário
   const [userId, setUserId] = useState(route.params.userId);
-  const [loggedUser, setLoggedUser] = useState("");
   const [isLoggedUser, setIsLoggedUser] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
@@ -88,18 +88,23 @@ export default function Profile({ route, navigation }) {
   function handleModal() {
     setModalVisible(!modalVisible);
   }
+  function navigateToTags() {
+    navigation.navigate("Tags", {
+      userId, tags
+    });
+  }
 
   async function loadUser(id) {
     try {
       const usuarioAtual = await AsyncStorage.getItem("user");
-      setLoggedUser(usuarioAtual);
       const response = await api.get(`/users/${id}`, {
         headers: { user_id: usuarioAtual },
       });
       if (response.data) {
         setName(response.data.user.name);
         setEmail(response.data.user.email);
-        setTags(response.data.user.tags);
+        setTagsId(response.data.user.tags.map((tag) => tag._id));
+        setTags(response.data.user.tags.map((tag) => tag.name));
         setUserId(response.data.user._id);
         setPassword(response.data.user.password);
         if (response.data.user.url && response.data.user.url != "") {
@@ -126,10 +131,9 @@ export default function Profile({ route, navigation }) {
     const response = await api.put(`/users`, {
       name,
       email,
-      tags: tags.toString(","),
       password,
     });
-    if(response.status==204){
+    if (response.status == 204) {
       showSucess("Perfil atualizado com sucesso!")
     }
     setPassword("");
@@ -337,7 +341,7 @@ export default function Profile({ route, navigation }) {
                                 },
                                 {
                                   text: "Sim",
-                                  onPress: () => {},
+                                  onPress: () => { },
                                 },
                               ],
                               { cancelable: false }
@@ -358,8 +362,8 @@ export default function Profile({ route, navigation }) {
                         </TouchableOpacity>
                       </>
                     ) : (
-                      <></>
-                    )}
+                        <></>
+                      )}
                   </View>
                   <View style={styles.viewInput}>
                     <Text style={styles.modalSubtitle}>Nome</Text>
@@ -372,7 +376,7 @@ export default function Profile({ route, navigation }) {
                       value={name}
                       onChangeText={setName}
                       numberOfLines={2}
-                      returnKeyType = { "next" }
+                      returnKeyType={"next"}
                       onSubmitEditing={() => { this.secondTextInput.focus(); }}
                       blurOnSubmit={false}
                     />
@@ -386,25 +390,10 @@ export default function Profile({ route, navigation }) {
                       value={email}
                       onChangeText={setEmail}
                       numberOfLines={2}
-                      returnKeyType = { "next" }
+                      returnKeyType={"next"}
                       onSubmitEditing={() => { this.thirdTextInput.focus(); }}
                       blurOnSubmit={false}
                       ref={(input) => { this.secondTextInput = input; }}
-                    />
-                    <Text style={styles.modalSubtitle}>Tags</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Altere suas tags de preferência..."
-                      placeholderTextColor="#999"
-                      autoCapitalize="words"
-                      autoCorrect={false}
-                      value={tags.toString(', ')}
-                      onChangeText={setTags}
-                      numberOfLines={2}
-                      returnKeyType = { "next" }
-                      onSubmitEditing={() => { this.fourthTextInput.focus(); }}
-                      blurOnSubmit={false}
-                      ref={(input) => { this.thirdTextInput = input; }}
                     />
                     <Text style={styles.modalSubtitle}>Senha</Text>
                     <TextInput
@@ -418,7 +407,7 @@ export default function Profile({ route, navigation }) {
                       value={password}
                       onChangeText={setPassword}
                       numberOfLines={2}
-                      returnKeyType = { "done" }
+                      returnKeyType={"done"}
                       onSubmitEditing={handleModal}
                       blurOnSubmit={false}
                       ref={(input) => { this.fourthTextInput = input; }}
@@ -468,114 +457,113 @@ export default function Profile({ route, navigation }) {
             </TouchableOpacity>
           </>
         ) : (
-          <>
-            {!isBlocked ? (
-              <View
-                style={{
-                  justifyContent: "space-between",
-                  flexDirection: "row",
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.detailsButton}
-                  onPress={() =>
-                    Alert.alert(
-                      "Bloquear",
-                      "Deseja realmente bloquear o usuário?",
-                      [
-                        {
-                          text: "Não",
-                          onPress: () => {
-                            return null;
-                          },
-                        },
-                        {
-                          text: "Sim",
-                          onPress: () => {
-                            blockUser();
-                          },
-                        },
-                      ],
-                      { cancelable: false }
-                    )
-                  }
+            <>
+              {!isBlocked ? (
+                <View
+                  style={{
+                    justifyContent: "space-between",
+                    flexDirection: "row",
+                  }}
                 >
-                  <Feather name="slash" size={25} color="#E73751"></Feather>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.detailsButton, { paddingLeft: 20 }]}
-                  onPress={() =>
-                    Alert.alert(
-                      `${isFollowed ? "Deixar de seguir" : "Seguir"}`,
-                      `Deseja realmente ${
-                        isFollowed ? "deixar de " : ""
-                      }seguir o usuário?`,
-                      [
-                        {
-                          text: "Não",
-                          onPress: () => {
-                            return null;
+                  <TouchableOpacity
+                    style={styles.detailsButton}
+                    onPress={() =>
+                      Alert.alert(
+                        "Bloquear",
+                        "Deseja realmente bloquear o usuário?",
+                        [
+                          {
+                            text: "Não",
+                            onPress: () => {
+                              return null;
+                            },
                           },
-                        },
-                        {
-                          text: "Sim",
-                          onPress: () => {
-                            followUser();
+                          {
+                            text: "Sim",
+                            onPress: () => {
+                              blockUser();
+                            },
                           },
-                        },
-                      ],
-                      { cancelable: false }
-                    )
-                  }
-                >
-                  <Feather
-                    name={isFollowed ? "user-minus" : "user-plus"}
-                    size={25}
-                    color="#7DCEA0"
-                  ></Feather>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View
-                style={{
-                  justifyContent: "space-between",
-                  flexDirection: "row",
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.detailsButton}
-                  onPress={() =>
-                    Alert.alert(
-                      "Desbloquear",
-                      "Deseja realmente desbloquear o usuário?",
-                      [
-                        {
-                          text: "Não",
-                          onPress: () => {
-                            return null;
+                        ],
+                        { cancelable: false }
+                      )
+                    }
+                  >
+                    <Feather name="slash" size={25} color="#E73751"></Feather>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.detailsButton, { paddingLeft: 20 }]}
+                    onPress={() =>
+                      Alert.alert(
+                        `${isFollowed ? "Deixar de seguir" : "Seguir"}`,
+                        `Deseja realmente ${isFollowed ? "deixar de " : ""
+                        }seguir o usuário?`,
+                        [
+                          {
+                            text: "Não",
+                            onPress: () => {
+                              return null;
+                            },
                           },
-                        },
-                        {
-                          text: "Sim",
-                          onPress: () => {
-                            blockUser();
+                          {
+                            text: "Sim",
+                            onPress: () => {
+                              followUser();
+                            },
                           },
-                        },
-                      ],
-                      { cancelable: false }
-                    )
-                  }
-                >
-                  <Feather
-                    name="check-circle"
-                    size={25}
-                    color="#7DCEA0"
-                  ></Feather>
-                </TouchableOpacity>
-              </View>
-            )}
-          </>
-        )}
+                        ],
+                        { cancelable: false }
+                      )
+                    }
+                  >
+                    <Feather
+                      name={isFollowed ? "user-minus" : "user-plus"}
+                      size={25}
+                      color="#7DCEA0"
+                    ></Feather>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                  <View
+                    style={{
+                      justifyContent: "space-between",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={styles.detailsButton}
+                      onPress={() =>
+                        Alert.alert(
+                          "Desbloquear",
+                          "Deseja realmente desbloquear o usuário?",
+                          [
+                            {
+                              text: "Não",
+                              onPress: () => {
+                                return null;
+                              },
+                            },
+                            {
+                              text: "Sim",
+                              onPress: () => {
+                                blockUser();
+                              },
+                            },
+                          ],
+                          { cancelable: false }
+                        )
+                      }
+                    >
+                      <Feather
+                        name="check-circle"
+                        size={25}
+                        color="#7DCEA0"
+                      ></Feather>
+                    </TouchableOpacity>
+                  </View>
+                )}
+            </>
+          )}
         <TouchableOpacity
           style={styles.detailsButton}
           onPress={() =>
@@ -609,24 +597,24 @@ export default function Profile({ route, navigation }) {
         onPress={() =>
           isLoggedUser
             ? Alert.alert(
-                "Alterar",
-                "Deseja alterar a foto de Perfil?",
-                [
-                  {
-                    text: "Não",
-                    onPress: () => {
-                      return null;
-                    },
+              "Alterar",
+              "Deseja alterar a foto de Perfil?",
+              [
+                {
+                  text: "Não",
+                  onPress: () => {
+                    return null;
                   },
-                  {
-                    text: "Sim",
-                    onPress: () => {
-                      handlePickUpdate();
-                    },
+                },
+                {
+                  text: "Sim",
+                  onPress: () => {
+                    handlePickUpdate();
                   },
-                ],
-                { cancelable: false }
-              )
+                },
+              ],
+              { cancelable: false }
+            )
             : null
         }
       >
@@ -642,7 +630,19 @@ export default function Profile({ route, navigation }) {
       <View style={styles.body}>
         <View style={styles.perfilName}>
           <Text style={styles.name}>{name}</Text>
-          <Text style={styles.info}>{tags.toString(', ')}</Text>
+          <TouchableOpacity style={styles.detailsBar} onPress={() => navigateToTags()}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingHorizontal: 30,
+              }}
+            >
+              <Feather name="edit" size={17} color="#FFC300"></Feather>
+              <Text style={styles.info}>{tags.join(', ')}</Text>
+            </View>
+          </TouchableOpacity>
         </View>
         {isUploadingImage && isLoggedUser ? (
           <TouchableOpacity
@@ -731,7 +731,7 @@ export default function Profile({ route, navigation }) {
         posts={posts}
         reloadPosts={reloadPosts}
         refreshing={refreshing}
-        loadPosts={loadPosts}
+        loadPosts={()=>{loadPosts(); loadUser(route.params.userId);}}
         searchSolved={false}
         searchFavorite={false}
         loading={loading}
