@@ -235,7 +235,8 @@ export default function Network() {
         style={{
           alignItems: "center",
           top: 5,
-          marginBottom: 5,
+          margin: 5,
+          marginBottom: 10,
           paddingHorizontal: "4%",
           flexDirection: "row",
           justifyContent: "space-between",

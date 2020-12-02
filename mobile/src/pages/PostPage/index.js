@@ -95,7 +95,6 @@ export default function PostPage({ route, navigation }) {
         );
 
         if (response.status == 204) {
-          showSucess("Comentário cadastrado com sucesso");
           setCommentText("");
           setPress(!press);
           //sendPushNotification(post.user.pushToken)
@@ -162,12 +161,12 @@ export default function PostPage({ route, navigation }) {
       const response = await api.get(`/post/${post._id}`, {
         headers: { user_id },
       });
-      if (response.data.files) {
-        if (response.data.files[0]) {
-          setFile1(response.data.files[0]);
+      if (response.data[0].files) {
+        if (response.data[0].files[0]) {
+          setFile1(response.data[0].files[0]);
         }
-        if (response.data.files[1]) {
-          setFile2(response.data.files[1]);
+        if (response.data[0].files[1]) {
+          setFile2(response.data[0].files[1]);
         }
       }
       setPost(response.data[0]);
@@ -214,14 +213,10 @@ export default function PostPage({ route, navigation }) {
   }
 
   async function handleLikePost() {
-    const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
     try {
-      const response = await api.post(
+      await api.post(
         `/posts/${post._id}/like`,
         {},
-        {
-          headers: { user_id },
-        }
       );
       await reloadPost();
     } catch (e) {
@@ -230,14 +225,10 @@ export default function PostPage({ route, navigation }) {
   }
 
   async function reportPost() {
-    const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
     try {
-      const response = await api.post(
+      await api.post(
         `/posts/${post._id}/report`,
         {},
-        {
-          headers: { user_id },
-        }
       );
       showSucess("Post reportado. Equipe Esclareça agradece seu feedback! ;)");
     } catch (e) {
@@ -248,7 +239,7 @@ export default function PostPage({ route, navigation }) {
   async function handleLikeComment(commId) {
     const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
     try {
-      const response = await api.post(
+      await api.post(
         `/posts/${post._id}/${commId}/like`,
         {},
         {
@@ -262,11 +253,8 @@ export default function PostPage({ route, navigation }) {
   }
 
   async function handleDeleteComment(commId) {
-    const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
     try {
-      const response = await api.delete(`/posts/${post._id}/${commId}`, {
-        headers: { user_id },
-      });
+      await api.delete(`/posts/${post._id}/${commId}`);
     } catch (e) {
       showError(e);
     }
@@ -275,14 +263,10 @@ export default function PostPage({ route, navigation }) {
 
   async function handleSolvePost(commId) {
     if (userIsPostOwner) {
-      const user_id = await AsyncStorage.getItem("user"); //Fazer esse puto entrar no estado
       try {
         const response = await api.post(
           `/posts/${post._id}/${commId}/solve`,
           {},
-          {
-            headers: { user_id },
-          }
         );
         if (response.status == 200) {
           showError("Publicação já solucionado por outro comentário");
@@ -296,7 +280,7 @@ export default function PostPage({ route, navigation }) {
 
   async function handlePickFile(fileIndex) {
     let result = await DocumentPicker.getDocumentAsync({});
-    if (result.type!="cancel") {
+    if (result.type != "cancel") {
       if (fileIndex == 0) {
         setIsUploadingFile(1);
       }
@@ -354,11 +338,7 @@ export default function PostPage({ route, navigation }) {
     );
   };
 
-  async function openFile1(file_ur) {
-    await WebBrowser.openBrowserAsync(file_ur);
-  }
-
-  async function openFile2(file_ur) {
+  async function openFile(file_ur) {
     await WebBrowser.openBrowserAsync(file_ur);
   }
 
@@ -420,8 +400,8 @@ export default function PostPage({ route, navigation }) {
               <View
                 style={{
                   flexDirection: "row",
-                   paddingTop: 12,
-                   alignItems: "center",
+                  paddingTop: 12,
+                  alignItems: "center",
                 }}
               >
                 <Text
@@ -431,55 +411,53 @@ export default function PostPage({ route, navigation }) {
                   {userIsPostOwner ? "Enviar anexos:" : "Anexos:"}
                 </Text>
               </View>
-              <View style={{flexDirection:'column'}}>
+              <View style={{ flexDirection: 'column' }}>
                 {userIsPostOwner ? (
                   <>
                     {file1 ? (
-                      <>
-                        <TouchableOpacity
-                          onPress={() =>
-                            Alert.alert(
-                              "Escolha a opção:",
-                              "Deseja enviar um novo arquivo ou visualizar o existente?",
-                              [
-                                {
-                                  text: "Enviar novo",
-                                  onPress: () => handlePickFile(0),
-                                },
-                                {
-                                  text: "Visualizar",
-                                  onPress: () => openFile1(post.files[0].url),
-                                },
-                              ],
-                              { cancelable: true }
-                            )
-                          }
+                      <TouchableOpacity
+                        onPress={() =>
+                          Alert.alert(
+                            "Escolha a opção:",
+                            "Deseja enviar um novo arquivo ou visualizar o existente?",
+                            [
+                              {
+                                text: "Enviar novo",
+                                onPress: () => handlePickFile(0),
+                              },
+                              {
+                                text: "Visualizar",
+                                onPress: () => openFile(post.files[0].url),
+                              },
+                            ],
+                            { cancelable: true }
+                          )
+                        }
+
+                      >
+                        <View
+                          style={{
+                            paddingLeft: 10,
+                            top: 10,
+                            alignItems: "center",
+                            flexDirection: "row"
+                          }}
                         >
-                          <View
-                            style={{
-                              paddingLeft: 10,
-                              top: 10,
-                              alignItems: "center",
-                              flexDirection: "row"
-                            }}
-                          >
-                            <Ionicons
-                              name="ios-attach"
-                              size={20}
-                              color="#FFC300"
-                            ></Ionicons>
-                            <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
-                              {isUploadingFile == 1
-                                ? `%${uploadProgress}`
-                                : post.files[0]
+                          <Ionicons
+                            name="ios-attach"
+                            size={20}
+                            color="#FFC300"
+                          />
+                          <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
+                            {isUploadingFile == 1
+                              ? `%${uploadProgress}`
+                              : post.files[0]
                                 ? post.files[0].name
                                 : "Anexo 1"}
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      </>
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
                     ) : (
-                      <>
                         <TouchableOpacity onPress={() => handlePickFile(0)}>
                           <View
                             style={{
@@ -498,59 +476,55 @@ export default function PostPage({ route, navigation }) {
                               {isUploadingFile == 1
                                 ? `%${uploadProgress}`
                                 : post.files[0]
-                                ? post.files[0].name
-                                : "Anexo 1"}
+                                  ? post.files[0].name
+                                  : "Anexo 1"}
                             </Text>
                           </View>
                         </TouchableOpacity>
-                      </>
-                    )}
+                      )}
                     {file2 ? (
-                      <>
-                        <TouchableOpacity
-                          onPress={() =>
-                            Alert.alert(
-                              "Escolha a opção:",
-                              "Deseja ver o arquivo ou inserir um novo?",
-                              [
-                                {
-                                  text: "Enviar novo",
-                                  onPress: () => handlePickFile(1),
-                                },
-                                {
-                                  text: "Visualizar",
-                                  onPress: () => openFile1(post.files[1].url),
-                                },
-                              ],
-                              { cancelable: false }
-                            )
-                          }
+                      <TouchableOpacity
+                        onPress={() =>
+                          Alert.alert(
+                            "Escolha a opção:",
+                            "Deseja ver o arquivo ou inserir um novo?",
+                            [
+                              {
+                                text: "Enviar novo",
+                                onPress: () => handlePickFile(1),
+                              },
+                              {
+                                text: "Visualizar",
+                                onPress: () => openFile(post.files[1].url),
+                              },
+                            ],
+                            { cancelable: false }
+                          )
+                        }
+                      >
+                        <View
+                          style={{
+                            paddingLeft: 10,
+                            top: 15,
+                            alignItems: "center",
+                            flexDirection: "row"
+                          }}
                         >
-                          <View
-                            style={{
-                              paddingLeft: 10,
-                              top: 15,
-                              alignItems: "center",
-                              flexDirection: "row"
-                            }}
-                          >
-                            <Ionicons
-                              name="ios-attach"
-                              size={20}
-                              color="#FFC300"
-                            ></Ionicons>
-                            <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
-                              {isUploadingFile == 2
-                                ? `%${uploadProgress}`
-                                : post.files[1]
+                          <Ionicons
+                            name="ios-attach"
+                            size={20}
+                            color="#FFC300"
+                          ></Ionicons>
+                          <Text style={{ color: "#7DCEA0", fontSize: 10, paddingLeft: 5 }}>
+                            {isUploadingFile == 2
+                              ? `%${uploadProgress}`
+                              : post.files[1]
                                 ? post.files[1].name
                                 : "Anexo 2"}
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      </>
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
                     ) : (
-                      <>
                         <TouchableOpacity onPress={() => handlePickFile(1)}>
                           <View
                             style={{
@@ -569,20 +543,18 @@ export default function PostPage({ route, navigation }) {
                               {isUploadingFile == 2
                                 ? `%${uploadProgress}`
                                 : post.files[1]
-                                ? post.files[1].name
-                                : "Anexo 2"}
+                                  ? post.files[1].name
+                                  : "Anexo 2"}
                             </Text>
                           </View>
                         </TouchableOpacity>
-                      </>
-                    )}
+                      )}
                   </>
                 ) : (
-                  <>
-                    {file1 ? (
-                      <>
+                    <>
+                      {file1 ? (
                         <TouchableOpacity
-                          onPress={() => openFile1(post.files[0].url)}
+                          onPress={() => openFile(post.files[0].url)}
                         >
                           <View
                             style={{
@@ -602,14 +574,12 @@ export default function PostPage({ route, navigation }) {
                             </Text>
                           </View>
                         </TouchableOpacity>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    {file2 ? (
-                      <>
+                      ) : (
+                          <></>
+                        )}
+                      {file2 ? (
                         <TouchableOpacity
-                          onPress={() => openFile2(post.files[1].url)}
+                          onPress={() => openFile(post.files[1].url)}
                         >
                           <View
                             style={{
@@ -629,12 +599,11 @@ export default function PostPage({ route, navigation }) {
                             </Text>
                           </View>
                         </TouchableOpacity>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </>
-                )}
+                      ) : (
+                          <></>
+                        )}
+                    </>
+                  )}
               </View>
             </View>
           </View>
@@ -706,44 +675,44 @@ export default function PostPage({ route, navigation }) {
                 </TouchableOpacity>
               </>
             ) : (
-              <>
-                <TouchableOpacity
-                  onPress={() =>
-                    Alert.alert(
-                      "Reportar",
-                      "Deseja reportar esse post por possuir conteúdo ofensivo ou inapropriado?",
-                      [
-                        {
-                          text: "Não",
-                          onPress: () => {
-                            return null;
+                <>
+                  <TouchableOpacity
+                    onPress={() =>
+                      Alert.alert(
+                        "Reportar",
+                        "Deseja reportar esse post por possuir conteúdo ofensivo ou inapropriado?",
+                        [
+                          {
+                            text: "Não",
+                            onPress: () => {
+                              return null;
+                            },
                           },
-                        },
-                        {
-                          text: "Sim",
-                          onPress: () => {
-                            reportPost();
+                          {
+                            text: "Sim",
+                            onPress: () => {
+                              reportPost();
+                            },
                           },
-                        },
-                      ],
-                      { cancelable: false }
-                    )
-                  }
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginLeft: 15,
-                  }}
-                >
-                  <Feather
-                    name="alert-octagon"
-                    size={15}
-                    color="#FF5733"
-                  ></Feather>
-                </TouchableOpacity>
-              </>
-            )}
+                        ],
+                        { cancelable: false }
+                      )
+                    }
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginLeft: 15,
+                    }}
+                  >
+                    <Feather
+                      name="alert-octagon"
+                      size={15}
+                      color="#FF5733"
+                    ></Feather>
+                  </TouchableOpacity>
+                </>
+              )}
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {post.solved ? (
@@ -777,8 +746,8 @@ export default function PostPage({ route, navigation }) {
                 <Feather name="x-circle" size={20} color="#E73751"></Feather>
               </>
             ) : (
-              <Text />
-            )}
+                  <Text />
+                )}
           </View>
         </View>
       </View>
@@ -914,40 +883,40 @@ export default function PostPage({ route, navigation }) {
                     </Text>
                   </View>
                   {post.type === false &&
-                  (userIsPostOwner || comment.solvedPost) ? (
-                    <>
-                      <TouchableOpacity
-                        onPress={() => handleSolvePost(comment._id)}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          paddingRight: 15,
-                        }}
-                      >
-                        <Text
+                    (userIsPostOwner || comment.solvedPost) ? (
+                      <>
+                        <TouchableOpacity
+                          onPress={() => handleSolvePost(comment._id)}
                           style={{
-                            color: "#7DCEA0",
-                            fontSize: 12,
-                            paddingRight: 2,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            paddingRight: 15,
                           }}
                         >
-                          Esclareceu sua dúvida?{" "}
-                        </Text>
-                        <Feather
-                          name={
-                            comment.solvedPost == true
-                              ? "check-circle"
-                              : "circle"
-                          }
-                          size={15}
-                          color="#7DCEA0"
-                        ></Feather>
-                      </TouchableOpacity>
-                    </>
-                  ) : (
-                    <></>
-                  )}
+                          <Text
+                            style={{
+                              color: "#7DCEA0",
+                              fontSize: 12,
+                              paddingRight: 2,
+                            }}
+                          >
+                            Esclareceu sua dúvida?{" "}
+                          </Text>
+                          <Feather
+                            name={
+                              comment.solvedPost == true
+                                ? "check-circle"
+                                : "circle"
+                            }
+                            size={15}
+                            color="#7DCEA0"
+                          ></Feather>
+                        </TouchableOpacity>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                 </View>
               </Animatable.View>
             )}
