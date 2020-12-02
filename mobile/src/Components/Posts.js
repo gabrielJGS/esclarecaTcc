@@ -55,7 +55,7 @@ export default function Posts(props) {
       marginBottom: 2,
     },
     Nomepost: {
-      fontSize: 10,
+      fontSize: 9,
       color: "#C8C8C8",
     },
 
