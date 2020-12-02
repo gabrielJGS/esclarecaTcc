@@ -342,7 +342,7 @@ export default function Home() {
       />
       <View style={styles.header}>
         <TouchableOpacity
-          style={styles.detailsButton}
+          style={[{height:50},styles.detailsButton]}
           onPress={() => navigation.openDrawer()}
         >
           <Feather name="menu" size={20} color="#FFC300"></Feather>
