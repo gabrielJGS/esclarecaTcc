@@ -26,7 +26,7 @@ import {
 
 import styles from './styles'
 import { 
-    showError 
+    showError, handleLimitBigText
 } from '../../common'
 import api from '../../services/api'
 
@@ -126,7 +126,7 @@ export default function Ranking(){
                 <Text style={{fontWeight:'bold',fontSize:22, color:'#2E4053'}}> Ranking Esclareça</Text>
                 <Feather name="info" size={15} color="#F1948A" style={{bottom:3,left:2}} />
             </TouchableOpacity>
-            <Animatable.View View style={{marginHorizontal:30,top:60,flex:1, paddingBottom:10}} animation="fadeInDown" duration={1000}>
+            <Animatable.View View style={{marginHorizontal:20,top:60,flex:1, paddingBottom:10}} animation="fadeInDown" duration={1000}>
                 <FlatList
                     data={users}
                     keyExtractor={user => String(user._id)}
@@ -138,7 +138,7 @@ export default function Ranking(){
                             <View style={{flexDirection:'row', alignItems:"center", justifyContent:'space-between', paddingBottom:15}}>
                                 <View style={{flexDirection:'row', alignItems:"center", justifyContent:'space-between'}}>
                                     <Feather name="award" size={17} color="#F5B7B1"/>
-                                    <Text style={{fontWeight:'bold',fontSize:19, color:'#566573', marginLeft:4}}>{user.name}</Text>
+                                    <Text style={{fontWeight:'bold',fontSize:19, color:'#566573', marginLeft:4}}>{handleLimitBigText(user.name, 20)}</Text>
                                 </View>
                                 <View>
                                     <Text style={{fontWeight:'bold',fontSize:19, color:'#F1948A'}}>{user.ranking} <Text style={{fontWeight:'bold',fontSize:19, color:'#566573'}}>Pontos</Text></Text>

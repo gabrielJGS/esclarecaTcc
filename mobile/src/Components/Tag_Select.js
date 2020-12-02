@@ -65,6 +65,7 @@ export default function Tag_Select(props) {
         }
     }
     const styles = {
+
         button: {
             height: hp('5%'),
             width: wp('50%'),
@@ -83,27 +84,30 @@ export default function Tag_Select(props) {
     };
 
     return (
-        <SectionedMultiSelect
-            items={tags}
-            IconRenderer={MaterialIcons}
-            uniqueKey="_id"
-            selectText={props.single ? "Escolha o assunto..." : "Escolha alguns assuntos..."}
-            confirmText={"Confirmar"}
-            searchPlaceholderText={props.single ? "Escolha o assunto..." : "Escolha alguns assuntos..."}
-            searchAdornment={s => setSearchText(s)}
-            noResultsComponent={
-                <View>
-                    <Text>Nenhum item encontrado</Text>
-                    <TouchableOpacity onPress={() => cadastrarTag()} style={styles.button}>
-                        <Text style={styles.label2}>Cadastrar Tag</Text>
-                    </TouchableOpacity>
-                </View>
-            }
-            single={props.single ? props.single : false}
-            onSelectedItemsChange={(sel) => props.onSelectedItemsChange(sel)}
-            selectedItems={props.selectedItems}
-            loading={loading}
-            itemsFlatListProps={{ initialNumToRender: 10, onEndReached: () => { loadTags(page) }, onEndReachedThreshold: 0.2 }}
-        />
+        <View style={{ width: '80%' }}>
+            <SectionedMultiSelect
+                style={styles.container}
+                items={tags}
+                IconRenderer={MaterialIcons}
+                uniqueKey="_id"
+                selectText={props.single ? "Escolha o assunto..." : "Escolha alguns assuntos..."}
+                confirmText={"Confirmar"}
+                searchPlaceholderText={props.single ? "Escolha o assunto..." : "Escolha alguns assuntos..."}
+                searchAdornment={s => setSearchText(s)}
+                noResultsComponent={
+                    <View>
+                        <Text>Nenhum item encontrado</Text>
+                        <TouchableOpacity onPress={() => cadastrarTag()} style={styles.button}>
+                            <Text style={styles.label2}>Cadastrar Tag</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+                single={props.single ? props.single : false}
+                onSelectedItemsChange={(sel) => props.onSelectedItemsChange(sel)}
+                selectedItems={props.selectedItems}
+                loading={loading}
+                itemsFlatListProps={{ initialNumToRender: 10, onEndReached: () => { loadTags(page) }, onEndReachedThreshold: 0.2 }}
+            />
+        </View>
     );
 }

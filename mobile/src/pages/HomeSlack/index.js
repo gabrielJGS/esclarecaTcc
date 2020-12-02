@@ -156,7 +156,7 @@ export default function HomeSlack(props) {
       if (response.status == 201) {
         // showSucess("EsclaChat criado com sucesso");
         setNomeModal("");
-        setTagModal("");
+        onSelectedItemsChange([]);
         setPrivadoModal(false);
         setSenhaModal("");
         handleModal();
@@ -386,14 +386,14 @@ export default function HomeSlack(props) {
         style={{
           flexDirection: "row",
           alignItems: "center",
+          // backgroundColor: '#fff',
+          // borderRadius: 5,
           justifyContent: "space-between",
           paddingHorizontal: 32,
           paddingVertical: 10,
         }}
       >
-        <View style={{width:'80%'}}>
-          <Tag_Select selectedItems={selectedSearch} onSelectedItemsChange={onSelectedSearchChange}  />
-        </View>
+          <Tag_Select selectedItems={selectedSearch} onSelectedItemsChange={onSelectedSearchChange} />
         <View style={{
           flexDirection: "row",
           alignItems: "center",
@@ -404,7 +404,7 @@ export default function HomeSlack(props) {
               name="search"
               size={18}
               color="#FFC300"
-              style={{ bottom: 4, right:16 }}
+              style={{ bottom: 4, right: 16 }}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => onSelectedSearchChange([])}>
