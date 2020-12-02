@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, AsyncStorage, Alert, TextInput, FlatList, ActivityIndicator, Image } from 'react-native';
 import { Feather, Foundation } from '@expo/vector-icons'
 import * as Animatable from 'react-native-animatable'
 
-import { showError, showSucess, handleDate, handleLimitBigText } from '../../common'
+import { showError, handleDate, handleLimitBigText } from '../../common'
 import api from '../../services/api'
 import socket from '../../services/socket'
 
@@ -55,7 +55,6 @@ export default function SlackPage({ route, navigation }) {
                     slack_msg: messageText,
                 })
                 if (response.status == 204) {
-                    showSucess("Comentário cadastrado com sucesso")
                     setMessageText('')
                     // await reloadMessages()
                 } else {

@@ -79,10 +79,8 @@ module.exports = (app) => {
   const update = (req, res) => {
     const name = req.body.name.trim();
     const email = req.body.email.trim().toLowerCase();
-    const tags = req.body.tags.trim();
 
     const user = req.user;
-
     let { key = "", location: url = "" } = "";
     if (req.file) {
       key = req.file.key;
@@ -100,18 +98,14 @@ module.exports = (app) => {
             name,
             email,
             password: hash,
-            tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
           })
             .then((_) => res.status(204).send())
             .catch((err) => res.status(500).json(err));
         });
       } else {
-        console.log(req.body.password)
-        console.log(tags)
         Users.findByIdAndUpdate(user.id, {
           name,
           email,
-          tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
         })
           .then((_) => res.status(204).send())
           .catch((err) => res.status(500).json(err));
@@ -209,7 +203,7 @@ module.exports = (app) => {
 
     res.header("X-Total-Count", count);
 
-    const users = await Users.find({
+    await Users.find({
       name: { $regex: `${search_text}`, $options: "i" },
     })
       .populate("tags", ['name'])
@@ -218,8 +212,6 @@ module.exports = (app) => {
       .limit(qtdLoad)
       .then((u) => { res.json(u) })
       .catch((err) => res.status(400).json(err));
-    // console.log(users)
-    // res.json(users);
   };
 
   const blockUser = async (req, res) => {
@@ -347,7 +339,6 @@ module.exports = (app) => {
     if (!userExist) {
       return res.status(400).send(`${email} inexistente!`);
     } else {
-      console.log(new Date() + " - " + userExist.hashExpiresAt)
       if (new Date() > userExist.hashExpiresAt) {
         return res.status(401).send("O token está expirado!");
       } else {

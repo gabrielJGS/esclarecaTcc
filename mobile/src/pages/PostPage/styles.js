@@ -15,14 +15,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingTop: hp('2%'),
   },
-
   headerPost: {
     backgroundColor: '#365478',
     borderBottomRightRadius: 10,
-    maxHeight:"50%"
+    // maxHeight:"50%",    
   },
-
-
   headerText: {
     fontSize: 18,
     color: 'white',
@@ -89,7 +86,7 @@ export default StyleSheet.create({
   Body: {
     marginTop: 5,
     flex: 1,
-    paddingBottom:28
+    paddingBottom: 28
   },
   BodyFlat: {
     flex: 0.9
@@ -156,20 +153,20 @@ export default StyleSheet.create({
   Nomepost: {
     fontSize: 10,
     color: '#C8C8C8',
-    marginBottom:5
+    marginBottom: 5
   },
 
   DuvidaTitle: {
     fontWeight: 'bold',
     color: "white",
     fontSize: 22,
-    paddingHorizontal:15,
+    paddingHorizontal: 15,
   },
   DuvidaCorpo: {
     flexDirection: 'row',
     paddingHorizontal: 32,
     paddingBottom: 10,
-    maxHeight:"60%"
+    maxHeight: "60%"
   },
   CorpoTitle: {
     color: 'white',
@@ -210,9 +207,9 @@ export default StyleSheet.create({
     fontWeight: 'bold'
   },
   avatar: {
-    width: 50,height: 50,borderRadius: 50 / 2,borderWidth:1,borderColor:"#D8D9DB",
+    width: 50, height: 50, borderRadius: 50 / 2, borderWidth: 1, borderColor: "#D8D9DB",
   },
-  avatar2:{
-    width: 40,height: 40,borderRadius: 40 / 2,borderWidth:1,borderColor:"#D8D9DB",
+  avatar2: {
+    width: 40, height: 40, borderRadius: 40 / 2, borderWidth: 1, borderColor: "#D8D9DB",
   }
 })

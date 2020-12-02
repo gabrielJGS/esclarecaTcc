@@ -128,6 +128,18 @@ export default function Profile({ route, navigation }) {
   }
 
   async function updateUser() {
+    if (name.trim() == '') {
+      showError("É necessário preencher o campo nome")
+      return;
+    }
+    if (email.trim() == '') {
+      showError("É necessário preencher o campo email")
+      return;
+    }
+    if (password.length < 6) {
+      showError("Ajuste sua senha para que tenha pelo menos 6 caracteres, sendo ao menos 1 letra e 1 número! :)")
+      return;
+    }
     const response = await api.put(`/users`, {
       name,
       email,
@@ -731,7 +743,7 @@ export default function Profile({ route, navigation }) {
         posts={posts}
         reloadPosts={reloadPosts}
         refreshing={refreshing}
-        loadPosts={()=>{loadPosts(); loadUser(route.params.userId);}}
+        loadPosts={() => { loadPosts(); loadUser(route.params.userId); }}
         searchSolved={false}
         searchFavorite={false}
         loading={loading}
