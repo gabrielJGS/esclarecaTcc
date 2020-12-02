@@ -34,7 +34,6 @@ export default function HomeSlack(props) {
     setSelectedItems(sele);
   };
 
-  const [searchText, setSearchText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [privadoModal, setPrivadoModal] = useState(false);
@@ -42,7 +41,6 @@ export default function HomeSlack(props) {
   const [senha, setSenha] = useState("");
 
   const [nomeModal, setNomeModal] = useState("");
-  const [tagModal, setTagModal] = useState("");
   const [senhaModal, setSenhaModal] = useState("");
 
   const [slackToLog, setSlackToLog] = useState();
@@ -393,15 +391,31 @@ export default function HomeSlack(props) {
           paddingVertical: 10,
         }}
       >
-        <Tag_Select selectedItems={selectedSearch} onSelectedItemsChange={onSelectedSearchChange} single={true} />
-        <TouchableOpacity onPress={() => reloadSlacks()}>
-          <Feather
-            name="search"
-            size={18}
-            color="#FFC300"
-            style={{ marginTop: 2 }}
-          />
-        </TouchableOpacity>
+        <View style={{width:'80%'}}>
+          <Tag_Select selectedItems={selectedSearch} onSelectedItemsChange={onSelectedSearchChange}  />
+        </View>
+        <View style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          <TouchableOpacity onPress={() => reloadSlacks()}>
+            <Feather
+              name="search"
+              size={18}
+              color="#FFC300"
+              style={{ bottom: 4, right:16 }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => onSelectedSearchChange([])}>
+            <Feather
+              name="x"
+              size={18}
+              color="#E73751"
+              style={{ bottom: 4 }}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
       {/* Fim cabeçalho */}
       {/* Lista dos slacks */}
