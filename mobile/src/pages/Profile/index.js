@@ -743,7 +743,7 @@ export default function Profile({ route, navigation }) {
         posts={posts}
         reloadPosts={reloadPosts}
         refreshing={refreshing}
-        loadPosts={() => { loadPosts(); loadUser(route.params.userId); }}
+        loadPosts={loadPosts}
         searchSolved={false}
         searchFavorite={false}
         loading={loading}
