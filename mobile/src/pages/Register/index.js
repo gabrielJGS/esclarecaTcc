@@ -177,7 +177,7 @@ export default function Register() {
                         <Text style={styles.label}>Senha</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Sua senha"
+                            placeholder="Deve ter 6 caracteres pelo menos 1 numérico"
                             placeholderTextColor="#999"
                             secureTextEntry={true}
                             password={true}

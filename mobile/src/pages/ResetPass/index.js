@@ -73,6 +73,7 @@ export default function ResetPass({ route, navigation }) {
                 <Text style={styles.label1}>Digite o código enviado no email:</Text>
                 <TextInput
                     style={styles.input}
+                    placeholder="Código enviado ao email preenchido"
                     placeholderTextColor="#999"
                     autoCapitalize="words"
                     autoCorrect={false}
@@ -86,6 +87,7 @@ export default function ResetPass({ route, navigation }) {
                 <Text style={styles.label2}>Digite a nova senha:</Text>
                 <TextInput
                     style={styles.input}
+                    placeholder="Deve ter 6 caracteres pelo menos 1 numérico"
                     placeholderTextColor="#999"
                     secureTextEntry={true}
                     password={true}
@@ -101,6 +103,7 @@ export default function ResetPass({ route, navigation }) {
                 <Text style={styles.label2}>Confirme a nova senha:</Text>
                 <TextInput
                     style={styles.input}
+                    placeholder="Digite novamente a senha"
                     placeholderTextColor="#999"
                     secureTextEntry={true}
                     password={true}

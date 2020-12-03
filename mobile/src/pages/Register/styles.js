@@ -3,21 +3,21 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 export default StyleSheet.create({
     container: {
-        backgroundColor:'#365478',
+        backgroundColor: '#365478',
         flex: 1,
     },
-    header:{
-        flexDirection:'row',
-        justifyContent:'space-between',
-        paddingVertical:12,
-        paddingHorizontal:32,
-        backgroundColor:'#365478',
-        borderBottomWidth:1,
-        borderBottomColor:'#365478',
-        height:70,
-        alignItems:'center',
-        height:hp('10%'),
-      },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        backgroundColor: '#365478',
+        borderBottomWidth: 1,
+        borderBottomColor: '#365478',
+        height: 70,
+        alignItems: 'center',
+        height: hp('10%'),
+    },
     img: {
         width: wp('22%'),
         height: hp('8%'),
@@ -27,7 +27,7 @@ export default StyleSheet.create({
     form: {
         backgroundColor: 'white',
         flex: 3,
-        width:wp('75%')
+        width: wp('80%')
     },
     label1: {
         fontWeight: 'bold',
@@ -44,7 +44,7 @@ export default StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#B2BABB',
         backgroundColor: 'white',
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
         fontSize: hp('1.8%'),
         color: '#707B7C',
         height: hp('4.5%'),
@@ -61,7 +61,7 @@ export default StyleSheet.create({
         height: hp('4.5%'),
         marginBottom: hp('2%'),
         borderRadius: 5,
-        width:130
+        width: 130
     },
     input3: {
         borderBottomWidth: 1,
@@ -73,11 +73,11 @@ export default StyleSheet.create({
         height: hp('4.5%'),
         marginBottom: hp('2%'),
         borderRadius: 5,
-        width:160
+        width: 160
     },
     button: {
         height: hp('5%'),
-        width:wp('50%'),
+        width: wp('50%'),
         backgroundColor: '#365478',
         justifyContent: 'center',
         alignItems: 'center',
@@ -108,7 +108,7 @@ export default StyleSheet.create({
         transform: [
             { scaleX: 2 }
         ],
-        marginLeft:'25%'
+        marginLeft: '25%'
     },
     images: {
         backgroundColor: '#B2BABB',
@@ -124,15 +124,17 @@ export default StyleSheet.create({
         backgroundColor: '#B2BABB',
         justifyContent: 'center',
         alignItems: 'center',
-        top:20
+        top: 20
     },
-    forms:{
-        justifyContent: 'center',alignItems: 'center', backgroundColor:'white', 
-        marginHorizontal:hp('5%'),
-        paddingHorizontal:hp('2%'), 
-        marginTop:hp('5%'),
-         flex:1, 
-        maxHeight:hp('80%'),
-        borderRadius:10
+    forms: {
+        justifyContent: 'center', 
+        alignItems: 'center',
+         backgroundColor: 'white',
+        marginHorizontal: hp('4%'),
+        paddingHorizontal: hp('2%'),
+        marginTop: hp('5%'),
+        flex: 1,
+        maxHeight: hp('80%'),
+        borderRadius: 10
     }
 });

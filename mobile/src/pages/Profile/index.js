@@ -89,9 +89,11 @@ export default function Profile({ route, navigation }) {
     setModalVisible(!modalVisible);
   }
   function navigateToTags() {
-    navigation.navigate("Tags", {
-      userId, tags
-    });
+    if (isLoggedUser) {
+      navigation.navigate("Tags", {
+        userId, tags
+      });
+    }
   }
 
   async function loadUser(id) {
@@ -410,7 +412,7 @@ export default function Profile({ route, navigation }) {
                     <Text style={styles.modalSubtitle}>Senha</Text>
                     <TextInput
                       style={styles.input}
-                      placeholder="Preencha caso deseje alterar sua senha..."
+                      placeholder="Deve ter 6 caracteres pelo menos 1 numérico"
                       placeholderTextColor="#999"
                       secureTextEntry={true}
                       password={true}
@@ -425,6 +427,7 @@ export default function Profile({ route, navigation }) {
                       ref={(input) => { this.fourthTextInput = input; }}
                     />
                   </View>
+                  <Text style={{color: '#e8423f', fontSize: 10}}>*A senha deve ter 6 caracteres pelo menos 1 numérico</Text>
                   <View style={styles.buttonView}>
                     <TouchableOpacity
                       onPress={updateUser}
@@ -651,7 +654,7 @@ export default function Profile({ route, navigation }) {
                 paddingHorizontal: 30,
               }}
             >
-              <Feather name="edit" size={17} color="#FFC300"></Feather>
+              {isLoggedUser ? <Feather name="edit" size={17} color="#FFC300"></Feather> : <></>}
               <Text style={styles.info}>{tags.join(', ')}</Text>
             </View>
           </TouchableOpacity>

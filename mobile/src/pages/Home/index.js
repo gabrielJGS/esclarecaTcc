@@ -60,12 +60,12 @@ export default function Home() {
     setType(true);
   }
 
-  useEffect(() => {
-    reload();
-    async function reload() {
-      await reloadPosts();
-    }
-  }, [type]);
+  // useEffect(() => {
+  //   reload();
+  //   async function reload() {
+  //     await reloadPosts();
+  //   }
+  // }, [type]);
 
   useFocusEffect(
     useCallback(() => {
@@ -73,7 +73,7 @@ export default function Home() {
       async function reload() {
         await reloadPosts();
       }
-    }, [])
+    }, [type])
   );
 
   function showModal() {

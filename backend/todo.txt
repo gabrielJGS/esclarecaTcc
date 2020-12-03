@@ -12,8 +12,10 @@ user: smtp_user, userHash: AKIAXK2FYMLRD2UKSO2K, pass: BDzU7SJ5RWQuq0+yauZU0Mz+d
 
 This sprint:
 Tela de ranking não esta cortando os nomes grandes demais//ok
-Componente tag-select na tela home(posts)
-Likes não estão dando pontos(ver as outras formas tbm)
+Componente tag-select na tela home(posts) // ok
+Componente tag-select na tela tags//ok
+Não aparecer botão nem navegar para tags no perfil de outro usuário//ok
+Likes não estão dando pontos(ver as outras formas tbm) // ok
 Ao entrar em um post (conteudo) e retornar ao menu, a pagina carrega as duvidas ao inves de conteudo
 
 Next:

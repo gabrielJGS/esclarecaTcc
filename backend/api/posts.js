@@ -414,7 +414,7 @@ module.exports = (app) => {
         } else {
           value = user.ranking - 5;
         }
-        const result = await Users.findByIdAndUpdate(user.id, {
+        await Users.findByIdAndUpdate(user.id, {
           ranking: value,
         }).catch((err) => {
           return res.status(400).json(err);
@@ -448,11 +448,24 @@ module.exports = (app) => {
           postToUpdate.likes.splice(index, 1);
         }
         await postToUpdate.save().catch((err) => res.status(400).json(err));
+
+        await Users.findByIdAndUpdate(user.id, {
+          ranking: user.ranking - 1,
+        }).catch((err) => {
+          return res.status(400).json(err);
+        });
+
         res.status(201).send();
       } else {
         //Curtindo
         postToUpdate.likes.push(user.id);
         await postToUpdate.save().catch((err) => res.status(400).json(err));
+
+        await Users.findByIdAndUpdate(user.id, {
+          ranking: user.ranking + 1,
+        }).catch((err) => {
+          return res.status(400).json(err);
+        });
 
         res.status(204).send();
       }

@@ -149,12 +149,17 @@ module.exports = app => {
                 }
                 await commToUpdate.save()
                     .catch(err => res.status(400).json(err))
+
+                await Users.findByIdAndUpdate(user.id, { ranking: user.ranking - 1 })
+
                 res.status(201).send()
             }
             else {//Curtindo
                 commToUpdate.likes.push(user.id)
                 await commToUpdate.save()
                     .catch(err => res.status(400).json(err))
+
+                await Users.findByIdAndUpdate(user.id, { ranking: user.ranking + 1 })
 
                 res.status(204).send()
             }

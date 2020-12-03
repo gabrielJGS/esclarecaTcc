@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     backgroundColor:'white', 
     borderRadius:10,
-    marginHorizontal:30,
+    marginHorizontal:20,
     marginTop:'50%',
     paddingVertical: 20,
     // height:hp('30%')
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     height: hp('3%'),
     marginBottom: hp('1%'),
     borderRadius: 5,
-    paddingHorizontal:60,
+    paddingHorizontal:30,
     alignItems:'center',
     justifyContent:'center'
   },
