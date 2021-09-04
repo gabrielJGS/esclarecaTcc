@@ -1,9 +1,11 @@
 # esclarecaTcc
 Este é o repositório do TCC de Gabriel José, Gabriel Lourenço e Reidner Rocha para o término do curso de Sistemas de Informação no ano de 2020.
-
-O app foi desenvolvido em React Native com Expo
-O backend foi desenvolvido em NodeJS, utilizando AWS para armazenamento de arquivos e envio de emails
-O banco de dados é MongoDB, permitindo mais flexibilidade e velocidade
+<ul style="list-style-type:circle">
+  <li>O app foi desenvolvido em React Native com Expo</li>
+  <li>O backend foi desenvolvido em NodeJS, utilizando AWS para armazenamento de arquivos e envio de emails</li>
+  <li>O banco de dados é MongoDB, permitindo mais flexibilidade e velocidade
+</li>
+</ul>
 
 O projeto é baseado em uma rede social focada para o estudo, de forma a ajudar na resolução de dúvidas e compartilhamento de conteúdo.<br>
 ![image](https://user-images.githubusercontent.com/82184751/132075958-d5299a6b-062a-47bc-9522-c9e321615418.png)
