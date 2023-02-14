@@ -41,4 +41,4 @@ O app também ofere a parte "social" de uma rede de conexões, permitindo que o 
 Os usuários mais participativos do app aparecem em um ranking mensal de participação<br>
 ![image](https://user-images.githubusercontent.com/82184751/132076228-9f66acb1-c59d-4150-a649-e03c4132c04f.png)<br>
 
-Defesa do TCC: https://drive.google.com/file/d/1BahblSPkMDiEO4Cmdd1sm6NILSq0y195/view
+Defesa do TCC: https://drive.google.com/file/d/1ccmz4ejDIgCWNf223BU_RDq-Q-0QVHWI/view
